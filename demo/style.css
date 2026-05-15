@@ -1,0 +1,1546 @@
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #E31E24;
+    --primary-dark: #B71C1C;
+    --primary-light: #fef2f2;
+    --secondary: #FFD700;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --dark: #1a1a1a;
+    --darker: #0d0d0d;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --gray-light: #adb5bd;
+    --light-gray: #e9ecef;
+    --white: #ffffff;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+    --transition: all 0.3s ease;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background: var(--light);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--white);
+    border-bottom: 1px solid var(--light-gray);
+    padding: 12px 0;
+    box-shadow: var(--shadow);
+}
+
+.navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    font-size: 1.5rem;
+}
+
+.logo-text {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.demo-badge {
+    background: var(--primary);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 5px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--gray);
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.nav-link.active {
+    color: var(--primary);
+    background: var(--primary-light);
+    font-weight: 600;
+}
+
+.btn-login {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: var(--primary);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-login:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: var(--dark);
+    border-radius: 3px;
+    transition: var(--transition);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    margin-top: 65px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    cursor: pointer;
+    border: none;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-outline-white {
+    background: rgba(255,255,255,0.15);
+    color: var(--white);
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+.btn-outline-white:hover {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.btn-lg {
+    padding: 14px 28px;
+    font-size: 1rem;
+}
+
+.btn-full {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ===== DEMO HERO ===== */
+.demo-hero {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d1f1f 50%, #1a1a1a 100%);
+    padding: 60px 0;
+    color: var(--white);
+}
+
+.demo-hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.demo-hero-text h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 15px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.demo-hero-text p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 25px;
+    line-height: 1.7;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.demo-hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.hero-stat-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(5px);
+}
+
+.hero-stat-card .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: rgba(227, 30, 36, 0.2);
+    color: #ff6b6b;
+}
+
+.hero-stat-card.resolved .stat-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+.hero-stat-card.pending .stat-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+.hero-stat-card.time .stat-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-num {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.stat-text {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* ===== RECENT SECTION ===== */
+.recent-section {
+    padding: 40px 0;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.section-title h2 i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.view-all {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.complaints-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.complaint-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.complaint-card:hover {
+    border-color: rgba(227, 30, 36, 0.1);
+    transform: translateX(5px);
+}
+
+.complaint-status {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.status-resolved { background: #d1fae5; color: #059669; }
+.status-progress { background: #fef3c7; color: #d97706; }
+.status-assigned { background: #dbeafe; color: #2563eb; }
+.status-new { background: #fee2e2; color: #dc2626; }
+
+.complaint-info {
+    flex: 1;
+}
+
+.complaint-info h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.complaint-info p {
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.complaint-info p i {
+    margin-right: 3px;
+    color: var(--gray-light);
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.badge-resolved { background: #d1fae5; color: #059669; }
+.badge-progress { background: #fef3c7; color: #d97706; }
+.badge-assigned { background: #dbeafe; color: #2563eb; }
+.badge-new { background: #fee2e2; color: #dc2626; }
+
+/* ===== MLA SECTION ===== */
+.mla-section {
+    padding: 40px 0;
+}
+
+.mla-banner {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--primary);
+}
+
+.mla-photo-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    box-shadow: 0 4px 15px rgba(227, 30, 36, 0.2);
+}
+
+.mla-banner-info h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.mla-title {
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.mla-party {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.mla-quote {
+    font-style: italic;
+    color: var(--gray);
+    font-size: 0.9rem;
+    padding-left: 15px;
+    border-left: 3px solid var(--secondary);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* ===== COMPLAINT FORM ===== */
+.complaint-form-section, .track-section, .updates-section, .dashboard-section {
+    padding: 40px 0;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.form-header h2 i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.form-header p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.complaint-form-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.complaint-form {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 35px;
+    box-shadow: var(--shadow);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--dark);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.required {
+    color: var(--primary);
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    transition: var(--transition);
+    font-family: 'Inter', 'Noto Sans Tamil', sans-serif;
+    background: var(--white);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+}
+
+/* Category Selector */
+.category-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.cat-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 15px 10px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.cat-option:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.cat-option.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+}
+
+.cat-option i {
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+.cat-option span {
+    font-size: 0.7rem;
+    font-weight: 500;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed var(--light-gray);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.upload-area:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.upload-area i {
+    font-size: 2rem;
+    color: var(--gray-light);
+    margin-bottom: 10px;
+}
+
+.upload-area p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.upload-area span {
+    font-size: 0.75rem;
+    color: var(--gray-light);
+}
+
+.upload-preview {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Location */
+.location-input {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 2px solid var(--info);
+    background: transparent;
+    color: var(--info);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.btn-location:hover {
+    background: var(--info);
+    color: var(--white);
+}
+
+.location-text {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.map-placeholder {
+    background: var(--light);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    border: 1px solid var(--light-gray);
+}
+
+.map-placeholder i {
+    font-size: 2rem;
+    color: var(--gray-light);
+    margin-bottom: 8px;
+}
+
+.map-placeholder p {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.form-actions {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.btn-submit {
+    min-width: 250px;
+}
+
+/* ===== TRACK PAGE ===== */
+.track-search {
+    display: flex;
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto 30px;
+}
+
+.track-search input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+}
+
+.track-search input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.track-result {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.track-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.track-header {
+    background: linear-gradient(135deg, var(--dark), #2d2d2d);
+    color: var(--white);
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.track-header h3 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.track-header p {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.track-details {
+    padding: 20px 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.track-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.track-detail .label {
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.track-detail .value {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Timeline */
+.track-timeline {
+    padding: 25px;
+}
+
+.tl-item {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 25px;
+    position: relative;
+}
+
+.tl-item:last-child {
+    padding-bottom: 0;
+}
+
+.tl-item::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: var(--light-gray);
+}
+
+.tl-item:last-child::before {
+    display: none;
+}
+
+.tl-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.tl-item.completed .tl-dot {
+    background: var(--success);
+}
+
+.tl-item.completed .tl-dot::after {
+    content: '✓';
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.tl-item.active .tl-dot {
+    background: var(--warning);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+    animation: pulse 2s infinite;
+}
+
+.tl-item.completed::before {
+    background: var(--success);
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.1); }
+}
+
+.tl-content h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.tl-content p {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+
+.tl-item:not(.completed):not(.active) .tl-content h4 {
+    color: var(--gray-light);
+}
+
+.tl-item:not(.completed):not(.active) .tl-content p {
+    color: var(--gray-light);
+}
+
+/* ===== UPDATES PAGE ===== */
+.updates-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.update-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.update-card:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.update-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+    padding: 10px;
+    background: var(--primary-light);
+    border-radius: var(--radius-sm);
+}
+
+.update-date .day {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.update-date .month {
+    font-size: 0.7rem;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.update-content {
+    flex: 1;
+}
+
+.update-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(227, 30, 36, 0.1);
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.update-tag.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.update-tag.info {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info);
+}
+
+.update-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.update-content p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.6;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* ===== DASHBOARD ===== */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.dashboard-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.dashboard-header h2 i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.dashboard-header p {
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--secondary);
+    color: var(--dark);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+/* Dashboard Stats */
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.dash-stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: var(--shadow);
+}
+
+.dash-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.dash-stat-icon.total { background: #ede9fe; color: #7c3aed; }
+.dash-stat-icon.resolved { background: #d1fae5; color: #059669; }
+.dash-stat-icon.pending { background: #fef3c7; color: #d97706; }
+.dash-stat-icon.progress { background: #dbeafe; color: #2563eb; }
+
+.dash-stat-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: block;
+}
+
+.dash-stat-label {
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* Dashboard Grid */
+.dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dash-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+}
+
+.dash-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.dash-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--light-gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.dash-card h3 i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+/* Chart Bars */
+.chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chart-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bar-label {
+    font-size: 0.8rem;
+    min-width: 110px;
+    color: var(--gray);
+}
+
+.bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--light);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #ff6b6b);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    transition: width 1s ease;
+}
+
+/* Category Stats */
+.category-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cat-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cat-stat-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.cat-stat-info {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    font-size: 0.85rem;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.cat-stat-info strong {
+    color: var(--dark);
+}
+
+.cat-stat-bar {
+    width: 80px;
+    height: 6px;
+    background: var(--light-gray);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cat-stat-bar div {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+/* Table */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.dash-table th {
+    text-align: left;
+    padding: 12px;
+    background: var(--light);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.dash-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--light-gray);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.dash-table code {
+    background: var(--light);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--light);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid var(--light-gray);
+    background: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    color: var(--gray);
+}
+
+.btn-action:hover {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.btn-action.assign {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.btn-action.assign:hover {
+    background: var(--success);
+    color: var(--white);
+}
+
+/* ===== MODALS ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 35px;
+    max-width: 400px;
+    width: 90%;
+    z-index: 1;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: var(--light);
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-header h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+
+.login-header p {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
+
+.phone-input {
+    display: flex;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.country-code {
+    padding: 12px 14px;
+    background: var(--light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-right: 2px solid var(--light-gray);
+}
+
+.phone-input input {
+    flex: 1;
+    border: none !important;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+.phone-input input:focus {
+    outline: none;
+    box-shadow: none !important;
+}
+
+.otp-inputs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.otp-input {
+    width: 50px !important;
+    height: 50px;
+    text-align: center;
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    border: 2px solid var(--light-gray) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.otp-input:focus {
+    border-color: var(--primary) !important;
+}
+
+/* Success Modal */
+.success-modal {
+    text-align: center;
+    max-width: 420px;
+}
+
+.success-content .success-icon {
+    font-size: 4rem;
+    color: var(--success);
+    margin-bottom: 15px;
+}
+
+.success-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.success-content p {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.success-info {
+    color: var(--gray);
+    font-size: 0.85rem !important;
+    margin-bottom: 20px !important;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+/* ===== FOOTER ===== */
+.demo-footer {
+    background: var(--darker);
+    color: var(--white);
+    padding: 40px 0 20px;
+    margin-top: 40px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 25px;
+}
+
+.footer-col h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.footer-col p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 5px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.footer-col p i {
+    margin-right: 8px;
+    color: var(--primary);
+}
+
+.party-name {
+    color: var(--secondary) !important;
+    font-weight: 600;
+}
+
+.footer-col a {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    transition: var(--transition);
+    font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+.footer-col a:hover {
+    color: var(--white);
+    padding-left: 5px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 15px;
+    text-align: center;
+}
+
+.footer-bottom p {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .demo-hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .dash-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 15px;
+        gap: 5px;
+        box-shadow: var(--shadow);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-right {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .demo-hero-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .demo-hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .mla-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .category-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .complaint-form {
+        padding: 20px;
+    }
+
+    .track-search {
+        flex-direction: column;
+    }
+
+    .track-details {
+        grid-template-columns: 1fr;
+    }
+
+    .dash-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-hero-text h1 {
+        font-size: 1.5rem;
+    }
+
+    .category-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dash-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stat-card {
+        padding: 15px;
+    }
+}
