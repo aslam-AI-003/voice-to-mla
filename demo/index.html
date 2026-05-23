@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice to MLA | மக்கள் குறை தீர்ப்பு மேடை - Demo</title>
+    <title>Voice to Minister | மக்கள் குறை தீர்ப்பு மேடை - D. Sarathkumar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -16,15 +19,15 @@
         <div class="container">
             <div class="nav-brand">
                 <span class="logo-icon">🎯</span>
-                <span class="logo-text">Voice to MLA</span>
+                <span class="logo-text">Voice to Minister</span>
                 <span class="demo-badge">DEMO</span>
             </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" class="nav-link active" data-page="home">முகப்பு</a></li>
                 <li><a href="#" class="nav-link" data-page="complaint">புகார் செய்</a></li>
-                <li><a href="#" class="nav-link" data-page="track">நிலை காண</a></li>
-                <li><a href="#" class="nav-link" data-page="updates">MLA Updates</a></li>
-                <li><a href="#" class="nav-link" data-page="dashboard">Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-page="mycomplaints">என் புகார்கள்</a></li>
+                <li><a href="#" class="nav-link" data-page="updates">Updates</a></li>
+                <li><a href="#" class="nav-link" data-page="dashboard">Minister Dashboard</a></li>
             </ul>
             <div class="nav-right">
                 <button class="btn-login" id="loginBtn">
@@ -50,16 +53,19 @@
                 <div class="container">
                     <div class="demo-hero-content">
                         <div class="demo-hero-text">
-                            <h1>உங்கள் குரல்,<br>நேரடியாக MLA-க்கு</h1>
+                            <h1>உங்கள் குரல்,<br>நேரடியாக அமைச்சருக்கு</h1>
                             <p>தாம்பரம் தொகுதியின் பிரச்சனைகளை நேரடியாக தெரிவியுங்கள். 
                             புகார் செய்யுங்கள், நிலையை track செய்யுங்கள்.</p>
                             <div class="hero-actions">
                                 <button class="btn btn-primary btn-lg" onclick="navigateTo('complaint')">
                                     <i class="fas fa-plus-circle"></i> புகார் செய்
                                 </button>
-                                <button class="btn btn-outline-white btn-lg" onclick="navigateTo('track')">
+                                <button class="btn btn-outline-white btn-lg" onclick="navigateTo('mycomplaints')">
                                     <i class="fas fa-search"></i> நிலை காண
                                 </button>
+                                <a href="https://wa.me/91XXXXXXXXXX?text=புகார்:%20" target="_blank" class="btn btn-whatsapp btn-lg">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp-ல புகார்
+                                </a>
                             </div>
                         </div>
                         <div class="demo-hero-stats">
@@ -140,135 +146,251 @@
                 </div>
             </section>
 
-            <!-- MLA Section -->
+            <!-- Minister Section -->
             <section class="mla-section">
                 <div class="container">
                     <div class="mla-banner">
                         <div class="mla-banner-photo">
-                            <img src="../assets/tvk-30.jpg" alt="D. Sarathkumar - MLA Tambaram" class="mla-photo-img">
+                            <img src="../assets/tvk-30.jpg" alt="D. Sarathkumar - Cabinet Minister" class="mla-photo-img">
                         </div>
                         <div class="mla-banner-info">
                             <h3>D. Sarathkumar</h3>
-                            <p class="mla-title">MLA - தாம்பரம் தொகுதி</p>
-                            <p class="mla-party">தமிழக வெற்றி கழகம் (TVK)</p>
-                            <p class="mla-quote">"மக்கள் சேவையே மகேசன் சேவை. உங்கள் ஒவ்வொரு புகாரும் எனக்கு முக்கியம்."</p>
+                            <p class="mla-title">🏛️ Cabinet Minister - Human Resources Management</p>
+                            <p class="mla-party">Government of Tamil Nadu | MLA - தாம்பரம் தொகுதி</p>
+                            <p style="font-size: 0.8rem; color: #666; margin-top: 4px;">தமிழக வெற்றி கழகம் (TVK) | CM: C. Joseph Vijay</p>
+                            <p class="mla-quote">"மக்கள் சேவையே மகேசன் சேவை. அமைச்சராக இருந்தாலும் உங்கள் தொகுதி பிரச்சனைகள் எனது முன்னுரிமை."</p>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- COMPLAINT PAGE -->
+        <!-- COMPLAINT PAGE - Multi-Step Wizard -->
         <div class="page" id="page-complaint">
             <section class="complaint-form-section">
                 <div class="container">
                     <div class="form-header">
-                        <h2><i class="fas fa-edit"></i> புகார் செய்யுங்கள்</h2>
-                        <p>உங்கள் பகுதி பிரச்சனையை கீழே பதிவு செய்யுங்கள்</p>
+                        <h2><i class="fas fa-edit"></i> புகார் பதிவு செய்யுங்கள்</h2>
+                        <p>உங்கள் பகுதி பிரச்சனையை 3 எளிய படிகளில் பதிவு செய்யுங்கள்</p>
                     </div>
+
+                    <!-- Progress Bar -->
+                    <div class="wizard-progress">
+                        <div class="progress-step active" data-step="1">
+                            <div class="progress-circle">1</div>
+                            <span>யார்?</span>
+                        </div>
+                        <div class="progress-line active-line"></div>
+                        <div class="progress-step" data-step="2">
+                            <div class="progress-circle">2</div>
+                            <span>என்ன?</span>
+                        </div>
+                        <div class="progress-line"></div>
+                        <div class="progress-step" data-step="3">
+                            <div class="progress-circle">3</div>
+                            <span>எங்கே?</span>
+                        </div>
+                    </div>
+
                     <div class="complaint-form-wrapper">
                         <form id="complaintForm" class="complaint-form">
-                            <!-- Category -->
-                            <div class="form-group">
-                                <label>புகார் வகை <span class="required">*</span></label>
-                                <div class="category-selector">
-                                    <div class="cat-option" data-value="roads">
-                                        <i class="fas fa-road"></i>
-                                        <span>சாலைகள்</span>
-                                    </div>
-                                    <div class="cat-option" data-value="drainage">
-                                        <i class="fas fa-water"></i>
-                                        <span>வடிகால்</span>
-                                    </div>
-                                    <div class="cat-option" data-value="water">
-                                        <i class="fas fa-tint"></i>
-                                        <span>குடிநீர்</span>
-                                    </div>
-                                    <div class="cat-option" data-value="electricity">
-                                        <i class="fas fa-bolt"></i>
-                                        <span>மின்சாரம்</span>
-                                    </div>
-                                    <div class="cat-option" data-value="garbage">
-                                        <i class="fas fa-trash"></i>
-                                        <span>கழிவு</span>
-                                    </div>
-                                    <div class="cat-option" data-value="traffic">
-                                        <i class="fas fa-traffic-light"></i>
-                                        <span>போக்குவரத்து</span>
-                                    </div>
-                                    <div class="cat-option" data-value="safety">
-                                        <i class="fas fa-shield-alt"></i>
-                                        <span>பாதுகாப்பு</span>
-                                    </div>
-                                    <div class="cat-option" data-value="scheme">
-                                        <i class="fas fa-hands-helping"></i>
-                                        <span>அரசு திட்டம்</span>
+                            
+                            <!-- STEP 1: Who -->
+                            <div class="wizard-step active" id="step1">
+                                <div class="step-title">
+                                    <h3>👤 உங்கள் தகவல்கள்</h3>
+                                    <p>புகார் செய்பவரின் விவரங்கள்</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="citizenName">பெயர் (Name) <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="citizenName" placeholder="உங்கள் முழு பெயர்" required>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Area -->
-                            <div class="form-group">
-                                <label for="area">பகுதி (Area) <span class="required">*</span></label>
-                                <select id="area" required>
-                                    <option value="">பகுதியை தேர்வு செய்யுங்கள்</option>
-                                    <option value="tambaram-east">Tambaram East</option>
-                                    <option value="tambaram-west">Tambaram West</option>
-                                    <option value="selaiyur">Selaiyur</option>
-                                    <option value="mudichur">Mudichur</option>
-                                    <option value="chromepet">Chromepet</option>
-                                    <option value="pallavaram">Pallavaram</option>
-                                    <option value="pammal">Pammal</option>
-                                    <option value="anakaputhur">Anakaputhur</option>
-                                    <option value="perungalathur">Perungalathur</option>
-                                    <option value="chitlapakkam">Chitlapakkam</option>
-                                </select>
-                            </div>
-
-                            <!-- Title -->
-                            <div class="form-group">
-                                <label for="title">புகார் தலைப்பு <span class="required">*</span></label>
-                                <input type="text" id="title" placeholder="உதா: சாலையில் பள்ளம், Street light வேலை செய்யல" required>
-                            </div>
-
-                            <!-- Description -->
-                            <div class="form-group">
-                                <label for="description">விரிவான விளக்கம்</label>
-                                <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்..."></textarea>
-                            </div>
-
-                            <!-- Photo Upload -->
-                            <div class="form-group">
-                                <label>புகைப்படம் / வீடியோ இணைக்க</label>
-                                <div class="upload-area" id="uploadArea">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Click to upload or drag & drop</p>
-                                    <span>JPG, PNG, MP4 (Max 10MB)</span>
-                                    <input type="file" id="fileInput" accept="image/*,video/*" hidden>
+                                <div class="form-group">
+                                    <label for="mobileNumber">தொலைபேசி எண் (Mobile) <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-phone"></i>
+                                        <div class="phone-input-group">
+                                            <span class="country-code-badge">+91</span>
+                                            <input type="tel" id="mobileNumber" placeholder="98765 43210" maxlength="10" required>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="upload-preview" id="uploadPreview"></div>
-                            </div>
 
-                            <!-- Location -->
-                            <div class="form-group">
-                                <label>இடம் (Location)</label>
-                                <div class="location-input">
-                                    <button type="button" class="btn-location" id="getLocation">
-                                        <i class="fas fa-crosshairs"></i> GPS Location பெற
+                                <div class="form-group">
+                                    <label for="area">பகுதி / Ward <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <select id="area" required>
+                                            <option value="">-- பகுதியை தேர்வு செய்யுங்கள் --</option>
+                                            <option value="tambaram-east">Tambaram East (வார்டு 1-5)</option>
+                                            <option value="tambaram-west">Tambaram West (வார்டு 6-10)</option>
+                                            <option value="selaiyur">Selaiyur (வார்டு 11-15)</option>
+                                            <option value="mudichur">Mudichur (வார்டு 16-20)</option>
+                                            <option value="chromepet">Chromepet (வார்டு 21-25)</option>
+                                            <option value="pallavaram">Pallavaram (வார்டு 26-30)</option>
+                                            <option value="pammal">Pammal (வார்டு 31-35)</option>
+                                            <option value="anakaputhur">Anakaputhur (வார்டு 36-40)</option>
+                                            <option value="perungalathur">Perungalathur (வார்டு 41-45)</option>
+                                            <option value="chitlapakkam">Chitlapakkam (வார்டு 46-50)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="wizard-actions">
+                                    <div></div>
+                                    <button type="button" class="btn btn-primary btn-next" onclick="nextStep(2)">
+                                        அடுத்து <i class="fas fa-arrow-right"></i>
                                     </button>
-                                    <span class="location-text" id="locationText">Location not set</span>
-                                </div>
-                                <div class="map-placeholder" id="mapPlaceholder">
-                                    <i class="fas fa-map-marked-alt"></i>
-                                    <p>Map will appear here after selecting location</p>
                                 </div>
                             </div>
 
-                            <!-- Submit -->
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary btn-lg btn-submit">
-                                    <i class="fas fa-paper-plane"></i> புகார் Submit செய்
-                                </button>
+                            <!-- STEP 2: What -->
+                            <div class="wizard-step" id="step2">
+                                <div class="step-title">
+                                    <h3>📋 புகார் விவரங்கள்</h3>
+                                    <p>பிரச்சனை என்ன என்பதை தெரிவிக்கவும்</p>
+                                </div>
+
+                                <!-- Category Large Cards -->
+                                <div class="form-group">
+                                    <label>புகார் வகை <span class="required">*</span></label>
+                                    <div class="category-grid-new">
+                                        <div class="cat-card-new" data-value="roads">
+                                            <div class="cat-card-icon"><i class="fas fa-road"></i></div>
+                                            <span>சாலை பிரச்சனை</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="water">
+                                            <div class="cat-card-icon"><i class="fas fa-tint"></i></div>
+                                            <span>குடிநீர்</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="drainage">
+                                            <div class="cat-card-icon"><i class="fas fa-water"></i></div>
+                                            <span>வடிகால்</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="electricity">
+                                            <div class="cat-card-icon"><i class="fas fa-bolt"></i></div>
+                                            <span>மின்சாரம்</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="garbage">
+                                            <div class="cat-card-icon"><i class="fas fa-trash"></i></div>
+                                            <span>கழிவு மேலாண்மை</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="traffic">
+                                            <div class="cat-card-icon"><i class="fas fa-traffic-light"></i></div>
+                                            <span>போக்குவரத்து</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="safety">
+                                            <div class="cat-card-icon"><i class="fas fa-shield-alt"></i></div>
+                                            <span>பொது பாதுகாப்பு</span>
+                                        </div>
+                                        <div class="cat-card-new" data-value="scheme">
+                                            <div class="cat-card-icon"><i class="fas fa-hands-helping"></i></div>
+                                            <span>அரசு திட்டம்</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="title">புகார் தலைப்பு <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-heading"></i>
+                                        <input type="text" id="title" placeholder="உதா: சாலையில் பள்ளம், Street light வேலை செய்யல" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">விரிவான விளக்கம்</label>
+                                    <div class="voice-input-wrapper">
+                                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்... அல்லது 🎤 பொத்தானை அழுத்தி தமிழில் பேசுங்கள்"></textarea>
+                                        <button type="button" class="btn-voice" id="voiceBtn" onclick="startVoiceInput()">
+                                            <i class="fas fa-microphone"></i>
+                                        </button>
+                                    </div>
+                                    <div class="voice-status" id="voiceStatus" style="display:none;">
+                                        <div class="voice-wave">
+                                            <span></span><span></span><span></span><span></span><span></span>
+                                        </div>
+                                        <p>🎤 கேட்கிறேன்... தமிழில் பேசுங்கள்</p>
+                                        <button type="button" class="btn-voice-stop" onclick="stopVoiceInput()">நிறுத்து</button>
+                                    </div>
+                                </div>
+
+                                <!-- Photo Upload -->
+                                <div class="form-group">
+                                    <label>புகைப்படம் / வீடியோ இணைக்க</label>
+                                    <div class="upload-area" id="uploadArea">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Click to upload or drag & drop</p>
+                                        <span>JPG, PNG, MP4 (Max 10MB)</span>
+                                        <input type="file" id="fileInput" accept="image/*,video/*" hidden>
+                                    </div>
+                                    <div class="upload-preview" id="uploadPreview"></div>
+                                </div>
+
+                                <div class="wizard-actions">
+                                    <button type="button" class="btn btn-outline-back" onclick="prevStep(1)">
+                                        <i class="fas fa-arrow-left"></i> முந்தைய
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-next" onclick="nextStep(3)">
+                                        அடுத்து <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: Where -->
+                            <div class="wizard-step" id="step3">
+                                <div class="step-title">
+                                    <h3>📍 இடம் & சமர்ப்பிப்பு</h3>
+                                    <p>சரியான இடத்தை குறிப்பிடவும்</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>GPS இடம் (Location)</label>
+                                    <div class="location-input">
+                                        <button type="button" class="btn-location" id="getLocation">
+                                            <i class="fas fa-crosshairs"></i> 📍 என் இடத்தை பெற
+                                        </button>
+                                        <span class="location-text" id="locationText">இடம் குறிப்பிடப்படவில்லை</span>
+                                    </div>
+                                    <div class="map-placeholder" id="mapPlaceholder">
+                                        <i class="fas fa-map-marked-alt"></i>
+                                        <p>Location பெற்ற பின் Map இங்கே தெரியும்</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="manualAddress">முகவரி (விருப்பம்)</label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-home"></i>
+                                        <input type="text" id="manualAddress" placeholder="சாலை பெயர், அடையாளம் (Landmark)">
+                                    </div>
+                                </div>
+
+                                <!-- Review Summary -->
+                                <div class="review-summary">
+                                    <h4><i class="fas fa-clipboard-check"></i> உங்கள் புகார் சுருக்கம்</h4>
+                                    <div class="review-items">
+                                        <div class="review-item"><span>பெயர்:</span> <strong id="reviewName">-</strong></div>
+                                        <div class="review-item"><span>தொலைபேசி:</span> <strong id="reviewPhone">-</strong></div>
+                                        <div class="review-item"><span>பகுதி:</span> <strong id="reviewArea">-</strong></div>
+                                        <div class="review-item"><span>வகை:</span> <strong id="reviewCategory">-</strong></div>
+                                        <div class="review-item"><span>தலைப்பு:</span> <strong id="reviewTitle">-</strong></div>
+                                    </div>
+                                </div>
+
+                                <div class="wizard-actions">
+                                    <button type="button" class="btn btn-outline-back" onclick="prevStep(2)">
+                                        <i class="fas fa-arrow-left"></i> முந்தைய
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-submit">
+                                        <i class="fas fa-paper-plane"></i> புகார் சமர்ப்பி
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -287,7 +409,7 @@
 
                     <!-- Search -->
                     <div class="track-search">
-                        <input type="text" placeholder="Complaint ID அல்லது Mobile Number" id="trackInput">
+                        <input type="text" placeholder="TN/TBM/CPT/2026/00847 அல்லது Mobile Number" id="trackInput">
                         <button class="btn btn-primary" onclick="searchComplaint()">
                             <i class="fas fa-search"></i> தேடு
                         </button>
@@ -298,7 +420,7 @@
                         <div class="track-card">
                             <div class="track-header">
                                 <div>
-                                    <h3>Complaint #TVK-2026-0847</h3>
+                                    <h3>Complaint TN/TBM/CPT/2026/00847</h3>
                                     <p>சாலையில் பள்ளம் - Mudichur Main Road</p>
                                 </div>
                                 <span class="status-badge badge-progress">பணியில்</span>
@@ -366,13 +488,66 @@
             </section>
         </div>
 
+        <!-- MY COMPLAINTS - CITIZEN DASHBOARD -->
+        <div class="page" id="page-mycomplaints">
+            <section class="track-section">
+                <div class="container">
+                    <div class="form-header">
+                        <h2><i class="fas fa-user-shield"></i> என் புகார்கள்</h2>
+                        <p>உங்கள் அனைத்து புகார்களின் நிலையை இங்கே பாருங்கள்</p>
+                    </div>
+
+                    <!-- Citizen Login / Search -->
+                    <div class="citizen-dash-login" id="citizenLoginSection">
+                        <div class="track-search">
+                            <input type="text" placeholder="உங்கள் Mobile Number அல்லது Complaint ID" id="citizenSearchInput">
+                            <button class="btn btn-primary" onclick="loadCitizenComplaints()">
+                                <i class="fas fa-search"></i> தேடு
+                            </button>
+                        </div>
+                        <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-top:10px;">Mobile Number enter செய்தால் உங்கள் அனைத்து புகார்களும் தெரியும்</p>
+                    </div>
+
+                    <!-- Citizen Stats -->
+                    <div class="citizen-stats" id="citizenStats" style="display:none;">
+                        <div class="dash-stats" style="grid-template-columns: repeat(3, 1fr); margin-bottom:20px;">
+                            <div class="dash-stat-card">
+                                <div class="dash-stat-icon total"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="dash-stat-info">
+                                    <span class="dash-stat-num" id="citizenTotal">0</span>
+                                    <span class="dash-stat-label">மொத்த புகார்கள்</span>
+                                </div>
+                            </div>
+                            <div class="dash-stat-card">
+                                <div class="dash-stat-icon pending"><i class="fas fa-clock"></i></div>
+                                <div class="dash-stat-info">
+                                    <span class="dash-stat-num" id="citizenPending">0</span>
+                                    <span class="dash-stat-label">நிலுவையில்</span>
+                                </div>
+                            </div>
+                            <div class="dash-stat-card">
+                                <div class="dash-stat-icon resolved"><i class="fas fa-check-circle"></i></div>
+                                <div class="dash-stat-info">
+                                    <span class="dash-stat-num" id="citizenResolved">0</span>
+                                    <span class="dash-stat-label">தீர்வு</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Citizen Complaints List -->
+                    <div class="citizen-complaints-list" id="citizenComplaintsList"></div>
+                </div>
+            </section>
+        </div>
+
         <!-- UPDATES PAGE -->
         <div class="page" id="page-updates">
             <section class="updates-section">
                 <div class="container">
                     <div class="form-header">
-                        <h2><i class="fas fa-newspaper"></i> MLA Updates & அறிவிப்புகள்</h2>
-                        <p>D. Sarathkumar - தாம்பரம் தொகுதி அறிவிப்புகள்</p>
+                        <h2><i class="fas fa-newspaper"></i> Minister Updates & அறிவிப்புகள்</h2>
+                        <p>D. Sarathkumar - Cabinet Minister (HRM) | தாம்பரம் தொகுதி</p>
                     </div>
                     <div class="updates-grid">
                         <div class="update-card">
@@ -430,16 +605,148 @@
                 <div class="container">
                     <div class="dashboard-header">
                         <div>
-                            <h2><i class="fas fa-tachometer-alt"></i> MLA Dashboard</h2>
-                            <p>தாம்பரம் தொகுதி - புகார் மேலாண்மை</p>
+                            <h2><i class="fas fa-tachometer-alt"></i> Minister Dashboard</h2>
+                            <p>D. Sarathkumar | Cabinet Minister - HRM | தாம்பரம் தொகுதி</p>
                         </div>
                         <div class="dashboard-actions">
-                            <span class="admin-badge"><i class="fas fa-crown"></i> Admin View</span>
+                            <span class="admin-badge" id="adminBadge" style="display:none;"><i class="fas fa-crown"></i> Admin View</span>
+                            <a href="admin.html" class="btn btn-primary" id="adminLoginBtn" style="font-size:0.8rem; padding: 8px 16px; text-decoration:none;">
+                                <i class="fas fa-lock"></i> Staff Portal
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Stats Cards -->
-                    <div class="dash-stats">
+                    <!-- MLA Trust Score Section -->
+                    <div class="trust-score-section">
+                        <div class="trust-card">
+                            <div class="trust-score-circle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" class="trust-bg"/>
+                                    <circle cx="50" cy="50" r="45" class="trust-fill" style="stroke-dasharray: 254; stroke-dashoffset: 28;"/>
+                                </svg>
+                                <div class="trust-score-value">
+                                    <span class="score-num">87%</span>
+                                    <span class="score-label">நம்பிக்கை</span>
+                                </div>
+                            </div>
+                            <div class="trust-info">
+                                <h3>🏆 மக்கள் நம்பிக்கை Index</h3>
+                                <p>People's Trust Score</p>
+                                <div class="trust-metrics">
+                                    <div class="trust-metric">
+                                        <span class="metric-label">Resolution Rate</span>
+                                        <span class="metric-value good">87.3%</span>
+                                    </div>
+                                    <div class="trust-metric">
+                                        <span class="metric-label">Avg Response Time</span>
+                                        <span class="metric-value good">2.3 Days</span>
+                                    </div>
+                                    <div class="trust-metric">
+                                        <span class="metric-label">Satisfaction Rating</span>
+                                        <span class="metric-value good">4.6/5 ⭐</span>
+                                    </div>
+                                    <div class="trust-metric">
+                                        <span class="metric-label">Active Volunteers</span>
+                                        <span class="metric-value">48</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Constituency Heatmap -->
+                    <div class="dash-card full-width map-card">
+                        <h3><i class="fas fa-map-marked-alt"></i> Constituency Heatmap - தாம்பரம் தொகுதி</h3>
+                        <div class="live-map" id="liveMap">
+                            <div class="map-container">
+                                <div class="map-bg">
+                                    <svg viewBox="0 0 800 450" class="constituency-map" style="border-radius:12px;">
+                                        <!-- Background -->
+                                        <rect width="800" height="450" fill="#f0f9ff" rx="12"/>
+                                        
+                                        <!-- Area Zones (Heatmap colored based on complaint density) -->
+                                        <!-- Tambaram East - HIGH (Red zone - most complaints: 287) -->
+                                        <path d="M 50 40 L 250 40 L 280 120 L 300 200 L 200 220 L 100 200 L 50 120 Z" 
+                                              fill="rgba(239,68,68,0.35)" stroke="rgba(239,68,68,0.6)" stroke-width="2"/>
+                                        <text x="140" y="125" font-size="13" font-weight="700" fill="#dc2626" text-anchor="middle">Tambaram East</text>
+                                        <text x="140" y="145" font-size="10" fill="#991b1b" text-anchor="middle">287 புகார்கள்</text>
+                                        <circle cx="160" cy="100" r="5" fill="#ef4444"/>
+                                        <circle cx="200" cy="130" r="5" fill="#ef4444"/>
+                                        <circle cx="120" cy="155" r="5" fill="#10b981"/>
+                                        
+                                        <!-- Selaiyur - HIGH (Red-Orange zone: 198) -->
+                                        <path d="M 450 30 L 700 30 L 750 130 L 700 200 L 550 200 L 450 150 Z" 
+                                              fill="rgba(249,115,22,0.3)" stroke="rgba(249,115,22,0.6)" stroke-width="2"/>
+                                        <text x="590" y="105" font-size="13" font-weight="700" fill="#ea580c" text-anchor="middle">Selaiyur</text>
+                                        <text x="590" y="125" font-size="10" fill="#9a3412" text-anchor="middle">198 புகார்கள்</text>
+                                        <circle cx="560" cy="80" r="5" fill="#10b981"/>
+                                        <circle cx="630" cy="100" r="5" fill="#f59e0b"/>
+                                        <circle cx="680" cy="140" r="5" fill="#10b981"/>
+                                        
+                                        <!-- Mudichur - MEDIUM (Yellow zone: 176) -->
+                                        <path d="M 480 230 L 750 220 L 780 340 L 700 410 L 500 400 L 450 320 Z" 
+                                              fill="rgba(245,158,11,0.25)" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
+                                        <text x="610" y="310" font-size="13" font-weight="700" fill="#d97706" text-anchor="middle">Mudichur</text>
+                                        <text x="610" y="330" font-size="10" fill="#92400e" text-anchor="middle">176 புகார்கள்</text>
+                                        <circle cx="580" cy="280" r="5" fill="#f59e0b"/>
+                                        <circle cx="650" cy="350" r="5" fill="#10b981"/>
+                                        <circle cx="700" cy="300" r="5" fill="#ef4444"/>
+                                        
+                                        <!-- Chromepet - MEDIUM (Yellow zone: 165) -->
+                                        <path d="M 30 230 L 180 220 L 230 300 L 220 400 L 100 420 L 30 350 Z" 
+                                              fill="rgba(245,158,11,0.25)" stroke="rgba(245,158,11,0.5)" stroke-width="2"/>
+                                        <text x="125" y="320" font-size="13" font-weight="700" fill="#d97706" text-anchor="middle">Chromepet</text>
+                                        <text x="125" y="340" font-size="10" fill="#92400e" text-anchor="middle">165 புகார்கள்</text>
+                                        <circle cx="100" cy="280" r="5" fill="#ef4444"/>
+                                        <circle cx="150" cy="360" r="5" fill="#10b981"/>
+                                        <circle cx="80" cy="380" r="5" fill="#f59e0b"/>
+                                        
+                                        <!-- Pallavaram - LOW-MED (Light Yellow: 143) -->
+                                        <path d="M 240 280 L 430 260 L 450 380 L 380 430 L 240 420 L 220 350 Z" 
+                                              fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)" stroke-width="2"/>
+                                        <text x="340" y="345" font-size="13" font-weight="700" fill="#059669" text-anchor="middle">Pallavaram</text>
+                                        <text x="340" y="365" font-size="10" fill="#065f46" text-anchor="middle">143 புகார்கள்</text>
+                                        <circle cx="320" cy="310" r="5" fill="#10b981"/>
+                                        <circle cx="380" cy="390" r="5" fill="#10b981"/>
+                                        
+                                        <!-- Pammal - LOW (Green zone: 121) -->
+                                        <path d="M 300 60 L 440 50 L 450 150 L 420 220 L 310 230 L 280 170 Z" 
+                                              fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)" stroke-width="2"/>
+                                        <text x="365" y="140" font-size="13" font-weight="700" fill="#059669" text-anchor="middle">Pammal</text>
+                                        <text x="365" y="160" font-size="10" fill="#065f46" text-anchor="middle">121 புகார்கள்</text>
+                                        <circle cx="350" cy="100" r="5" fill="#10b981"/>
+                                        <circle cx="400" cy="180" r="5" fill="#10b981"/>
+                                        
+                                        <!-- Roads overlay -->
+                                        <path d="M 0 220 L 800 220" stroke="rgba(100,100,100,0.15)" stroke-width="2" stroke-dasharray="8,4"/>
+                                        <path d="M 400 0 L 400 450" stroke="rgba(100,100,100,0.15)" stroke-width="2" stroke-dasharray="8,4"/>
+                                        <path d="M 50 430 L 780 50" stroke="rgba(100,100,100,0.08)" stroke-width="1.5" stroke-dasharray="6,4"/>
+                                        
+                                        <!-- Heatmap intensity indicator -->
+                                        <rect x="30" y="420" width="120" height="20" rx="4" fill="url(#heatGradient)" stroke="#ccc" stroke-width="0.5"/>
+                                        <defs>
+                                            <linearGradient id="heatGradient">
+                                                <stop offset="0%" stop-color="#10b981"/>
+                                                <stop offset="50%" stop-color="#f59e0b"/>
+                                                <stop offset="100%" stop-color="#ef4444"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <text x="30" y="415" font-size="8" fill="#666">Low</text>
+                                        <text x="78" y="415" font-size="8" fill="#666">Med</text>
+                                        <text x="130" y="415" font-size="8" fill="#666">High</text>
+                                    </svg>
+                                </div>
+                                <div class="map-legend" id="mapLegend">
+                                    <div class="legend-item"><span class="legend-dot" style="background:rgba(239,68,68,0.5);"></span> High Risk (<span class="legend-new">98</span> pending)</div>
+                                    <div class="legend-item"><span class="legend-dot" style="background:rgba(245,158,11,0.5);"></span> Medium (<span class="legend-progress">60</span> in progress)</div>
+                                    <div class="legend-item"><span class="legend-dot" style="background:rgba(16,185,129,0.5);"></span> Resolved (<span class="legend-resolved">1,089</span>)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards (6 cards) -->
+                    <div class="dash-stats" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
                         <div class="dash-stat-card">
                             <div class="dash-stat-icon total"><i class="fas fa-clipboard-list"></i></div>
                             <div class="dash-stat-info">
@@ -448,10 +755,24 @@
                             </div>
                         </div>
                         <div class="dash-stat-card">
+                            <div class="dash-stat-icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-calendar-day"></i></div>
+                            <div class="dash-stat-info">
+                                <span class="dash-stat-num" id="todayCount">12</span>
+                                <span class="dash-stat-label">இன்று புதிய</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat-card">
                             <div class="dash-stat-icon resolved"><i class="fas fa-check-circle"></i></div>
                             <div class="dash-stat-info">
                                 <span class="dash-stat-num">1,089</span>
-                                <span class="dash-stat-label">தீர்வு</span>
+                                <span class="dash-stat-label">மொத்த தீர்வு</span>
+                            </div>
+                        </div>
+                        <div class="dash-stat-card">
+                            <div class="dash-stat-icon" style="background:#d1fae5; color:#059669;"><i class="fas fa-check-double"></i></div>
+                            <div class="dash-stat-info">
+                                <span class="dash-stat-num" id="resolvedTodayCount">5</span>
+                                <span class="dash-stat-label">இன்று தீர்வு</span>
                             </div>
                         </div>
                         <div class="dash-stat-card">
@@ -462,10 +783,59 @@
                             </div>
                         </div>
                         <div class="dash-stat-card">
-                            <div class="dash-stat-icon progress"><i class="fas fa-wrench"></i></div>
+                            <div class="dash-stat-icon" style="background:#ede9fe; color:#7c3aed;"><i class="fas fa-users"></i></div>
                             <div class="dash-stat-info">
-                                <span class="dash-stat-num">60</span>
-                                <span class="dash-stat-label">பணியில்</span>
+                                <span class="dash-stat-num">48</span>
+                                <span class="dash-stat-label">Active Volunteers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Resolution Graph -->
+                    <div class="dash-card full-width">
+                        <h3><i class="fas fa-chart-line"></i> Weekly Resolution Graph - வாரவாரி தீர்வு</h3>
+                        <div class="weekly-graph" style="padding:15px;">
+                            <div style="display:flex; align-items:flex-end; gap:12px; height:200px; padding:25px 10px 0; border-bottom:2px solid #f0f0f0;">
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:5px;">18</span>
+                                    <div style="background:linear-gradient(180deg, #dc2626, #ef4444); width:60%; height:56%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:5px;">24</span>
+                                    <div style="background:linear-gradient(180deg, #dc2626, #ef4444); width:60%; height:75%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:5px;">14</span>
+                                    <div style="background:linear-gradient(180deg, #dc2626, #ef4444); width:60%; height:44%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:5px;">28</span>
+                                    <div style="background:linear-gradient(180deg, #dc2626, #ef4444); width:60%; height:88%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:5px;">21</span>
+                                    <div style="background:linear-gradient(180deg, #dc2626, #ef4444); width:60%; height:66%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:#059669; margin-bottom:5px;">32</span>
+                                    <div style="background:linear-gradient(180deg, #059669, #10b981); width:60%; height:100%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                                    <span style="font-size:0.75rem; font-weight:700; color:#d97706; margin-bottom:5px;">5</span>
+                                    <div style="background:linear-gradient(180deg, #d97706, #f59e0b); width:60%; height:16%; border-radius:6px 6px 0 0; min-height:20px;"></div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:12px; padding:8px 10px 0;">
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">திங்</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">செவ்</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">புத</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">வியா</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">வெள்</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">சனி</span>
+                                <span style="flex:1; text-align:center; font-size:0.7rem; color:var(--gray); font-weight:500;">ஞாயி</span>
+                            </div>
+                            <div style="text-align:center; margin-top:12px; padding-top:10px; border-top:1px solid #f0f0f0;">
+                                <span style="font-size:0.8rem; color:var(--gray);">📊 இந்த வாரம்: <strong style="color:#10b981;">142 தீர்வு</strong> | சராசரி: <strong>20/நாள்</strong></span>
                             </div>
                         </div>
                     </div>
@@ -563,14 +933,29 @@
                         </div>
                     </div>
 
-                    <!-- Recent Complaints Table -->
-                    <div class="dash-card full-width">
-                        <h3><i class="fas fa-list"></i> சமீபத்திய புகார்கள் - Admin View</h3>
+                    <!-- Admin Actions (Admin Only) -->
+                    <div class="dash-card full-width admin-only" id="adminActionsSection" style="display:none;">
+                        <h3><i class="fas fa-tools"></i> Admin Actions</h3>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button class="btn btn-primary" onclick="openUpdateModal()" style="font-size:0.85rem;">
+                                <i class="fas fa-bullhorn"></i> + புதிய Update Post செய்
+                            </button>
+                            <button class="btn" style="background:#10b981; color:white; font-size:0.85rem;" onclick="showNotification('Coming soon: Bulk resolve feature', 'info')">
+                                <i class="fas fa-check-double"></i> Bulk Resolve
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Complaints Table (Admin Only) -->
+                    <div class="dash-card full-width admin-only" id="adminSection" style="display:none;">
+                        <h3><i class="fas fa-lock"></i> சமீபத்திய புகார்கள் - Admin View <span style="font-size:0.7rem; background:#fef3c7; color:#d97706; padding:2px 8px; border-radius:10px; margin-left:8px;">🔒 Staff Only</span></h3>
                         <div class="table-wrapper">
                             <table class="dash-table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>👤 Citizen</th>
+                                        <th>📱 Mobile</th>
                                         <th>புகார்</th>
                                         <th>பகுதி</th>
                                         <th>வகை</th>
@@ -582,24 +967,30 @@
                                 <tbody>
                                     <tr>
                                         <td><code>#0847</code></td>
+                                        <td>ராஜேஷ்</td>
+                                        <td>98765xxxxx</td>
                                         <td>சாலையில் பள்ளம்</td>
                                         <td>Mudichur</td>
                                         <td><span class="tag">சாலைகள்</span></td>
                                         <td><span class="status-badge badge-progress">பணியில்</span></td>
                                         <td>Mr. Kumar</td>
-                                        <td><button class="btn-action"><i class="fas fa-eye"></i></button></td>
+                                        <td><button class="btn-action" onclick="viewComplaintDetail('TVK-2026-0847')"><i class="fas fa-eye"></i></button></td>
                                     </tr>
                                     <tr>
                                         <td><code>#0846</code></td>
+                                        <td>சுரேஷ்</td>
+                                        <td>87654xxxxx</td>
                                         <td>Street Light வேலை செய்யல</td>
                                         <td>Selaiyur</td>
                                         <td><span class="tag">மின்சாரம்</span></td>
                                         <td><span class="status-badge badge-assigned">ஒதுக்கப்பட்டது</span></td>
                                         <td>EB Team</td>
-                                        <td><button class="btn-action"><i class="fas fa-eye"></i></button></td>
+                                        <td><button class="btn-action" onclick="viewComplaintDetail('TVK-2026-0848')"><i class="fas fa-eye"></i></button></td>
                                     </tr>
                                     <tr>
                                         <td><code>#0845</code></td>
+                                        <td>கவிதா</td>
+                                        <td>76543xxxxx</td>
                                         <td>Drainage overflow</td>
                                         <td>Tambaram East</td>
                                         <td><span class="tag">வடிகால்</span></td>
@@ -609,6 +1000,8 @@
                                     </tr>
                                     <tr>
                                         <td><code>#0844</code></td>
+                                        <td>முருகன்</td>
+                                        <td>65432xxxxx</td>
                                         <td>குடிநீர் வரவில்லை</td>
                                         <td>Chromepet</td>
                                         <td><span class="tag">குடிநீர்</span></td>
@@ -618,12 +1011,14 @@
                                     </tr>
                                     <tr>
                                         <td><code>#0843</code></td>
+                                        <td>பிரியா</td>
+                                        <td>54321xxxxx</td>
                                         <td>Garbage collection இல்லை</td>
                                         <td>Pallavaram</td>
                                         <td><span class="tag">கழிவு</span></td>
                                         <td><span class="status-badge badge-resolved">தீர்வு ✓</span></td>
                                         <td>Sanitation Team</td>
-                                        <td><button class="btn-action"><i class="fas fa-eye"></i></button></td>
+                                        <td><button class="btn-action" onclick="viewComplaintDetail('TVK-2026-0846')"><i class="fas fa-eye"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -641,7 +1036,7 @@
             <button class="modal-close" onclick="closeModal()">&times;</button>
             <div class="login-form">
                 <div class="login-header">
-                    <h3>🎯 Voice to MLA</h3>
+                    <h3>🎯 Voice to Minister</h3>
                     <p>Mobile OTP Login</p>
                 </div>
                 <div class="login-body">
@@ -670,6 +1065,76 @@
         </div>
     </div>
 
+    <!-- Assignment Modal -->
+    <div class="modal" id="assignModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="closeAssignModal()">&times;</button>
+            <div class="assign-modal-content">
+                <div class="login-header">
+                    <h3>👤 Volunteer ஒதுக்கு</h3>
+                    <p id="assignComplaintInfo">Complaint TN/TBM/CPT/2026/00845</p>
+                </div>
+                <div class="form-group">
+                    <label>பகுதி (Area)</label>
+                    <input type="text" id="assignArea" readonly style="background: var(--light);">
+                </div>
+                <div class="form-group">
+                    <label>Ward Volunteer/Coordinator தேர்வு செய்யுங்கள் <span class="required">*</span></label>
+                    <select id="volunteerSelect">
+                        <option value="">-- Volunteer தேர்வு செய்யுங்கள் --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority Level</label>
+                    <select id="prioritySelect">
+                        <option value="normal">🟢 Normal (48 hrs)</option>
+                        <option value="high">🟡 High (24 hrs)</option>
+                        <option value="urgent">🔴 Urgent (12 hrs)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>குறிப்பு (Note to Volunteer)</label>
+                    <textarea id="assignNote" rows="2" placeholder="Optional: Add instructions for the volunteer..."></textarea>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="confirmAssignment()">
+                    <i class="fas fa-user-check"></i> Assign & Notify
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Update Modal -->
+    <div class="modal" id="updateModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="closeUpdateModal()">&times;</button>
+            <div class="login-header">
+                <h3>📢 புதிய Update Post செய்</h3>
+                <p>Minister அறிவிப்பு / நிகழ்வு / நிறைவு Update</p>
+            </div>
+            <div class="form-group">
+                <label>Update வகை <span class="required">*</span></label>
+                <select id="updateTag">
+                    <option value="அறிவிப்பு">📋 அறிவிப்பு (Announcement)</option>
+                    <option value="நிறைவு">✅ நிறைவு (Completed)</option>
+                    <option value="நிகழ்வு">📅 நிகழ்வு (Event)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>தலைப்பு (Title) <span class="required">*</span></label>
+                <input type="text" id="updateTitle" placeholder="உதா: Mudichur சாலை பணி நிறைவு">
+            </div>
+            <div class="form-group">
+                <label>விளக்கம் (Content) <span class="required">*</span></label>
+                <textarea id="updateContent" rows="4" placeholder="Update பற்றிய விரிவான தகவல் எழுதுங்கள்..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="postUpdate()">
+                <i class="fas fa-bullhorn"></i> Post Update
+            </button>
+        </div>
+    </div>
+
     <!-- Success Modal -->
     <div class="modal" id="successModal">
         <div class="modal-overlay"></div>
@@ -678,10 +1143,20 @@
                 <div class="success-icon">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <h3>புகார் வெற்றிகரமாக பதிவு செய்யப்பட்டது!</h3>
-                <p>Complaint ID: <strong>#TVK-2026-0848</strong></p>
-                <p class="success-info">உங்கள் புகார் MLA அலுவலகத்திற்கு அனுப்பப்பட்டது. விரைவில் நடவடிக்கை எடுக்கப்படும்.</p>
-                <button class="btn btn-primary" onclick="closeSuccessModal()">சரி</button>
+                <h3>✅ புகார் வெற்றிகரமாக பதிவு செய்யப்பட்டது!</h3>
+                <div class="complaint-id-display">
+                    <code id="generatedComplaintId">TN/TBM/CPT/2026/00848</code>
+                </div>
+                <div class="status-pending">⏳ நிலை: நிலுவையில் (Pending)</div>
+                <p class="success-info">உங்கள் புகார் அமைச்சர் அலுவலகத்திற்கு அனுப்பப்பட்டது. விரைவில் அதிகாரிக்கு ஒதுக்கப்படும்.</p>
+                <div class="success-actions">
+                    <button class="btn btn-primary" onclick="trackNewComplaint()">
+                        <i class="fas fa-search"></i> நிலை காண
+                    </button>
+                    <button class="btn btn-outline-back" onclick="closeSuccessModalEnhanced()">
+                        <i class="fas fa-home"></i> முகப்பு
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -691,9 +1166,9 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <h4>🎯 Voice to MLA</h4>
+                    <h4>🎯 Voice to Minister</h4>
                     <p>மக்கள் குரல் - தாம்பரம் தொகுதி</p>
-                    <p class="party-name">தமிழக வெற்றி கழகம் (TVK)</p>
+                    <p class="party-name">தமிழக வெற்றி கழகம் (TVK) | CM: C. Joseph Vijay</p>
                 </div>
                 <div class="footer-col">
                     <h4>Links</h4>
@@ -710,11 +1185,12 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2026 Voice to MLA | D. Sarathkumar - MLA Tambaram | TVK</p>
+                <p>© 2026 Voice to Minister | D. Sarathkumar - Cabinet Minister (HRM), Govt of TN | MLA Tambaram | TVK</p>
             </div>
         </div>
     </footer>
 
+    <script src="firebase-db.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
