@@ -26,7 +26,12 @@ hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
 // ===== LOGIN MODAL =====
 const loginBtn = document.getElementById('loginBtn');
 const loginModal = document.getElementById('loginModal');
-loginBtn.addEventListener('click', () => loginModal.classList.add('active'));
+let loggedInUser = JSON.parse(localStorage.getItem('vtm_loggedInUser') || 'null');
+
+loginBtn.addEventListener('click', () => {
+    if (loggedInUser) { toggleProfileDropdown(); }
+    else { loginModal.classList.add('active'); }
+});
 
 function closeModal() { loginModal.classList.remove('active'); }
 
@@ -38,17 +43,108 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 
 // ===== OTP FUNCTIONALITY =====
 function sendOTP() {
+    const mobileInput = document.querySelector('#loginModal .phone-input input[type="tel"]');
+    if (!mobileInput || !mobileInput.value || mobileInput.value.length < 10) {
+        showNotification('சரியான Mobile Number உள்ளிடுங்கள்!', 'error'); return;
+    }
     const otpSection = document.getElementById('otpSection');
     otpSection.style.display = 'block';
+    showNotification(`📱 OTP sent to +91 ${mobileInput.value.substring(0,5)}xxxxx`, 'success');
     setTimeout(() => { const fi = otpSection.querySelector('.otp-input'); if (fi) fi.focus(); }, 100);
 }
 
 function verifyOTP() {
+    const mobileInput = document.querySelector('#loginModal .phone-input input[type="tel"]');
+    const mobile = mobileInput ? mobileInput.value.trim() : '';
+    // Find user's name from existing complaints or use mobile
+    let userName = '';
+    const userComplaints = Object.values(complaintsDB).filter(c => c.mobileNumber === mobile);
+    if (userComplaints.length > 0 && userComplaints[0].citizenName) {
+        userName = userComplaints[0].citizenName;
+    } else {
+        userName = 'User';
+    }
+    // Save logged in state
+    loggedInUser = { name: userName, mobile: mobile, loginTime: new Date().toISOString() };
+    localStorage.setItem('vtm_loggedInUser', JSON.stringify(loggedInUser));
     closeModal();
-    loginBtn.innerHTML = '<i class="fas fa-user-circle"></i><span>User</span>';
-    loginBtn.style.background = 'var(--primary)'; loginBtn.style.color = 'white'; loginBtn.style.border = 'none';
-    showNotification('வெற்றிகரமாக Login செய்யப்பட்டது!', 'success');
+    updateLoginUI();
+    autoFillFormFromLogin();
+    showNotification(`✅ வெற்றிகரமாக Login! வணக்கம் ${userName}`, 'success');
 }
+
+function updateLoginUI() {
+    if (!loggedInUser) {
+        loginBtn.innerHTML = '<i class="fas fa-user-circle"></i><span>Login</span>';
+        loginBtn.style.background = ''; loginBtn.style.color = ''; loginBtn.style.border = '';
+        return;
+    }
+    const displayName = loggedInUser.name.length > 8 ? loggedInUser.name.substring(0, 8) + '..' : loggedInUser.name;
+    loginBtn.innerHTML = `<i class="fas fa-user-circle"></i><span>${displayName} ▾</span>`;
+    loginBtn.style.background = 'var(--primary)'; loginBtn.style.color = 'white'; loginBtn.style.border = 'none'; loginBtn.style.borderRadius = '8px'; loginBtn.style.padding = '8px 14px';
+}
+
+function toggleProfileDropdown() {
+    let dd = document.getElementById('profileDropdown');
+    if (dd) { dd.remove(); return; }
+    const rect = loginBtn.getBoundingClientRect();
+    dd = document.createElement('div');
+    dd.id = 'profileDropdown';
+    dd.style.cssText = `position:fixed;top:${rect.bottom + 8}px;right:20px;background:white;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.15);padding:0;min-width:240px;z-index:5000;overflow:hidden;animation:slideIn 0.2s ease;`;
+    const userComplaints = Object.values(complaintsDB).filter(c => c.mobileNumber === loggedInUser.mobile);
+    const resolved = userComplaints.filter(c => c.statusClass === 'badge-resolved').length;
+    dd.innerHTML = `
+        <div style="background:linear-gradient(135deg,#dc2626,#991b1b);padding:16px;color:white;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">👤</div>
+                <div><h4 style="margin:0;font-size:0.9rem;">${loggedInUser.name}</h4><p style="margin:0;font-size:0.7rem;opacity:0.8;">+91 ${loggedInUser.mobile}</p></div>
+            </div>
+        </div>
+        <div style="padding:8px;">
+            <div style="display:flex;justify-content:space-around;padding:10px 0;border-bottom:1px solid #f3f4f6;">
+                <div style="text-align:center;"><span style="font-size:1.1rem;font-weight:700;color:#dc2626;">${userComplaints.length}</span><p style="font-size:0.6rem;color:#666;margin:2px 0 0;">புகார்கள்</p></div>
+                <div style="text-align:center;"><span style="font-size:1.1rem;font-weight:700;color:#059669;">${resolved}</span><p style="font-size:0.6rem;color:#666;margin:2px 0 0;">தீர்வு</p></div>
+                <div style="text-align:center;"><span style="font-size:1.1rem;font-weight:700;color:#d97706;">${userComplaints.length - resolved}</span><p style="font-size:0.6rem;color:#666;margin:2px 0 0;">நிலுவை</p></div>
+            </div>
+            <a href="#" onclick="document.getElementById('profileDropdown').remove();navigateTo('mycomplaints');autoLoadMyComplaints();" style="display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:#333;font-size:0.8rem;border-radius:8px;margin-top:4px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background=''"><i class="fas fa-clipboard-list" style="color:#dc2626;"></i> என் புகார்கள்</a>
+            <a href="#" onclick="document.getElementById('profileDropdown').remove();navigateTo('complaint');" style="display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:#333;font-size:0.8rem;border-radius:8px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background=''"><i class="fas fa-plus-circle" style="color:#2563eb;"></i> புதிய புகார் செய்</a>
+            <a href="#" onclick="document.getElementById('profileDropdown').remove();logoutUser();" style="display:flex;align-items:center;gap:10px;padding:10px 12px;text-decoration:none;color:#ef4444;font-size:0.8rem;border-radius:8px;border-top:1px solid #f3f4f6;margin-top:4px;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background=''"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>`;
+    document.body.appendChild(dd);
+    // Close on outside click
+    setTimeout(() => { document.addEventListener('click', closeProfileDropdown); }, 100);
+}
+
+function closeProfileDropdown(e) {
+    const dd = document.getElementById('profileDropdown');
+    if (dd && !dd.contains(e.target) && !loginBtn.contains(e.target)) {
+        dd.remove(); document.removeEventListener('click', closeProfileDropdown);
+    }
+}
+
+function logoutUser() {
+    loggedInUser = null;
+    localStorage.removeItem('vtm_loggedInUser');
+    updateLoginUI();
+    showNotification('👋 Logged out successfully', 'info');
+}
+
+function autoFillFormFromLogin() {
+    if (!loggedInUser) return;
+    const nameField = document.getElementById('citizenName');
+    const mobileField = document.getElementById('mobileNumber');
+    if (nameField && !nameField.value && loggedInUser.name && loggedInUser.name !== 'User') nameField.value = loggedInUser.name;
+    if (mobileField && !mobileField.value && loggedInUser.mobile) mobileField.value = loggedInUser.mobile;
+}
+
+function autoLoadMyComplaints() {
+    if (!loggedInUser) return;
+    const input = document.getElementById('citizenSearchInput');
+    if (input) { input.value = loggedInUser.mobile; loadCitizenComplaints(); }
+}
+
+// Restore login state on page load
+if (loggedInUser) { setTimeout(() => { updateLoginUI(); autoFillFormFromLogin(); }, 300); }
 
 document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
     input.addEventListener('input', (e) => { if (e.target.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus(); });
