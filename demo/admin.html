@@ -118,10 +118,15 @@
             <div class="shield"><i class="fas fa-shield-alt"></i></div>
             <h2>🔒 Minister Staff Portal</h2>
             <p>Authorized office staff only. OTP verification required.</p>
+            
+            <!-- Step 1: Enter Mobile -->
             <div id="loginStep1">
                 <input type="tel" id="staffMobile" placeholder="Staff Mobile Number" maxlength="10">
                 <button class="btn-login" onclick="staffSendOTP()"><i class="fas fa-paper-plane"></i> Send OTP</button>
+                <p style="font-size:0.7rem;color:#999;margin-top:12px;">New staff? Enter mobile & register after OTP</p>
             </div>
+
+            <!-- Step 2: OTP Verification -->
             <div id="loginStep2" class="hidden">
                 <p style="font-size:0.8rem;margin-bottom:15px;">OTP sent to <strong id="staffMobileShow"></strong></p>
                 <div class="otp-row">
@@ -133,6 +138,33 @@
                 <button class="btn-login" onclick="staffVerifyOTP()"><i class="fas fa-lock-open"></i> Verify & Login</button>
                 <p style="font-size:0.7rem;color:#999;margin-top:12px;">Demo OTP: 1234</p>
             </div>
+
+            <!-- Step 3: New Staff Registration (only for unregistered numbers) -->
+            <div id="loginStep3" class="hidden">
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px;margin-bottom:15px;">
+                    <p style="font-size:0.75rem;color:#059669;margin:0;">✅ OTP Verified! Complete your staff profile to continue.</p>
+                </div>
+                <input type="text" id="staffName" placeholder="👤 Full Name (e.g., Aslam Khan)" style="margin-bottom:10px;">
+                <select id="staffRole" style="width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:10px;font-size:0.9rem;margin-bottom:10px;outline:none;appearance:auto;">
+                    <option value="">-- Select Role --</option>
+                    <option value="Office Manager">🏢 Office Manager</option>
+                    <option value="Field Coordinator">📋 Field Coordinator</option>
+                    <option value="Data Entry Staff">💻 Data Entry Staff</option>
+                    <option value="Area Supervisor">📍 Area Supervisor</option>
+                </select>
+                <select id="staffArea" style="width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:10px;font-size:0.9rem;margin-bottom:12px;outline:none;appearance:auto;">
+                    <option value="">-- Assigned Area --</option>
+                    <option value="All Areas">🌐 All Areas (Office)</option>
+                    <option value="Tambaram East">Tambaram East</option>
+                    <option value="Selaiyur">Selaiyur</option>
+                    <option value="Mudichur">Mudichur</option>
+                    <option value="Chromepet">Chromepet</option>
+                    <option value="Pallavaram">Pallavaram</option>
+                    <option value="Pammal">Pammal</option>
+                </select>
+                <button class="btn-login" onclick="completeStaffRegistration()"><i class="fas fa-user-plus"></i> Register & Enter Dashboard</button>
+            </div>
+
             <p style="font-size:0.65rem;color:#999;margin-top:20px;">🔐 Secured | Unauthorized access is logged</p>
         </div>
     </div>
@@ -679,7 +711,17 @@
             });
         });
 
-        // Staff Login
+        // ===== STAFF LOGIN SYSTEM (Smart: Register + Returning) =====
+        let currentStaffUser = JSON.parse(localStorage.getItem('vtm_admin_staff') || 'null');
+        let staffRegistry = JSON.parse(localStorage.getItem('vtm_staff_registry') || '{}');
+
+        // Auto-login if staff session exists
+        if (currentStaffUser) {
+            document.getElementById('adminLoginOverlay').style.display = 'none';
+            document.getElementById('adminLayout').style.display = 'flex';
+            setTimeout(() => { updateStaffTopbar(); loadFromFirebase(); loadVolunteersFromFirebase(); }, 300);
+        }
+
         function staffSendOTP() {
             const mobile = document.getElementById('staffMobile');
             if (!mobile.value || mobile.value.length < 10) { alert('Enter valid 10-digit mobile!'); return; }
@@ -700,16 +742,97 @@
         function staffVerifyOTP() {
             const otp = Array.from(document.querySelectorAll('.staff-otp')).map(i => i.value).join('');
             if (otp === '1234') {
-                document.getElementById('adminLoginOverlay').style.display = 'none';
-                document.getElementById('adminLayout').style.display = 'flex';
-                // Load complaints and volunteers from Firebase after login
-                setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); }, 500);
+                const mobile = document.getElementById('staffMobile').value.trim();
+                // Check if this mobile is already registered
+                if (staffRegistry[mobile]) {
+                    // Returning staff — direct login
+                    currentStaffUser = staffRegistry[mobile];
+                    currentStaffUser.lastLogin = new Date().toISOString();
+                    localStorage.setItem('vtm_admin_staff', JSON.stringify(currentStaffUser));
+                    document.getElementById('adminLoginOverlay').style.display = 'none';
+                    document.getElementById('adminLayout').style.display = 'flex';
+                    updateStaffTopbar();
+                    setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); }, 500);
+                    alert(`👋 Welcome back, ${currentStaffUser.name}!`);
+                } else {
+                    // New staff — show registration form
+                    document.getElementById('loginStep2').classList.add('hidden');
+                    document.getElementById('loginStep3').classList.remove('hidden');
+                }
             } else {
                 alert('Invalid OTP! Try 1234');
                 document.querySelectorAll('.staff-otp').forEach(i => { i.value = ''; i.style.borderColor = '#ef4444'; });
                 document.querySelector('.staff-otp').focus();
             }
         }
+
+        function completeStaffRegistration() {
+            const name = document.getElementById('staffName').value.trim();
+            const role = document.getElementById('staffRole').value;
+            const area = document.getElementById('staffArea').value;
+            const mobile = document.getElementById('staffMobile').value.trim();
+            if (!name) { alert('Please enter your full name!'); return; }
+            if (!role) { alert('Please select your role!'); return; }
+            if (!area) { alert('Please select your assigned area!'); return; }
+            // Create staff profile
+            const staffId = 'STAFF-' + String(Object.keys(staffRegistry).length + 1).padStart(3, '0');
+            currentStaffUser = { name, mobile, role, area, staffId, registeredAt: new Date().toISOString(), lastLogin: new Date().toISOString() };
+            // Save to registry
+            staffRegistry[mobile] = currentStaffUser;
+            localStorage.setItem('vtm_staff_registry', JSON.stringify(staffRegistry));
+            localStorage.setItem('vtm_admin_staff', JSON.stringify(currentStaffUser));
+            // Also save to Firebase
+            try {
+                if (typeof db !== 'undefined') {
+                    db.collection('vtm_staff').doc(mobile).set(currentStaffUser);
+                }
+            } catch(e) { console.log('Staff Firebase save error:', e); }
+            // Enter dashboard
+            document.getElementById('adminLoginOverlay').style.display = 'none';
+            document.getElementById('adminLayout').style.display = 'flex';
+            updateStaffTopbar();
+            setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); }, 500);
+            alert(`✅ Welcome, ${name}! You are registered as ${role} (${staffId})`);
+        }
+
+        function updateStaffTopbar() {
+            if (!currentStaffUser) return;
+            const topbarUser = document.querySelector('.admin-topbar .topbar-right span:last-child');
+            if (topbarUser) {
+                topbarUser.innerHTML = `👤 <strong>${currentStaffUser.name}</strong> <span style="font-size:0.65rem;background:#dbeafe;color:#2563eb;padding:2px 6px;border-radius:4px;margin-left:5px;">${currentStaffUser.role}</span>`;
+            }
+        }
+
+        // Override logout to clear staff session
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            if (link.textContent.trim().includes('Logout')) {
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    currentStaffUser = null;
+                    localStorage.removeItem('vtm_admin_staff');
+                    // Reset login form
+                    document.getElementById('loginStep1').classList.remove('hidden');
+                    document.getElementById('loginStep2').classList.add('hidden');
+                    document.getElementById('loginStep3').classList.add('hidden');
+                    document.getElementById('staffMobile').value = '';
+                    document.querySelectorAll('.staff-otp').forEach(i => i.value = '');
+                    document.getElementById('adminLayout').style.display = 'none';
+                    document.getElementById('adminLoginOverlay').style.display = 'flex';
+                };
+            }
+        });
+
+        // Load staff registry from Firebase on page load
+        async function loadStaffRegistry() {
+            try {
+                if (typeof db !== 'undefined') {
+                    const snapshot = await db.collection('vtm_staff').get();
+                    snapshot.forEach(doc => { staffRegistry[doc.id] = doc.data(); });
+                    localStorage.setItem('vtm_staff_registry', JSON.stringify(staffRegistry));
+                }
+            } catch(e) { console.log('Load staff registry error:', e); }
+        }
+        setTimeout(loadStaffRegistry, 1000);
 
         // Post Update
         function postAdminUpdate() {
