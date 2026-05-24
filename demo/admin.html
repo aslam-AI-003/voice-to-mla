@@ -199,7 +199,7 @@
                 <h2><i class="fas fa-tachometer-alt"></i> Minister Dashboard</h2>
                 <div class="topbar-right">
                     <div class="notif-bell" onclick="alert('3 new notifications')"><i class="fas fa-bell"></i><span class="badge">3</span></div>
-                    <span style="font-size:0.8rem;color:#666;">👤 Staff User</span>
+                    <span id="staffUserDisplay" style="font-size:0.8rem;color:#666;">👤 Staff User</span>
                 </div>
             </div>
 
@@ -797,7 +797,7 @@
 
         function updateStaffTopbar() {
             if (!currentStaffUser) return;
-            const topbarUser = document.querySelector('.admin-topbar .topbar-right span:last-child');
+            const topbarUser = document.getElementById('staffUserDisplay');
             if (topbarUser) {
                 topbarUser.innerHTML = `👤 <strong>${currentStaffUser.name}</strong> <span style="font-size:0.65rem;background:#dbeafe;color:#2563eb;padding:2px 6px;border-radius:4px;margin-left:5px;">${currentStaffUser.role}</span>`;
             }
