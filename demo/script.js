@@ -255,7 +255,41 @@ function searchComplaint() {
 
         if (complaint) {
             const displayId = complaint.govId || `TN/TBM/CPT/2026/${complaint.id.split('-').pop()}`;
-            let timelineHTML = complaint.timeline.map(item => `<div class="tl-item ${item.state}"><div class="tl-dot"></div><div class="tl-content"><h4>${item.text}</h4><p>${item.time}</p></div></div>`).join('');
+            // Dynamic timeline based on current statusClass
+            const statusSteps = ['badge-new', 'badge-assigned', 'badge-progress', 'badge-resolved'];
+            const stepLabels = ['புகார் பதிவு செய்யப்பட்டது', 'துறைக்கு ஒதுக்கப்பட்டது', 'பணி தொடங்கப்பட்டது', 'தீர்வு & உறுதிப்படுத்தல்'];
+            const currentIdx = statusSteps.indexOf(complaint.statusClass);
+            const escalated = complaint.statusClass === 'badge-escalated';
+            let dynamicTimeline = [];
+            // Step 1: Always completed (complaint registered)
+            dynamicTimeline.push({ text: 'புகார் பதிவு செய்யப்பட்டது', time: complaint.timeline && complaint.timeline[0] ? complaint.timeline[0].time : complaint.date, state: 'completed' });
+            // Step 2: Assigned
+            if (currentIdx >= 1 || escalated) {
+                dynamicTimeline.push({ text: `துறைக்கு ஒதுக்கப்பட்டது (${complaint.assigned || '-'})`, time: complaint.updatedAt ? new Date(complaint.updatedAt).toLocaleString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Updated', state: 'completed' });
+            } else {
+                dynamicTimeline.push({ text: 'ஆய்வு செய்யப்படுகிறது', time: 'நிலுவையில்...', state: currentIdx === 0 ? 'active' : '' });
+            }
+            // Step 3: In Progress
+            if (currentIdx >= 2) {
+                dynamicTimeline.push({ text: 'பணி தொடங்கப்பட்டது', time: complaint.updatedAt ? new Date(complaint.updatedAt).toLocaleString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Updated', state: 'completed' });
+            } else if (currentIdx === 1) {
+                dynamicTimeline.push({ text: 'பணி தொடங்கப்படும்', time: 'நிலுவையில்...', state: 'active' });
+            } else {
+                dynamicTimeline.push({ text: 'பணி தொடங்கப்படும்', time: 'நிலுவையில்...', state: '' });
+            }
+            // Step 4: Resolved
+            if (currentIdx >= 3) {
+                dynamicTimeline.push({ text: 'தீர்வு & உறுதிப்படுத்தப்பட்டது ✓', time: complaint.resolvedAt ? new Date(complaint.resolvedAt).toLocaleString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Resolved', state: 'completed' });
+            } else if (currentIdx === 2) {
+                dynamicTimeline.push({ text: 'தீர்வு & உறுதிப்படுத்தல்', time: 'நிலுவையில்...', state: 'active' });
+            } else {
+                dynamicTimeline.push({ text: 'தீர்வு & உறுதிப்படுத்தல்', time: 'நிலுவையில்...', state: '' });
+            }
+            // Escalated extra step
+            if (escalated) {
+                dynamicTimeline.push({ text: '⚠️ Minister-க்கு Escalate செய்யப்பட்டது', time: complaint.updatedAt ? new Date(complaint.updatedAt).toLocaleString('en-IN', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '', state: 'active' });
+            }
+            let timelineHTML = dynamicTimeline.map(item => `<div class="tl-item ${item.state}"><div class="tl-dot"></div><div class="tl-content"><h4>${item.text}</h4><p>${item.time}</p></div></div>`).join('');
             result.innerHTML = `<div class="track-card"><div class="track-header"><div><h3>Complaint ${displayId}</h3><p>${complaint.title}</p></div><span class="status-badge ${complaint.statusClass}">${complaint.status}</span></div><div class="track-details"><div class="track-detail"><span class="label">வகை:</span><span class="value">${complaint.category}</span></div><div class="track-detail"><span class="label">பகுதி:</span><span class="value">${complaint.area}</span></div><div class="track-detail"><span class="label">ஒதுக்கப்பட்டவர்:</span><span class="value">${complaint.assigned}</span></div><div class="track-detail"><span class="label">பதிவு நாள்:</span><span class="value">${complaint.date}</span></div></div><div class="track-timeline">${timelineHTML}</div></div>`;
             result.style.opacity = '1';
             showNotification('புகார் விவரங்கள் கிடைத்தது!', 'success');
