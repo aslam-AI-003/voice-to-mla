@@ -30,7 +30,15 @@ let loggedInUser = JSON.parse(localStorage.getItem('vtm_loggedInUser') || 'null'
 
 loginBtn.addEventListener('click', () => {
     if (loggedInUser) { toggleProfileDropdown(); }
-    else { loginModal.classList.add('active'); }
+    else {
+        // Reset modal to fresh state
+        const mobileInput = document.querySelector('#loginModal .phone-input input[type="tel"]');
+        if (mobileInput) mobileInput.value = '';
+        const otpSection = document.getElementById('otpSection');
+        if (otpSection) otpSection.style.display = 'none';
+        document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+        loginModal.classList.add('active');
+    }
 });
 
 function closeModal() { loginModal.classList.remove('active'); }
