@@ -183,6 +183,10 @@ if (complaintForm) {
         if (!title) { showNotification('புகார் தலைப்பு எழுதுங்கள்!', 'error'); return; }
         const description = document.getElementById('description').value;
         const categoryValue = selectedCat.dataset.value;
+        const citizenName = document.getElementById('citizenName') ? document.getElementById('citizenName').value.trim() : '';
+        const mobileNumber = document.getElementById('mobileNumber') ? document.getElementById('mobileNumber').value.trim() : '';
+        const locationText = document.getElementById('locationText') ? document.getElementById('locationText').textContent.trim() : '';
+        const manualAddress = document.getElementById('manualAddress') ? document.getElementById('manualAddress').value.trim() : '';
         const submitBtn = complaintForm.querySelector('.btn-submit');
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> சமர்ப்பிக்கிறது...';
         submitBtn.disabled = true;
@@ -202,8 +206,10 @@ if (complaintForm) {
                 title: title + (areaNames[area] ? ' - ' + areaNames[area] : ''),
                 description: description || '', category: categoryNames[categoryValue] || categoryValue,
                 area: areaNames[area] || area,
-                citizenName: document.getElementById('citizenName') ? document.getElementById('citizenName').value : '',
-                mobileNumber: document.getElementById('mobileNumber') ? document.getElementById('mobileNumber').value : '',
+                citizenName: citizenName,
+                mobileNumber: mobileNumber,
+                location: locationText || '',
+                address: manualAddress || '',
                 assigned: '-', date: dateStr, status: 'புதியது', statusClass: 'badge-new', createdAt: now.toISOString(),
                 timeline: [
                     { text: 'புகார் பதிவு செய்யப்பட்டது', time: `${dateStr} - ${timeStr}`, state: 'completed' },
