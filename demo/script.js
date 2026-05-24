@@ -232,11 +232,18 @@ function trackNewComplaint() { document.getElementById('successModal').classList
 function closeSuccessModalEnhanced() { document.getElementById('successModal').classList.remove('active'); navigateTo('track'); setTimeout(searchComplaint, 500); }
 
 // ===== TRACK SEARCH =====
-function searchComplaint() {
+async function searchComplaint() {
     const input = document.getElementById('trackInput');
     const result = document.getElementById('trackResult');
     if (!input.value) { showNotification('Complaint ID enter செய்யுங்கள்!', 'error'); return; }
     result.style.opacity = '0.5';
+    // Always fetch fresh data from Firebase before searching
+    try {
+        if (window.VoiceToMLA_DB) {
+            const fc = await VoiceToMLA_DB.getAllComplaints();
+            if (fc && Object.keys(fc).length > 0) Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
+        }
+    } catch(e) { console.log('Fresh fetch error:', e); }
     setTimeout(() => {
         let searchVal = input.value.trim().toUpperCase();
         let complaint = null;

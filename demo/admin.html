@@ -583,10 +583,9 @@
                 }
             } catch (e) { console.log('Firebase assign error:', e); }
 
-            // Close modal, refresh
+            // Close modal, refresh from Firebase to ensure latest data
             document.getElementById('complaintDetailModal').remove();
-            renderComplaints();
-            updateDashboardLive();
+            await loadFromFirebase();
             alert(`✅ ${selectedVol} assigned to complaint!`);
         }
 
