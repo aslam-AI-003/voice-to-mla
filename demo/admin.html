@@ -472,13 +472,26 @@
             const existing = document.getElementById('complaintDetailModal');
             if (existing) existing.remove();
 
-            // Build volunteer options filtered by area
+            // Build volunteer options - area-based first, then others
             const areaVolunteers = volunteersData.filter(v => {
-                if (!c.area) return true;
+                if (!c.area) return false;
                 return c.area.toLowerCase().includes(v.area.toLowerCase()) || v.area.toLowerCase().includes(c.area.toLowerCase());
             });
-            const allVolunteers = volunteersData;
-            const volOptions = allVolunteers.map(v => `<option value="${v.name} (${v.role})" ${(c.assigned || '').includes(v.name.split(' ').pop()) ? 'selected' : ''}>${v.name} - ${v.area} (${v.role})</option>`).join('');
+            const otherVolunteers = volunteersData.filter(v => {
+                if (!c.area) return true;
+                return !c.area.toLowerCase().includes(v.area.toLowerCase()) && !v.area.toLowerCase().includes(c.area.toLowerCase());
+            });
+            let volOptions = '';
+            if (areaVolunteers.length > 0) {
+                volOptions += `<optgroup label="📍 ${c.area} Area Volunteers">`;
+                volOptions += areaVolunteers.map(v => `<option value="${v.name} (${v.role})" ${(c.assigned || '').includes(v.name.split(' ').pop()) ? 'selected' : ''}>${v.name} - ${v.ward} (${v.role})</option>`).join('');
+                volOptions += `</optgroup>`;
+            }
+            if (otherVolunteers.length > 0) {
+                volOptions += `<optgroup label="🌐 Other Area Volunteers">`;
+                volOptions += otherVolunteers.map(v => `<option value="${v.name} (${v.role})">${v.name} - ${v.area} (${v.role})</option>`).join('');
+                volOptions += `</optgroup>`;
+            }
 
             // Status options
             const statusOptions = [
