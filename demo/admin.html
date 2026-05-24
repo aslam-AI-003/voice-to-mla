@@ -59,6 +59,7 @@
         .badge-assigned { background: #dbeafe; color: #2563eb; }
         .badge-progress { background: #fef3c7; color: #d97706; }
         .badge-resolved { background: #d1fae5; color: #059669; }
+        .badge-escalated { background: #fef3c7; color: #dc2626; border: 1px solid #fca5a5; }
         /* Chart bars */
         .chart-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .chart-item .label { font-size: 0.75rem; width: 100px; color: #374151; }
@@ -470,6 +471,25 @@
             // Remove existing modal
             const existing = document.getElementById('complaintDetailModal');
             if (existing) existing.remove();
+
+            // Build volunteer options filtered by area
+            const areaVolunteers = volunteersData.filter(v => {
+                if (!c.area) return true;
+                return c.area.toLowerCase().includes(v.area.toLowerCase()) || v.area.toLowerCase().includes(c.area.toLowerCase());
+            });
+            const allVolunteers = volunteersData;
+            const volOptions = allVolunteers.map(v => `<option value="${v.name} (${v.role})" ${(c.assigned || '').includes(v.name.split(' ').pop()) ? 'selected' : ''}>${v.name} - ${v.area} (${v.role})</option>`).join('');
+
+            // Status options
+            const statusOptions = [
+                { value: 'badge-new', label: 'புதியது (New)', status: 'புதியது' },
+                { value: 'badge-assigned', label: 'ஒதுக்கப்பட்டது (Assigned)', status: 'ஒதுக்கப்பட்டது' },
+                { value: 'badge-progress', label: 'பணியில் (In Progress)', status: 'பணியில்' },
+                { value: 'badge-escalated', label: '⚠️ Escalated', status: '⚠️ Escalated' },
+                { value: 'badge-resolved', label: 'தீர்வு ✓ (Resolved)', status: 'தீர்வு ✓' }
+            ];
+            const statusOpts = statusOptions.map(s => `<option value="${s.value}" ${statusCls === s.value ? 'selected' : ''}>${s.label}</option>`).join('');
+
             // Create modal
             const modal = document.createElement('div');
             modal.id = 'complaintDetailModal';
@@ -493,11 +513,133 @@
                     <div class="detail-row"><span class="dlabel">🔧 Assigned To</span><span class="dvalue">${c.assigned || 'Not assigned'}</span></div>
                     <div class="detail-row"><span class="dlabel">📅 Date</span><span class="dvalue">${c.date || '-'}</span></div>
                     ${c.description ? `<div class="detail-row"><span class="dlabel">📄 Description</span><span class="dvalue">${c.description}</span></div>` : ''}
+                    
+                    <!-- ASSIGN VOLUNTEER SECTION -->
+                    <div style="margin-top:18px;padding:15px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;">
+                        <h4 style="font-size:0.85rem;margin:0 0 10px;color:#1d4ed8;"><i class="fas fa-user-plus"></i> Assign Volunteer</h4>
+                        <select id="modalAssignVolunteer" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;margin-bottom:8px;">
+                            <option value="">-- Select Volunteer --</option>
+                            ${volOptions}
+                        </select>
+                        <button onclick="assignVolunteerToComplaint('${id}')" style="width:100%;padding:8px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;">
+                            <i class="fas fa-user-check"></i> Assign & Update
+                        </button>
+                    </div>
+
+                    <!-- CHANGE STATUS SECTION -->
+                    <div style="margin-top:12px;padding:15px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;">
+                        <h4 style="font-size:0.85rem;margin:0 0 10px;color:#059669;"><i class="fas fa-exchange-alt"></i> Change Status</h4>
+                        <select id="modalChangeStatus" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;margin-bottom:8px;">
+                            ${statusOpts}
+                        </select>
+                        <button onclick="changeComplaintStatus('${id}')" style="width:100%;padding:8px;background:linear-gradient(135deg,#059669,#047857);color:white;border:none;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;">
+                            <i class="fas fa-sync-alt"></i> Update Status
+                        </button>
+                    </div>
+
                     <div style="margin-top:15px;display:flex;gap:8px;">
                         <button onclick="document.getElementById('complaintDetailModal').remove()" style="flex:1;padding:10px;background:#f3f4f6;border:none;border-radius:8px;cursor:pointer;font-size:0.8rem;">Close</button>
                     </div>
                 </div>`;
             document.body.appendChild(modal);
+        }
+
+        // ===== ASSIGN VOLUNTEER TO COMPLAINT =====
+        async function assignVolunteerToComplaint(complaintId) {
+            const volSelect = document.getElementById('modalAssignVolunteer');
+            const selectedVol = volSelect.value;
+            if (!selectedVol) { alert('Please select a volunteer!'); return; }
+
+            // Update local DB
+            complaintsDB[complaintId].assigned = selectedVol;
+            if (complaintsDB[complaintId].statusClass === 'badge-new') {
+                complaintsDB[complaintId].status = 'ஒதுக்கப்பட்டது';
+                complaintsDB[complaintId].statusClass = 'badge-assigned';
+            }
+
+            // Save to Firebase
+            try {
+                if (typeof db !== 'undefined') {
+                    await db.collection('vtm_complaints').doc(complaintId).update({
+                        assigned: selectedVol,
+                        status: complaintsDB[complaintId].status,
+                        statusClass: complaintsDB[complaintId].statusClass,
+                        updatedAt: new Date().toISOString()
+                    });
+                    console.log('✅ Volunteer assigned in Firebase:', complaintId, selectedVol);
+                }
+            } catch (e) { console.log('Firebase assign error:', e); }
+
+            // Close modal, refresh
+            document.getElementById('complaintDetailModal').remove();
+            renderComplaints();
+            updateDashboardLive();
+            alert(`✅ ${selectedVol} assigned to complaint!`);
+        }
+
+        // ===== CHANGE COMPLAINT STATUS =====
+        async function changeComplaintStatus(complaintId) {
+            const statusSelect = document.getElementById('modalChangeStatus');
+            const newStatusClass = statusSelect.value;
+            const statusMap = {
+                'badge-new': 'புதியது',
+                'badge-assigned': 'ஒதுக்கப்பட்டது',
+                'badge-progress': 'பணியில்',
+                'badge-escalated': '⚠️ Escalated',
+                'badge-resolved': 'தீர்வு ✓'
+            };
+            const newStatus = statusMap[newStatusClass] || 'புதியது';
+
+            // Update local DB
+            complaintsDB[complaintId].status = newStatus;
+            complaintsDB[complaintId].statusClass = newStatusClass;
+
+            // Save to Firebase
+            try {
+                if (typeof db !== 'undefined') {
+                    await db.collection('vtm_complaints').doc(complaintId).update({
+                        status: newStatus,
+                        statusClass: newStatusClass,
+                        updatedAt: new Date().toISOString()
+                    });
+                    console.log('✅ Status updated in Firebase:', complaintId, newStatus);
+                }
+            } catch (e) { console.log('Firebase status update error:', e); }
+
+            // Close modal, refresh
+            document.getElementById('complaintDetailModal').remove();
+            renderComplaints();
+            updateDashboardLive();
+            alert(`✅ Status changed to: ${newStatus}`);
+        }
+
+        // ===== MARK RESOLVED FROM VOLUNTEER PAGE =====
+        async function markResolvedFromVolunteer(complaintId) {
+            if (!confirm('Mark this complaint as Resolved?')) return;
+
+            // Update local DB
+            complaintsDB[complaintId].status = 'தீர்வு ✓';
+            complaintsDB[complaintId].statusClass = 'badge-resolved';
+
+            // Save to Firebase
+            try {
+                if (typeof db !== 'undefined') {
+                    await db.collection('vtm_complaints').doc(complaintId).update({
+                        status: 'தீர்வு ✓',
+                        statusClass: 'badge-resolved',
+                        resolvedAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    });
+                    console.log('✅ Marked resolved in Firebase:', complaintId);
+                }
+            } catch (e) { console.log('Firebase resolve error:', e); }
+
+            // Close modal, refresh
+            document.getElementById('complaintDetailModal').remove();
+            renderComplaints();
+            renderVolunteers();
+            updateDashboardLive();
+            alert('✅ Complaint marked as Resolved!');
         }
 
         // Sidebar navigation
@@ -630,13 +772,16 @@
             if (assigned.length > 0) {
                 complaintsHTML = assigned.map(c => {
                     const displayId = c.govId || `TN/TBM/CPT/2026/${(c.id || '').split('-').pop()}`;
-                    return `<div style="padding:10px;border:1px solid #f3f4f6;border-radius:8px;margin-bottom:8px;">
+                    const isResolved = c.statusClass === 'badge-resolved';
+                    const resolveBtn = isResolved ? '' : `<button onclick="markResolvedFromVolunteer('${c.id}')" style="margin-top:6px;padding:5px 10px;background:#059669;color:white;border:none;border-radius:6px;font-size:0.7rem;cursor:pointer;font-weight:600;"><i class="fas fa-check"></i> Mark Resolved</button>`;
+                    return `<div style="padding:10px;border:1px solid ${isResolved ? '#bbf7d0' : '#f3f4f6'};border-radius:8px;margin-bottom:8px;background:${isResolved ? '#f0fdf4' : 'white'};">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <code style="font-size:0.7rem;color:#dc2626;">${displayId}</code>
                             <span class="badge ${c.statusClass || 'badge-new'}" style="font-size:0.65rem;">${c.status || 'புதியது'}</span>
                         </div>
                         <p style="font-size:0.8rem;font-weight:600;margin:5px 0 2px;">${c.title || '-'}</p>
                         <p style="font-size:0.7rem;color:#666;">${c.area} | ${c.category} | ${c.date}</p>
+                        ${resolveBtn}
                     </div>`;
                 }).join('');
             } else {
