@@ -329,6 +329,12 @@ if (complaintForm) {
             const generatedIdEl = document.getElementById('generatedComplaintId');
             if (generatedIdEl) generatedIdEl.textContent = govStyleId;
             if (firebaseReady && window.VoiceToMLA_DB) VoiceToMLA_DB.saveComplaint(complaintsDB[lastComplaintId]);
+            // Update logged-in user's name if they are "User" (generic) and typed their name
+            if (loggedInUser && loggedInUser.name === 'User' && citizenName) {
+                loggedInUser.name = citizenName;
+                localStorage.setItem('vtm_loggedInUser', JSON.stringify(loggedInUser));
+                updateLoginUI();
+            }
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> புகார் சமர்ப்பி';
             submitBtn.disabled = false;
             document.getElementById('successModal').classList.add('active');
