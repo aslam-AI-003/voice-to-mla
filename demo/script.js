@@ -156,6 +156,17 @@ function autoLoadMyComplaints() {
 // Restore login state on page load
 if (loggedInUser) { setTimeout(() => { updateLoginUI(); autoFillFormFromLogin(); }, 300); }
 
+// After Firebase loads, update user's name if still "User"
+function refreshLoggedInUserName() {
+    if (!loggedInUser || loggedInUser.name !== 'User') return;
+    const userComplaints = Object.values(complaintsDB).filter(c => c.mobileNumber === loggedInUser.mobile);
+    if (userComplaints.length > 0 && userComplaints[0].citizenName) {
+        loggedInUser.name = userComplaints[0].citizenName;
+        localStorage.setItem('vtm_loggedInUser', JSON.stringify(loggedInUser));
+        updateLoginUI();
+    }
+}
+
 document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
     input.addEventListener('input', (e) => { if (e.target.value.length === 1 && index < inputs.length - 1) inputs[index + 1].focus(); });
     input.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus(); });
@@ -447,6 +458,7 @@ async function loadComplaintsFromFirebase() {
         firebaseReady = true;
         updateDashboardStats();
         updateTrustIndex();
+        refreshLoggedInUserName();
         console.log('🔥 Firebase loaded:', Object.keys(complaintsDB).length, 'complaints');
         showNotification('🔥 Database connected! ' + Object.keys(complaintsDB).length + ' complaints loaded.', 'success');
     } catch (error) {
