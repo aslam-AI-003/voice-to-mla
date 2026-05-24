@@ -141,8 +141,10 @@ function autoFillFormFromLogin() {
     if (!loggedInUser) return;
     const nameField = document.getElementById('citizenName');
     const mobileField = document.getElementById('mobileNumber');
-    if (nameField && !nameField.value && loggedInUser.name && loggedInUser.name !== 'User') nameField.value = loggedInUser.name;
+    // Only auto-fill mobile (safe - it's the user's own number)
     if (mobileField && !mobileField.value && loggedInUser.mobile) mobileField.value = loggedInUser.mobile;
+    // Only fill name if it's the user's OWN name (not from other complaints)
+    // Don't fill name if it's just "User" (generic)
 }
 
 function autoLoadMyComplaints() {
