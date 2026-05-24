@@ -255,6 +255,8 @@ function searchComplaint() {
 
         if (complaint) {
             const displayId = complaint.govId || `TN/TBM/CPT/2026/${complaint.id.split('-').pop()}`;
+            // Update search bar to show proper government ID format
+            input.value = displayId;
             // Dynamic timeline based on current statusClass
             const statusSteps = ['badge-new', 'badge-assigned', 'badge-progress', 'badge-resolved'];
             const currentIdx = statusSteps.indexOf(complaint.statusClass);
