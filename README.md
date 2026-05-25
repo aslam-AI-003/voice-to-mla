@@ -1,4 +1,4 @@
-# 🎯 Voice to MLA - Project Files
+# 🎯 Voice to Minister - Project Files
 
 ## Project Structure
 
@@ -43,4 +43,4 @@ Then open: http://localhost:8080
 - **MLA:** D. Sarathkumar
 - **Constituency:** Tambaram
 - **Party:** Tamilaga Vettri Kazhagam (TVK)
-- **Project:** Voice to MLA - Grievance Management Platform
+- **Project:** Voice to Minister - Grievance Management Platform

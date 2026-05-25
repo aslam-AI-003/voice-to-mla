@@ -1,4 +1,4 @@
-// ===== FIREBASE CONFIGURATION FOR VOICE TO MLA =====
+// ===== FIREBASE CONFIGURATION FOR VOICE TO MINISTER =====
 const firebaseConfig = {
     apiKey: "AIzaSyA0h41dnLHhll9QebR4fkiaiG8C3cdo8Es",
     authDomain: "abm-billing.firebaseapp.com",
@@ -13,7 +13,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ===== VOICE TO MLA - FIRESTORE OPERATIONS =====
+// ===== VOICE TO MINISTER - FIRESTORE OPERATIONS =====
 const VoiceToMLA_DB = {
 
     // --- COMPLAINTS ---
@@ -233,4 +233,4 @@ const VoiceToMLA_DB = {
 
 // Make available globally
 window.VoiceToMLA_DB = VoiceToMLA_DB;
-console.log('🔥 Firebase connected for Voice to MLA');
+console.log('🔥 Firebase connected for Voice to Minister');

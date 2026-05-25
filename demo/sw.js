@@ -1,5 +1,5 @@
-// Service Worker for Voice to MLA - Push Notifications
-const CACHE_NAME = 'voice-to-mla-v1';
+// Service Worker for Voice to Minister - Push Notifications
+const CACHE_NAME = 'voice-to-minister-v1';
 
 // Install event
 self.addEventListener('install', (event) => {
@@ -34,7 +34,7 @@ self.addEventListener('push', (event) => {
     };
 
     event.waitUntil(
-        self.registration.showNotification(data.title || '🎯 Voice to MLA Update', options)
+        self.registration.showNotification(data.title || '🎯 Voice to Minister Update', options)
     );
 });
 
