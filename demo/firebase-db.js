@@ -91,21 +91,23 @@ const VoiceToMLA_DB = {
                 nextNum = counterDoc.data().lastComplaintNumber + 1;
             }
             
-            // Double-check: make sure this ID doesn't already exist
-            const existingCheck = await db.collection('vtm_complaints').doc(`TVK-2026-0${nextNum}`).get();
+            // Double-check: make sure this ID doesn't already exist (use 5-digit padded format)
+            const paddedNum = String(nextNum).padStart(5, '0');
+            const existingCheck = await db.collection('vtm_complaints').doc(`TVK-2026-${paddedNum}`).get();
             if (existingCheck.exists) {
                 // ID already taken, find the max and go one above
                 const allDocs = await db.collection('vtm_complaints').get();
                 let maxNum = 848;
                 allDocs.docs.forEach(doc => {
-                    const id = doc.id; // e.g., "TVK-2026-0849"
-                    const num = parseInt(id.split('-').pop());
-                    if (num > maxNum) maxNum = num;
+                    const id = doc.id; // e.g., "TVK-2026-00849"
+                    const numStr = id.split('-').pop();
+                    const num = parseInt(numStr);
+                    if (!isNaN(num) && num > maxNum) maxNum = num;
                 });
                 nextNum = maxNum + 1;
             }
             
-            // Update counter
+            // Update counter in Firebase (atomic update)
             await db.collection('vtm_config').doc('counter').set({
                 lastComplaintNumber: nextNum,
                 updatedAt: new Date().toISOString()

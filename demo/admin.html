@@ -242,7 +242,7 @@
                         <h3><i class="fas fa-list"></i> Latest Complaints (Live)</h3>
                         <div style="overflow-x:auto;" id="dashTableContainer">
                             <table class="admin-table">
-                                <thead><tr><th>ID</th><th>Citizen</th><th>Complaint</th><th>Area</th><th>Category</th><th>Status</th><th>Assigned</th><th>Date</th></tr></thead>
+                                <thead><tr><th>ID</th><th>Citizen</th><th>Complaint</th><th>Zone</th><th>Area</th><th>Department</th><th>Grievance Type</th><th>Status</th><th>Assigned</th><th>Date</th></tr></thead>
                                 <tbody id="dashTableBody"></tbody>
                             </table>
                         </div>
@@ -287,7 +287,7 @@
                         <h3><i class="fas fa-clipboard-list"></i> All Complaints <span id="complaintsCount" style="font-size:0.7rem;background:#f3f4f6;padding:2px 8px;border-radius:10px;margin-left:8px;"></span></h3>
                         <div style="overflow-x:auto;" id="complaintsTableContainer">
                             <table class="admin-table" id="complaintsTable">
-                                <thead><tr><th>ID</th><th>Citizen</th><th>Mobile</th><th>Complaint</th><th>Area</th><th>Category</th><th>Status</th><th>Assigned</th><th>Date</th><th>Actions</th></tr></thead>
+                                <thead><tr><th>ID</th><th>Citizen</th><th>Mobile</th><th>Complaint</th><th>Zone</th><th>Area</th><th>Department</th><th>Grievance Type</th><th>Status</th><th>Assigned</th><th>Date</th><th>Actions</th></tr></thead>
                                 <tbody id="complaintsTableBody"></tbody>
                             </table>
                         </div>
@@ -306,7 +306,8 @@
                         <h3><i class="fas fa-user-plus"></i> Add New Volunteer</h3>
                         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
                             <div style="flex:1;min-width:150px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Name</label><input type="text" id="newVolName" placeholder="Volunteer Name" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;box-sizing:border-box;"></div>
-                            <div style="flex:1;min-width:120px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Area</label><select id="newVolArea" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;"><option>Tambaram East</option><option>Selaiyur</option><option>Mudichur</option><option>Chromepet</option><option>Pallavaram</option><option>Pammal</option><option>Perungalathur</option><option>Chitlapakkam</option></select></div>
+                            <div style="flex:0.8;min-width:120px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Phone</label><input type="tel" id="newVolPhone" placeholder="9876543210" maxlength="10" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;box-sizing:border-box;"></div>
+                            <div style="flex:1;min-width:120px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Area</label><select id="newVolArea" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;"><option>Tambaram West</option><option>Tambaram East</option><option>Selaiyur</option><option>Mudichur</option><option>Chromepet</option><option>Pallavaram</option><option>Pammal</option><option>Perungalathur</option><option>Chitlapakkam</option></select></div>
                             <div style="flex:0.5;min-width:80px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Ward</label><input type="text" id="newVolWard" placeholder="Ward 1" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;box-sizing:border-box;"></div>
                             <div style="flex:0.5;min-width:100px;"><label style="font-size:0.7rem;font-weight:600;display:block;margin-bottom:4px;">Role</label><select id="newVolRole" style="width:100%;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.8rem;"><option>Coordinator</option><option>Volunteer</option></select></div>
                             <button onclick="addNewVolunteer()" style="padding:8px 16px;background:linear-gradient(135deg,#dc2626,#991b1b);color:white;border:none;border-radius:8px;font-size:0.8rem;cursor:pointer;font-weight:600;"><i class="fas fa-plus"></i> Add</button>
@@ -429,17 +430,62 @@
 
         // ===== LOAD FROM FIREBASE =====
         async function loadFromFirebase() {
+            let loadedFromFirebase = false;
             try {
-                if (window.VoiceToMLA_DB) {
-                    const fc = await VoiceToMLA_DB.getAllComplaints();
-                    if (fc && Object.keys(fc).length > 0) {
-                        Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
+                if (typeof db !== 'undefined') {
+                    // Direct Firestore query to get ALL complaints (most reliable)
+                    const snapshot = await db.collection('vtm_complaints').get();
+                    if (!snapshot.empty) {
+                        snapshot.docs.forEach(doc => {
+                            const data = doc.data();
+                            const key = data.id || doc.id;
+                            complaintsDB[key] = data;
+                        });
+                        loadedFromFirebase = true;
+                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from Firebase');
                     }
                 }
-            } catch (e) { console.log('Firebase load error:', e); }
+            } catch (e) { console.log('Firebase load error:', e.message); }
+
+            // FALLBACK: Always also load from localStorage (cross-page sharing when Firebase is offline)
+            try {
+                const localData = localStorage.getItem('vtm_all_complaints');
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    let newCount = 0;
+                    Object.keys(parsed).forEach(k => {
+                        if (!complaintsDB[k]) { complaintsDB[k] = parsed[k]; newCount++; }
+                    });
+                    if (newCount > 0) console.log('📦 Loaded', newCount, 'additional complaints from localStorage');
+                }
+            } catch(e) { console.log('localStorage load error:', e); }
+
             renderComplaints();
             updateDashboardLive();
             document.getElementById('lastRefresh').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+        }
+
+        // ===== REAL-TIME LISTENER (Auto-updates when new complaint comes in) =====
+        function startRealtimeListener() {
+            try {
+                if (typeof db !== 'undefined') {
+                    // Use simple onSnapshot without orderBy to avoid index issues
+                    db.collection('vtm_complaints').onSnapshot((snapshot) => {
+                        snapshot.docs.forEach(doc => {
+                            const data = doc.data();
+                            const key = data.id || doc.id;
+                            complaintsDB[key] = data;
+                        });
+                        console.log('🔄 Real-time update:', snapshot.docs.length, 'complaints');
+                        renderComplaints();
+                        updateDashboardLive();
+                    }, (error) => {
+                        console.log('Real-time listener error:', error);
+                        // Fallback: try polling every 10 seconds
+                        setInterval(loadFromFirebase, 10000);
+                    });
+                }
+            } catch(e) { console.log('Realtime listener setup error:', e); }
         }
 
         // ===== RENDER COMPLAINTS TABLE =====
@@ -462,19 +508,25 @@
             if (!tbody) return;
 
             if (all.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:#999;"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;"></i>No complaints found</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:40px;color:#999;"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;"></i>No complaints found</td></tr>';
             } else {
                 tbody.innerHTML = all.map(c => {
                     const displayId = c.govId || `TN/TBM/CPT/2026/${(c.id || '').split('-').pop()}`;
                     const statusLabel = c.status || 'புதியது';
                     const statusCls = c.statusClass || 'badge-new';
+                    const zoneTxt = c.zoneName || (c.zone ? 'Zone ' + c.zone : '-');
+                    const areaTxt = c.areaName || c.area || '-';
+                    const deptTxt = c.department ? c.department : (c.category || '-');
+                    const grievanceTxt = c.grievanceType || '-';
                     return `<tr>
                         <td><code style="font-size:0.7rem;">${displayId}</code></td>
                         <td>${c.citizenName || '-'}</td>
                         <td>${c.mobileNumber ? c.mobileNumber.substring(0,5) + 'xxxxx' : '-'}</td>
-                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.title || '-'}</td>
-                        <td>${c.area || '-'}</td>
-                        <td>${c.category || '-'}</td>
+                        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.title || '-'}</td>
+                        <td>${zoneTxt}</td>
+                        <td>${areaTxt}</td>
+                        <td style="font-size:0.7rem;">${deptTxt}</td>
+                        <td style="font-size:0.7rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${grievanceTxt}</td>
                         <td><span class="badge ${statusCls}">${statusLabel}</span></td>
                         <td>${c.assigned || '-'}</td>
                         <td>${c.date || '-'}</td>
@@ -597,6 +649,7 @@
 
             // Update local DB
             complaintsDB[complaintId].assigned = selectedVol;
+            complaintsDB[complaintId].updatedAt = new Date().toISOString();
             if (complaintsDB[complaintId].statusClass === 'badge-new') {
                 complaintsDB[complaintId].status = 'ஒதுக்கப்பட்டது';
                 complaintsDB[complaintId].statusClass = 'badge-assigned';
@@ -615,9 +668,13 @@
                 }
             } catch (e) { console.log('Firebase assign error:', e); }
 
-            // Close modal, refresh from Firebase to ensure latest data
+            // ALWAYS save to localStorage (so public page can read updated data)
+            localStorage.setItem('vtm_all_complaints', JSON.stringify(complaintsDB));
+
+            // Close modal, refresh
             document.getElementById('complaintDetailModal').remove();
-            await loadFromFirebase();
+            renderComplaints();
+            updateDashboardLive();
             alert(`✅ ${selectedVol} assigned to complaint!`);
         }
 
@@ -650,6 +707,9 @@
                 }
             } catch (e) { console.log('Firebase status update error:', e); }
 
+            // ALWAYS save to localStorage
+            localStorage.setItem('vtm_all_complaints', JSON.stringify(complaintsDB));
+
             // Close modal, refresh
             document.getElementById('complaintDetailModal').remove();
             renderComplaints();
@@ -677,6 +737,9 @@
                     console.log('✅ Marked resolved in Firebase:', complaintId);
                 }
             } catch (e) { console.log('Firebase resolve error:', e); }
+
+            // ALWAYS save to localStorage
+            localStorage.setItem('vtm_all_complaints', JSON.stringify(complaintsDB));
 
             // Close modal, refresh
             document.getElementById('complaintDetailModal').remove();
@@ -723,7 +786,7 @@
         if (currentStaffUser) {
             document.getElementById('adminLoginOverlay').style.display = 'none';
             document.getElementById('adminLayout').style.display = 'flex';
-            setTimeout(() => { updateStaffTopbar(); loadFromFirebase(); loadVolunteersFromFirebase(); }, 300);
+            setTimeout(() => { updateStaffTopbar(); loadFromFirebase(); loadVolunteersFromFirebase(); startRealtimeListener(); }, 300);
         }
 
         // Show/hide login vs register views
@@ -751,7 +814,7 @@
             document.getElementById('adminLoginOverlay').style.display = 'none';
             document.getElementById('adminLayout').style.display = 'flex';
             updateStaffTopbar();
-            setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); }, 500);
+            setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); startRealtimeListener(); }, 500);
             alert(`👋 Welcome back, ${account.name}!`);
         }
 
@@ -793,7 +856,7 @@
             document.getElementById('adminLoginOverlay').style.display = 'none';
             document.getElementById('adminLayout').style.display = 'flex';
             updateStaffTopbar();
-            setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); }, 500);
+            setTimeout(() => { loadFromFirebase(); loadVolunteersFromFirebase(); startRealtimeListener(); }, 500);
             alert(`✅ Registration Successful!\n\nWelcome, ${name}!\nStaff ID: ${staffId}\nUsername: ${username}\n\nUse these credentials to login next time.`);
         }
 
@@ -862,12 +925,18 @@
 
         // ===== VOLUNTEER MANAGEMENT SYSTEM =====
         let volunteersData = [
-            { id: 1, name: 'Mr. Senthil Kumar', initials: 'SK', area: 'Tambaram East', ward: 'Ward 12', role: 'Coordinator', resolved: ['TVK-2026-00846'], resolvedTitles: ['Drainage overflow - Tambaram East Bus Stand அருகில்'] },
-            { id: 2, name: 'Mr. Rajan', initials: 'RJ', area: 'Selaiyur', ward: 'Ward 15', role: 'Coordinator', resolved: ['TVK-2026-00848'], resolvedTitles: ['Street Light வேலை செய்யல - Selaiyur 4th Cross'] },
-            { id: 3, name: 'Mr. Kumar', initials: 'KM', area: 'Mudichur', ward: 'Ward 18', role: 'Coordinator', resolved: ['TVK-2026-00847'], resolvedTitles: ['சாலையில் பள்ளம் - Mudichur Main Road'] },
-            { id: 4, name: 'Mr. Selvam', initials: 'SV', area: 'Chromepet', ward: 'Ward 5', role: 'Coordinator', resolved: [], resolvedTitles: [] },
-            { id: 5, name: 'Mrs. Priya', initials: 'PR', area: 'Pallavaram', ward: 'Ward 22', role: 'Coordinator', resolved: [], resolvedTitles: [] },
-            { id: 6, name: 'Mr. Ganesh', initials: 'GN', area: 'Pammal', ward: 'Ward 9', role: 'Coordinator', resolved: [], resolvedTitles: [] }
+            // Tambaram West Volunteers (Real Data)
+            { id: 1, name: 'Sivaraman', initials: 'SI', area: 'Tambaram West', ward: 'Ward 32', phone: '9940388616', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 2, name: 'Baskar', initials: 'BA', area: 'Tambaram West', ward: 'Ward 33', phone: '9840937182', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 3, name: 'Sathish', initials: 'SA', area: 'Tambaram West', ward: 'Ward 49', phone: '9941776720', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 4, name: 'Navaraj', initials: 'NV', area: 'Tambaram West', ward: 'Ward 50(A)', phone: '7092643557', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 5, name: 'Purshoth', initials: 'PU', area: 'Tambaram West', ward: 'Ward 50(B)', phone: '9962172782', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 6, name: 'Mike Praveen', initials: 'MP', area: 'Tambaram West', ward: 'Ward 51', phone: '8939515062', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 7, name: 'Aanand', initials: 'AA', area: 'Tambaram West', ward: 'Ward 52(A)', phone: '9176898792', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 8, name: 'Pradheep', initials: 'PD', area: 'Tambaram West', ward: 'Ward 52(B)', phone: '9092036222', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 9, name: 'Aanand', initials: 'AN', area: 'Tambaram West', ward: 'Ward 53', phone: '9841415071', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 10, name: 'Lokesh', initials: 'LO', area: 'Tambaram West', ward: 'Ward 54', phone: '9600032319', role: 'Coordinator', resolved: [], resolvedTitles: [] },
+            { id: 11, name: 'Suresh', initials: 'SU', area: 'Tambaram West', ward: 'Ward 60', phone: '6385849108', role: 'Coordinator', resolved: [], resolvedTitles: [] }
         ];
 
         function renderVolunteers() {
@@ -886,9 +955,10 @@
             if (!container) return;
             container.innerHTML = volunteersData.map(vol => {
                 const resolvedCount = vol.resolved.length;
+                const phoneTxt = vol.phone ? `📱 ${vol.phone}` : '';
                 return `<div class="vol-card" style="cursor:pointer;" onclick="showVolunteerResolved(${vol.id})">
                     <div class="vol-avatar">${vol.initials}</div>
-                    <div class="vol-info"><h4>${vol.name}</h4><p>${vol.ward} - ${vol.area} | ${vol.role}</p></div>
+                    <div class="vol-info"><h4>${vol.name}</h4><p>${vol.ward} - ${vol.area} | ${vol.role}</p>${phoneTxt ? `<p style="font-size:0.65rem;color:#2563eb;margin-top:2px;">${phoneTxt}</p>` : ''}</div>
                     <div class="vol-stats"><div class="num">${resolvedCount}</div><div class="lbl">Resolved</div></div>
                 </div>`;
             }).join('');
@@ -954,18 +1024,21 @@
 
         function addNewVolunteer() {
             const name = document.getElementById('newVolName').value.trim();
+            const phone = document.getElementById('newVolPhone').value.trim();
             const area = document.getElementById('newVolArea').value;
             const ward = document.getElementById('newVolWard').value.trim() || 'Ward -';
             const role = document.getElementById('newVolRole').value;
             if (!name) { alert('Volunteer name required!'); return; }
+            if (!phone || phone.length < 10) { alert('Valid phone number required!'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-            const newVol = { id: volunteersData.length + 1, name: name, initials: initials, area: area, ward: ward, role: role, resolved: [], resolvedTitles: [] };
+            const newVol = { id: volunteersData.length + 1, name: name, initials: initials, area: area, ward: ward, phone: phone, role: role, resolved: [], resolvedTitles: [] };
             volunteersData.push(newVol);
             document.getElementById('newVolName').value = '';
+            document.getElementById('newVolPhone').value = '';
             document.getElementById('newVolWard').value = '';
             renderVolunteers();
             saveVolunteersToFirebase();
-            alert(`✅ ${name} added as ${role} for ${area}!`);
+            alert(`✅ ${name} (📱 ${phone}) added as ${role} for ${area} - ${ward}!`);
         }
 
         // Save volunteers to Firebase (using global 'db' from firebase-db.js)
@@ -1082,7 +1155,7 @@
                 }).join('') || '<p style="color:#999;font-size:0.8rem;">No data</p>';
             }
 
-            // Latest complaints table (top 10)
+            // Latest complaints table (top 10) - Updated with Zone, Area, Department, Grievance Type
             const sorted = [...all].sort((a, b) => {
                 const numA = parseInt((a.id || '').split('-').pop()) || 0;
                 const numB = parseInt((b.id || '').split('-').pop()) || 0;
@@ -1092,7 +1165,11 @@
             if (dashBody) {
                 dashBody.innerHTML = sorted.map(c => {
                     const displayId = c.govId || `TN/TBM/CPT/2026/${(c.id || '').split('-').pop()}`;
-                    return `<tr><td><code style="font-size:0.65rem;">${displayId}</code></td><td>${c.citizenName || '-'}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.title || '-'}</td><td>${c.area || '-'}</td><td>${c.category || '-'}</td><td><span class="badge ${c.statusClass || 'badge-new'}">${c.status || 'புதியது'}</span></td><td>${c.assigned || '-'}</td><td>${c.date || '-'}</td></tr>`;
+                    const zoneTxt = c.zoneName || (c.zone ? 'Zone ' + c.zone : '-');
+                    const areaTxt = c.areaName || c.area || '-';
+                    const deptTxt = c.department ? c.department : (c.category || '-');
+                    const grievanceTxt = c.grievanceType || '-';
+                    return `<tr><td><code style="font-size:0.65rem;">${displayId}</code></td><td>${c.citizenName || '-'}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.title || '-'}</td><td>${zoneTxt}</td><td>${areaTxt}</td><td style="font-size:0.7rem;">${deptTxt}</td><td style="font-size:0.7rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${grievanceTxt}</td><td><span class="badge ${c.statusClass || 'badge-new'}">${c.status || 'புதியது'}</span></td><td>${c.assigned || '-'}</td><td>${c.date || '-'}</td></tr>`;
                 }).join('');
             }
         }

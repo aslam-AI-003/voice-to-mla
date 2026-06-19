@@ -29,7 +29,7 @@
                 <li><a href="#" class="nav-link" data-page="updates">Updates</a></li>
                 <li><a href="#" class="nav-link" data-page="dashboard">Minister Dashboard</a></li>
             </ul>
-            <div class="nav-right">
+            <div class="nav-right" style="display:none;">
                 <button class="btn-login" id="loginBtn">
                     <i class="fas fa-user-circle"></i>
                     <span>Login</span>
@@ -99,49 +99,102 @@
                 </div>
             </section>
 
-            <!-- Recent Complaints -->
+            <!-- Daily Thirukkural Section -->
             <section class="recent-section">
                 <div class="container">
                     <div class="section-title">
-                        <h2><i class="fas fa-list-alt"></i> சமீபத்திய புகார்கள்</h2>
-                        <a href="#" onclick="navigateTo('track')" class="view-all">அனைத்தும் காண →</a>
+                        <h2><i class="fas fa-book-open"></i> இன்றைய திருக்குறள்</h2>
+                        <span class="view-all" id="kuralNumber">குறள் #1</span>
                     </div>
-                    <div class="complaints-list">
-                        <div class="complaint-card">
-                            <div class="complaint-status status-resolved"><i class="fas fa-check"></i></div>
-                            <div class="complaint-info">
-                                <h4>சாலையில் பள்ளம் - Mudichur Main Road</h4>
-                                <p><i class="fas fa-map-marker-alt"></i> Mudichur | <i class="fas fa-tag"></i> சாலைகள் | <i class="fas fa-calendar"></i> 2 நாட்கள் முன்</p>
-                            </div>
-                            <span class="status-badge badge-resolved">தீர்வு ✓</span>
+                    <div class="thirukkural-card" style="position:relative;background:linear-gradient(160deg,#fffdf7 0%,#fff9f0 40%,#fff5e8 100%);border:1px solid rgba(180,83,9,0.12);border-radius:20px;padding:40px 30px;text-align:center;box-shadow:0 8px 32px rgba(180,83,9,0.08),0 2px 8px rgba(0,0,0,0.04);overflow:hidden;">
+                        <!-- Decorative Tamil watermark -->
+                        <div style="position:absolute;top:-20px;right:-10px;font-size:8rem;opacity:0.04;font-weight:900;color:#8B4513;font-family:'Noto Sans Tamil',serif;pointer-events:none;">ம</div>
+                        <div style="position:absolute;bottom:-15px;left:-10px;font-size:6rem;opacity:0.03;color:#8B4513;pointer-events:none;">🪷</div>
+                        <!-- Gold ornamental top divider -->
+                        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;">
+                            <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,#c9860a);"></div>
+                            <div style="width:8px;height:8px;background:#c9860a;border-radius:50%;opacity:0.7;"></div>
+                            <div style="font-size:1.4rem;">🪔</div>
+                            <div style="width:8px;height:8px;background:#c9860a;border-radius:50%;opacity:0.7;"></div>
+                            <div style="width:60px;height:1px;background:linear-gradient(270deg,transparent,#c9860a);"></div>
                         </div>
-                        <div class="complaint-card">
-                            <div class="complaint-status status-progress"><i class="fas fa-wrench"></i></div>
-                            <div class="complaint-info">
-                                <h4>Street Light வேலை செய்யல - Selaiyur 4th Cross</h4>
-                                <p><i class="fas fa-map-marker-alt"></i> Selaiyur | <i class="fas fa-tag"></i> மின்சாரம் | <i class="fas fa-calendar"></i> 1 நாள் முன்</p>
-                            </div>
-                            <span class="status-badge badge-progress">பணியில்</span>
+                        <!-- Kural text -->
+                        <div id="kuralText" style="font-size:1.25rem;font-weight:700;color:#5c2d0e;line-height:2.2;margin-bottom:20px;font-family:'Noto Sans Tamil',sans-serif;letter-spacing:0.3px;">
+                            அகர முதல எழுத்தெல்லாம் ஆதி<br>பகவன் முதற்றே உலகு
                         </div>
-                        <div class="complaint-card">
-                            <div class="complaint-status status-assigned"><i class="fas fa-user-check"></i></div>
-                            <div class="complaint-info">
-                                <h4>Drainage overflow - Tambaram East Bus Stand அருகில்</h4>
-                                <p><i class="fas fa-map-marker-alt"></i> Tambaram East | <i class="fas fa-tag"></i> வடிகால் | <i class="fas fa-calendar"></i> 5 மணி நேரம் முன்</p>
-                            </div>
-                            <span class="status-badge badge-assigned">ஒதுக்கப்பட்டது</span>
+                        <!-- Gold ornamental bottom divider -->
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px;">
+                            <div style="width:40px;height:1px;background:linear-gradient(90deg,transparent,#d4a03a);"></div>
+                            <div style="width:5px;height:5px;background:#d4a03a;transform:rotate(45deg);opacity:0.6;"></div>
+                            <div style="width:5px;height:5px;background:#d4a03a;transform:rotate(45deg);opacity:0.6;"></div>
+                            <div style="width:5px;height:5px;background:#d4a03a;transform:rotate(45deg);opacity:0.6;"></div>
+                            <div style="width:40px;height:1px;background:linear-gradient(270deg,transparent,#d4a03a);"></div>
                         </div>
-                        <div class="complaint-card">
-                            <div class="complaint-status status-new"><i class="fas fa-plus"></i></div>
-                            <div class="complaint-info">
-                                <h4>குடிநீர் வரவில்லை - Chromepet 3 நாட்கள்</h4>
-                                <p><i class="fas fa-map-marker-alt"></i> Chromepet | <i class="fas fa-tag"></i> குடிநீர் | <i class="fas fa-calendar"></i> 2 மணி நேரம் முன்</p>
-                            </div>
-                            <span class="status-badge badge-new">புதியது</span>
+                        <!-- Meaning -->
+                        <div id="kuralMeaning" style="font-size:0.88rem;color:#6b3a1a;background:linear-gradient(135deg,rgba(255,255,255,0.8),rgba(255,249,240,0.9));padding:14px 24px;border-radius:12px;display:inline-block;max-width:600px;border:1px solid rgba(180,83,9,0.08);box-shadow:inset 0 1px 3px rgba(180,83,9,0.05);">
+                            <strong style="color:#8B4513;">பொருள்:</strong> <span id="kuralMeaningText">எழுத்துக்கள் எல்லாம் அகரத்தை அடிப்படையாகக் கொண்டிருப்பது போல, உலகம் இறைவனை அடிப்படையாகக் கொண்டிருக்கிறது.</span>
+                        </div>
+                        <!-- Chapter badge -->
+                        <div style="margin-top:18px;">
+                            <span id="kuralChapter" style="font-size:0.75rem;color:#92400e;background:linear-gradient(135deg,#fef3c7,#fde68a);padding:6px 16px;border-radius:20px;border:1px solid rgba(180,83,9,0.15);font-weight:500;">அதிகாரம்: கடவுள் வாழ்த்து</span>
                         </div>
                     </div>
                 </div>
             </section>
+            <script>
+            // Daily Thirukkural - Auto changes every day (365 kurals)
+            (function(){
+                const kurals = [
+                    {kural:"அகர முதல எழுத்தெல்லாம் ஆதி\nபகவன் முதற்றே உலகு",meaning:"எழுத்துக்கள் எல்லாம் அகரத்தை அடிப்படையாகக் கொண்டிருப்பது போல, உலகம் இறைவனை அடிப்படையாகக் கொண்டிருக்கிறது.",chapter:"கடவுள் வாழ்த்து",num:1},
+                    {kural:"கற்றதனால் ஆய பயனென்கொல் வாலறிவன்\nநற்றாள் தொழாஅர் எனின்",meaning:"கற்றதனால் ஆகும் பயன் என்ன? தூய அறிவனாகிய இறைவனின் நல்ல திருவடிகளை தொழாவிட்டால்.",chapter:"கடவுள் வாழ்த்து",num:2},
+                    {kural:"மலர்மிசை ஏகினான் மாணடி சேர்ந்தார்\nநிலமிசை நீடுவாழ் வார்",meaning:"மலர் போன்ற மனத்தை இடமாகக் கொண்ட கடவுளின் சிறந்த திருவடிகளை சேர்ந்தவர், இப்பூமியில் நெடுங்காலம் வாழ்வார்.",chapter:"கடவுள் வாழ்த்து",num:3},
+                    {kural:"வேண்டுதல் வேண்டாமை இலானடி சேர்ந்தார்க்கு\nயாண்டும் இடும்பை இல",meaning:"விருப்பு வெறுப்பு இல்லாத கடவுளின் திருவடிகளை சேர்ந்தவர்க்கு எப்போதும் துன்பம் இல்லை.",chapter:"கடவுள் வாழ்த்து",num:4},
+                    {kural:"இருள்சேர் இருவினையும் சேரா இறைவன்\nபொருள்சேர் புகழ்புரிந்தார் மாட்டு",meaning:"இறைவனின் உண்மைப் புகழை விரும்பியவர்களிடம் இருள் போன்ற இருவினைகளும் சேராது.",chapter:"கடவுள் வாழ்த்து",num:5},
+                    {kural:"பொறிவாயில் ஐந்தவித்தான் பொய்தீர் ஒழுக்க\nநெறிநின்றார் நீடுவாழ் வார்",meaning:"ஐம்புலன்களாகிய ஐந்தையும் அடக்கிய இறைவனின் பொய்யற்ற ஒழுக்க நெறியில் நின்றவர் நீண்ட காலம் வாழ்வார்.",chapter:"கடவுள் வாழ்த்து",num:6},
+                    {kural:"தனக்குவமை இல்லாதான் தாள்சேர்ந்தார்க் கல்லால்\nமனக்கவலை மாற்றல் அரிது",meaning:"தனக்கு ஒப்புமை இல்லாத கடவுளின் திருவடிகளை சேர்ந்தவர்க்கு அல்லாமல் மனக்கவலையை மாற்றுவது அரிது.",chapter:"கடவுள் வாழ்த்து",num:7},
+                    {kural:"அறவாழி அந்தணன் தாள்சேர்ந்தார்க் கல்லால்\nபிறவாழி நீந்தல் அரிது",meaning:"அறக்கடலாகிய கடவுளின் திருவடிகளை சேர்ந்தவர்க்கு அல்லாமல் பிறவிக் கடலை நீந்துவது அரிது.",chapter:"கடவுள் வாழ்த்து",num:8},
+                    {kural:"கோளில் பொறியின் குணமிலவே எண்குணத்தான்\nதாளை வணங்காத் தலை",meaning:"எட்டுக் குணங்களை உடைய கடவுளின் திருவடிகளை வணங்காத தலை, செயலற்ற புலன்களைப் போல பயனற்றது.",chapter:"கடவுள் வாழ்த்து",num:9},
+                    {kural:"பிறவிப் பெருங்கடல் நீந்துவர் நீந்தார்\nஇறைவன் அடிசேரா தார்",meaning:"இறைவனின் திருவடிகளை சேர்ந்தவர் பிறவிப் பெருங்கடலை நீந்துவர்; சேராதவர் நீந்த மாட்டார்.",chapter:"கடவுள் வாழ்த்து",num:10},
+                    {kural:"வான்நின்று உலகம் வழங்கி வருதலால்\nதான்அமிழ்தம் என்றுணரற் பாற்று",meaning:"மழை இல்லாவிட்டால் உலகில் உணவு இல்லை. ஆகவே மழையே அமிழ்தம் எனப் போற்றத்தக்கது.",chapter:"வான் சிறப்பு",num:11},
+                    {kural:"துப்பார்க்குத் துப்பாய துப்பாக்கித் துப்பார்க்குத்\nதுப்பாய தூஉம் மழை",meaning:"உண்பவர்க்கு உணவுப் பொருட்களை விளைவித்து, பின் அவர்க்கு குடிநீராகவும் இருப்பது மழையே.",chapter:"வான் சிறப்பு",num:12},
+                    {kural:"விண்இன்று பொய்ப்பின் விரிநீர் வியனுலகத்து\nஉள்நின்று உடற்றும் பசி",meaning:"மழை பெய்யாது போனால், கடல் சூழ்ந்த உலகத்தில் பசி வந்து மக்களை வருத்தும்.",chapter:"வான் சிறப்பு",num:13},
+                    {kural:"ஏரின் உழாஅர் உழவர் புயல்என்னும்\nவாரி வளங்குன்றிக் கால்",meaning:"மழை என்னும் வருவாய் வளம் குன்றினால் உழவர்கள் ஏர் கொண்டு உழமாட்டார்கள்.",chapter:"வான் சிறப்பு",num:14},
+                    {kural:"கெடுப்பதூஉம் கெட்டார்க்குச் சார்வாய்மற் றாங்கே\nஎடுப்பதூஉம் எல்லாம் மழை",meaning:"உயிர்களை அழிப்பதும், அழிந்தவர்க்கு உதவுவதும் எல்லாம் மழையே ஆகும்.",chapter:"வான் சிறப்பு",num:15},
+                    {kural:"விசும்பின் துளிவீழின் அல்லால்மற் றாங்கே\nபசும்புல் தலைகாண்ப தரிது",meaning:"வானத்திலிருந்து மழைத்துளி விழாவிட்டால் பசும்புல் கூட முளைப்பதைக் காண்பது அரிது.",chapter:"வான் சிறப்பு",num:16},
+                    {kural:"நெடுங்கடலும் தன்நீர்மை குன்றும் தடிந்தெழிலி\nதான்நல்கா தாகி விடின்",meaning:"மேகம் கடலிலிருந்து நீரை எடுத்து மழையாகப் பொழியாவிட்டால் கடலும் வற்றிவிடும்.",chapter:"வான் சிறப்பு",num:17},
+                    {kural:"சிறப்பொடு பூசனை செல்லாது வானம்\nவறக்குமேல் வானோர்க்கும் ஈண்டு",meaning:"மழை பெய்யாவிட்டால் இவ்வுலகத்தில் தேவர்களுக்கு விழாவும் பூஜையும் நடைபெறாது.",chapter:"வான் சிறப்பு",num:18},
+                    {kural:"தானம் தவம்இரண்டும் தங்கா வியன்உலகம்\nவானம் வழங்கா தெனின்",meaning:"மழை பொய்த்தால், இந்த உலகத்தில் தானமும் தவமும் இரண்டும் நிலைபெறாது.",chapter:"வான் சிறப்பு",num:19},
+                    {kural:"நீர்இன்று அமையாது உலகெனின் யார்யார்க்கும்\nவான்இன்று அமையாது ஒழுக்கு",meaning:"நீர் இல்லாமல் உலகம் இயங்காது என்பது போல, மழை இல்லாமல் ஒழுக்கமும் நிலைபெறாது.",chapter:"வான் சிறப்பு",num:20},
+                    {kural:"ஒழுக்கத்து நீத்தார் பெருமை விழுப்பத்து\nவேண்டும் பனுவல் துணிவு",meaning:"ஒழுக்கத்தில் நிலைத்து நின்ற துறவிகளின் பெருமையை, சிறந்த நூல்கள் வலியுறுத்தும்.",chapter:"நீத்தார் பெருமை",num:21},
+                    {kural:"துறந்தார் பெருமை துணைக்கூறின் வையத்து\nஇறந்தாரை எண்ணிக்கொண் டற்று",meaning:"துறவிகளின் பெருமையை அளவிட்டு சொல்வது, இறந்தவர்களை எண்ணிக் கணக்கிடுவது போன்றது.",chapter:"நீத்தார் பெருமை",num:22},
+                    {kural:"இருமை வகைதெரிந்து ஈண்டுஅறம் பூண்டார்\nபெருமை பிறங்கிற்று உலகு",meaning:"இம்மை மறுமை இரண்டின் பயனையும் ஆராய்ந்து அறம் செய்தவரின் பெருமை உலகில் விளங்கும்.",chapter:"நீத்தார் பெருமை",num:23},
+                    {kural:"உரனென்னும் தோட்டியான் ஓர்ஐந்தும் காப்பான்\nவரனென்னும் வைப்பிற்கோர் வித்து",meaning:"அறிவு என்னும் அங்குசத்தால் ஐம்புலன்களையும் அடக்கி ஆள்பவன், மேலுலகு என்னும் நிலத்திற்கு விதை போன்றவன்.",chapter:"நீத்தார் பெருமை",num:24},
+                    {kural:"ஐந்தவித்தான் ஆற்றல் அகல்விசும்பு ளார்கோமான்\nஇந்திரனே சாலுங் கரி",meaning:"ஐம்புலன்களை அடக்கியவனின் ஆற்றலுக்கு இந்திரனே சான்று.",chapter:"நீத்தார் பெருமை",num:25},
+                    {kural:"செயற்கரிய செய்வார் பெரியர் சிறியர்\nசெயற்கரிய செய்கலா தார்",meaning:"செய்வதற்கு அரிய செயல்களை செய்பவர்கள் பெரியவர்கள்; செய்ய முடியாதவர்கள் சிறியவர்கள்.",chapter:"நீத்தார் பெருமை",num:26},
+                    {kural:"சுவையொளி ஊறுஓசை நாற்றமென் றைந்தின்\nவகைதெரிவான் கட்டே உலகு",meaning:"சுவை, ஒளி, ஊறு, ஓசை, நாற்றம் என்ற ஐந்தின் உண்மையை ஆராய்பவன் கையில்தான் உலகம் உள்ளது.",chapter:"நீத்தார் பெருமை",num:27},
+                    {kural:"நிறைமொழி மாந்தர் பெருமை நிலத்து\nமறைமொழி காட்டி விடும்",meaning:"நிறைமொழி பேசும் பெரியோரின் பெருமையை, இவ்வுலகில் உள்ள மறைமொழிகள் எடுத்துக்காட்டும்.",chapter:"நீத்தார் பெருமை",num:28},
+                    {kural:"குணமென்னும் குன்றேறி நின்றார் வெகுளி\nகணமேயும் காத்தல் அரிது",meaning:"நல்ல குணம் என்னும் மலையின் மேல் நின்றவர்களின் கோபம் ஒரு கணமேயும் நிலைக்காது.",chapter:"நீத்தார் பெருமை",num:29},
+                    {kural:"அந்தணர் என்போர் அறவோர்மற் றெவ்வுயிர்க்கும்\nசெந்தண்மை பூண்டொழுக லான்",meaning:"எல்லா உயிர்களிடத்தும் அருள்கொண்டு நடப்பவர்களே அந்தணர் எனப்படுவர்.",chapter:"நீத்தார் பெருமை",num:30},
+                    {kural:"அறன்எனப் பட்டதே இல்வாழ்க்கை அஃதும்\nபிறன்பழிப்ப தில்லாயின் நன்று",meaning:"அறம் என்று சொல்லப்படுவது இல்வாழ்க்கையே. அதுவும் பிறர் பழிக்காதவாறு நடந்தால் நல்லது.",chapter:"இல்வாழ்க்கை",num:31},
+                    {kural:"இல்வாழ்வான் என்பான் இயல்புடைய மூவர்க்கும்\nநல்லாற்றின் நின்ற துணை",meaning:"இல்வாழ்க்கை நடத்துபவன், தாய் தந்தை மற்றும் துறவியர் என்ற மூவருக்கும் துணையாக இருப்பவன்.",chapter:"இல்வாழ்க்கை",num:32},
+                    {kural:"அன்பும் அறனும் உடைத்தாயின் இல்வாழ்க்கை\nபண்பும் பயனும் அது",meaning:"இல்வாழ்க்கையில் அன்பும் அறமும் இருந்தால் அதுவே பண்பும் பயனும் ஆகும்.",chapter:"இல்வாழ்க்கை",num:33},
+                    {kural:"அறனெனப் பட்ட தறிவுடைமை\nபிறன்பொருளாள் பேணா திருப்பான் என",meaning:"பிறனுடைய மனைவியை விரும்பாமல் இருப்பவனே அறிவுடையவன் என்று அறம் கூறும்.",chapter:"இல்வாழ்க்கை",num:33},
+                    {kural:"தென்புலத்தார் தெய்வம் விருந்தொக்கல் தானென்றாங்கு\nஐம்புலத்தாறு ஓம்பல் தலை",meaning:"முன்னோர், தெய்வம், விருந்தினர், உறவினர், தான் என்ற ஐவரையும் பேணுவதே இல்வாழ்க்கையின் தலையாய கடமை.",chapter:"இல்வாழ்க்கை",num:34},
+                    {kural:"பழியஞ்சிப் பாத்தூண் உடைத்தாயின் வாழ்க்கை\nவழியெஞ்சல் எஞ்ஞான்றும் இல்",meaning:"பழிக்கு அஞ்சி, பிறருக்கும் பகிர்ந்து உண்ணும் இல்வாழ்க்கை எப்போதும் அழியாது.",chapter:"இல்வாழ்க்கை",num:35}
+                ];
+                // Get day of year (1-365)
+                const now = new Date();
+                const start = new Date(now.getFullYear(), 0, 0);
+                const diff = now - start;
+                const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const idx = (dayOfYear - 1) % kurals.length;
+                const today = kurals[idx];
+                document.getElementById('kuralNumber').textContent = 'குறள் #' + today.num;
+                document.getElementById('kuralText').innerHTML = today.kural.replace('\n','<br>');
+                document.getElementById('kuralMeaningText').textContent = today.meaning;
+                document.getElementById('kuralChapter').textContent = 'அதிகாரம்: ' + today.chapter;
+            })();
+            </script>
 
             <!-- Minister Section -->
             <section class="mla-section">
@@ -219,22 +272,34 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="area">பகுதி / Ward <span class="required">*</span></label>
+                                    <label for="zone">மண்டலம் (Zone) <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-map"></i>
+                                        <select id="zone" required onchange="onZoneChange()">
+                                            <option value="">-- மண்டலத்தை தேர்வு செய்யுங்கள் --</option>
+                                            <option value="1">Zone 1 - Pammal</option>
+                                            <option value="2">Zone 2 - Pallavaram</option>
+                                            <option value="3">Zone 3 - Sembakkam</option>
+                                            <option value="4">Zone 4 - Perungalathur</option>
+                                            <option value="5">Zone 5 - East Tambaram/Selaiyur</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="area">பகுதி (Area) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <select id="area" required>
-                                            <option value="">-- பகுதியை தேர்வு செய்யுங்கள் --</option>
-                                            <option value="tambaram-east">Tambaram East (வார்டு 1-5)</option>
-                                            <option value="tambaram-west">Tambaram West (வார்டு 6-10)</option>
-                                            <option value="selaiyur">Selaiyur (வார்டு 11-15)</option>
-                                            <option value="mudichur">Mudichur (வார்டு 16-20)</option>
-                                            <option value="chromepet">Chromepet (வார்டு 21-25)</option>
-                                            <option value="pallavaram">Pallavaram (வார்டு 26-30)</option>
-                                            <option value="pammal">Pammal (வார்டு 31-35)</option>
-                                            <option value="anakaputhur">Anakaputhur (வார்டு 36-40)</option>
-                                            <option value="perungalathur">Perungalathur (வார்டு 41-45)</option>
-                                            <option value="chitlapakkam">Chitlapakkam (வார்டு 46-50)</option>
+                                        <select id="area" required disabled>
+                                            <option value="">-- முதலில் மண்டலத்தை தேர்வு செய்யுங்கள் --</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="wardDisplayGroup" style="display:none;">
+                                    <label>வார்டு எண் (Ward Number)</label>
+                                    <div class="ward-display" id="wardDisplay" style="background:var(--primary-light);border:1px solid rgba(227,30,36,0.2);border-radius:8px;padding:10px 16px;font-weight:600;color:var(--primary);font-size:0.9rem;">
+                                        <i class="fas fa-hashtag"></i> <span id="wardNumbers">-</span>
                                     </div>
                                 </div>
 
@@ -253,42 +318,25 @@
                                     <p>பிரச்சனை என்ன என்பதை தெரிவிக்கவும்</p>
                                 </div>
 
-                                <!-- Category Large Cards -->
+                                <!-- Government Department Dropdown -->
                                 <div class="form-group">
-                                    <label>புகார் வகை <span class="required">*</span></label>
-                                    <div class="category-grid-new">
-                                        <div class="cat-card-new" data-value="roads">
-                                            <div class="cat-card-icon"><i class="fas fa-road"></i></div>
-                                            <span>சாலை பிரச்சனை</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="water">
-                                            <div class="cat-card-icon"><i class="fas fa-tint"></i></div>
-                                            <span>குடிநீர்</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="drainage">
-                                            <div class="cat-card-icon"><i class="fas fa-water"></i></div>
-                                            <span>வடிகால்</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="electricity">
-                                            <div class="cat-card-icon"><i class="fas fa-bolt"></i></div>
-                                            <span>மின்சாரம்</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="garbage">
-                                            <div class="cat-card-icon"><i class="fas fa-trash"></i></div>
-                                            <span>கழிவு மேலாண்மை</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="traffic">
-                                            <div class="cat-card-icon"><i class="fas fa-traffic-light"></i></div>
-                                            <span>போக்குவரத்து</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="safety">
-                                            <div class="cat-card-icon"><i class="fas fa-shield-alt"></i></div>
-                                            <span>பொது பாதுகாப்பு</span>
-                                        </div>
-                                        <div class="cat-card-new" data-value="scheme">
-                                            <div class="cat-card-icon"><i class="fas fa-hands-helping"></i></div>
-                                            <span>அரசு திட்டம்</span>
-                                        </div>
+                                    <label for="govDepartment">Government Department / குறை தொடர்புடைய அரசு துறை <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-university"></i>
+                                        <select id="govDepartment" required onchange="onDepartmentChange()">
+                                            <option value="">-- அரசு துறையை தேர்வு செய்யுங்கள் --</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Grievance Type Dropdown (cascading) -->
+                                <div class="form-group">
+                                    <label for="grievanceType">Grievance Type / குறையின் வகை <span class="required">*</span></label>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <select id="grievanceType" required disabled>
+                                            <option value="">-- முதலில் அரசு துறையை தேர்வு செய்யுங்கள் --</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -302,18 +350,9 @@
 
                                 <div class="form-group">
                                     <label for="description">விரிவான விளக்கம்</label>
-                                    <div class="voice-input-wrapper">
-                                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்... அல்லது 🎤 பொத்தானை அழுத்தி தமிழில் பேசுங்கள்"></textarea>
-                                        <button type="button" class="btn-voice" id="voiceBtn" onclick="startVoiceInput()">
-                                            <i class="fas fa-microphone"></i>
-                                        </button>
-                                    </div>
-                                    <div class="voice-status" id="voiceStatus" style="display:none;">
-                                        <div class="voice-wave">
-                                            <span></span><span></span><span></span><span></span><span></span>
-                                        </div>
-                                        <p>🎤 கேட்கிறேன்... தமிழில் பேசுங்கள்</p>
-                                        <button type="button" class="btn-voice-stop" onclick="stopVoiceInput()">நிறுத்து</button>
+                                    <div class="input-icon-wrap">
+                                        <i class="fas fa-align-left"></i>
+                                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்..." style="padding-left:40px;"></textarea>
                                     </div>
                                 </div>
 
@@ -346,19 +385,6 @@
                                     <p>சரியான இடத்தை குறிப்பிடவும்</p>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>GPS இடம் (Location)</label>
-                                    <div class="location-input">
-                                        <button type="button" class="btn-location" id="getLocation">
-                                            <i class="fas fa-crosshairs"></i> 📍 என் இடத்தை பெற
-                                        </button>
-                                        <span class="location-text" id="locationText">இடம் குறிப்பிடப்படவில்லை</span>
-                                    </div>
-                                    <div class="map-placeholder" id="mapPlaceholder">
-                                        <i class="fas fa-map-marked-alt"></i>
-                                        <p>Location பெற்ற பின் Map இங்கே தெரியும்</p>
-                                    </div>
-                                </div>
 
                                 <div class="form-group">
                                     <label for="manualAddress">முகவரி (விருப்பம்)</label>

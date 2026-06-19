@@ -193,7 +193,187 @@ const aiCategoryKeywords = {
 };
 
 const categoryNames = { 'roads': 'சாலைகள்', 'drainage': 'வடிகால்', 'water': 'குடிநீர்', 'electricity': 'மின்சாரம்', 'garbage': 'கழிவு', 'traffic': 'போக்குவரத்து', 'safety': 'பாதுகாப்பு', 'scheme': 'அரசு திட்டம்' };
-const areaNames = { 'tambaram-east': 'Tambaram East', 'tambaram-west': 'Tambaram West', 'selaiyur': 'Selaiyur', 'mudichur': 'Mudichur', 'chromepet': 'Chromepet', 'pallavaram': 'Pallavaram', 'pammal': 'Pammal', 'anakaputhur': 'Anakaputhur', 'perungalathur': 'Perungalathur', 'chitlapakkam': 'Chitlapakkam' };
+
+// ===== ALL 38 TN GOVERNMENT DEPARTMENTS & GRIEVANCE TYPES =====
+const govDepartments = {
+    'ADW': { name: 'Adi Dravidar and Tribal Welfare Department', nameTA: 'ஆதிதிராவிடர் மற்றும் பழங்குடியினர் நலத்துறை', grievances: ['இலவச வீட்டு மனை திட்டம் / Free Housing Scheme', 'உதவித்தொகை வழங்கப்படவில்லை / Scholarship Not Received', 'விடுதி சேர்க்கை / Hostel Admission', 'நலத்திட்ட உதவி / Welfare Scheme Benefits', 'சமூக சான்றிதழ் / Community Certificate Issue', 'பொது புகார் / General Complaint'] },
+    'AGRI': { name: 'Agriculture and Farmers Welfares Department', nameTA: 'வேளாண்மை மற்றும் உழவர் நலத்துறை', grievances: ['பயிர் காப்பீட்டு உரிமை / Crop Insurance Claim', 'மானியம் வழங்கப்படவில்லை / Subsidy Not Received', 'ஆழ்துளை கிணறு திட்டம் / Bore Well Scheme', 'உரம் வழங்கல் / Fertilizer Supply Issue', 'PM-KISAN தொகை / PM-KISAN Amount', 'பொது புகார் / General Complaint'] },
+    'AHFISH': { name: 'Animal Husbandry, Dairying, Fisheries and Fishermen Welfare Department', nameTA: 'கால்நடை பராமரிப்பு, பால்வளம், மீன்வளம் மற்றும் மீனவர் நலத்துறை', grievances: ['கால்நடை மருத்துவமனை / Veterinary Hospital', 'கால்நடை காப்பீடு / Cattle Insurance', 'மீன்பிடி அனுமதி / Fishing Permit', 'மீன் சந்தை வசதி / Fish Market Facilities', 'பொது புகார் / General Complaint'] },
+    'BCMBC': { name: 'BC, MBC and Minorities Welfare Department', nameTA: 'பிற்படுத்தப்பட்டோர், மிகவும் பிற்படுத்தப்பட்டோர் மற்றும் சிறுபான்மையினர் நலத்துறை', grievances: ['உதவித்தொகை / Scholarship', 'சமூக சான்றிதழ் / Community Certificate', 'நலத்திட்ட உதவி / Welfare Scheme', 'திருமண உதவி / Marriage Assistance', 'பொது புகார் / General Complaint'] },
+    'FOODCO': { name: 'Co-operation, Food and Consumer Protection Department', nameTA: 'கூட்டுறவு, உணவு மற்றும் நுகர்வோர் பாதுகாப்புத்துறை', grievances: ['ரேஷன் அட்டை பிரச்சனை / Ration Card Issue', 'நியாய விலை கடை புகார் / PDS Shop Complaint', 'பொருட்கள் தரம் / Product Quality', 'நுகர்வோர் தகராறு / Consumer Dispute', 'பொது புகார் / General Complaint'] },
+    'CTREG': { name: 'Commercial Taxes and Registration Department', nameTA: 'வணிக வரி மற்றும் பதிவுத்துறை', grievances: ['சொத்து பதிவு தாமதம் / Property Registration Delay', 'முத்திரை கட்டண பிரச்சனை / Stamp Duty Issue', 'GST புகார் / GST Grievance', 'பொது புகார் / General Complaint'] },
+    'ENERGY': { name: 'Energy Department', nameTA: 'எரிசக்தித்துறை', grievances: ['மின் தடை / Power Cut', 'தெரு விளக்கு பழுது / Street Light Repair', 'புதிய மின் இணைப்பு / New Connection', 'மின்மாற்றி பழுது / Transformer Issue', 'மின் கட்டண தகராறு / EB Bill Dispute', 'மீட்டர் பிரச்சனை / Meter Problem', 'மின் கம்பம் சாய்வு / Electric Pole Tilt', 'பொது புகார் / General Complaint'] },
+    'ENVFOR': { name: 'Environment, Climate Change and Forests Department', nameTA: 'சுற்றுச்சூழல், காலநிலை மாற்றம் மற்றும் வனத்துறை', grievances: ['மரம் வெட்ட அனுமதி / Tree Cutting Permission', 'மாசு புகார் / Pollution Complaint', 'காடு ஆக்கிரமிப்பு / Forest Encroachment', 'பொது புகார் / General Complaint'] },
+    'FIN': { name: 'Finance Department', nameTA: 'நிதித்துறை', grievances: ['கருவூல பணம் தாமதம் / Treasury Payment Delay', 'ஓய்வூதியம் வழங்கல் / Pension Disbursement', 'பொது புகார் / General Complaint'] },
+    'HHTK': { name: 'Handlooms, Handicrafts, Textiles and Khadi Department', nameTA: 'கைத்தறி, கைவினைப்பொருட்கள், ஜவுளி மற்றும் காதித்துறை', grievances: ['நெசவாளர் கடன் / Weaver Loan', 'மானியம் / Subsidy', 'மூலப்பொருள் வழங்கல் / Raw Material Supply', 'பொது புகார் / General Complaint'] },
+    'HEALTH': { name: 'Health and Family Welfare Department', nameTA: 'சுகாதாரம் மற்றும் குடும்ப நலத்துறை', grievances: ['ஆரம்ப சுகாதார நிலையம் சேவை / PHC/GH Service', 'மருந்து பற்றாக்குறை / Medicine Shortage', 'ஆம்புலன்ஸ் தாமதம் / Ambulance Delay', 'சுகாதாரம் / Cleanliness Issue', 'மருத்துவர் இல்லை / Doctor Not Available', '108 சேவை / 108 Service Issue', 'பொது புகார் / General Complaint'] },
+    'HIGHEDU': { name: 'Higher Education Department', nameTA: 'உயர்கல்வித்துறை', grievances: ['கல்லூரி சேர்க்கை / College Admission', 'உதவித்தொகை / Scholarship', 'விடுதி வசதி / Hostel Facility', 'தேர்வு பிரச்சனை / Exam Issue', 'பொது புகார் / General Complaint'] },
+    'HWY': { name: 'Highways and Minor Ports Department', nameTA: 'நெடுஞ்சாலை மற்றும் சிறு துறைமுகத்துறை', grievances: ['சாலை பள்ளம் / Road Pothole', 'மேம்பாலம் பராமரிப்பு / Flyover Maintenance', 'தேசிய/மாநில நெடுஞ்சாலை சீரமைப்பு / NH/SH Repair', 'வேக தடை தேவை / Speed Breaker Needed', 'சமிக்ஞை விளக்கு பழுது / Signal Malfunction', 'சாலை அகலப்படுத்தல் / Road Widening', 'பொது புகார் / General Complaint'] },
+    'PAR': { name: 'Human Resources Management Department', nameTA: 'மனித வள மேலாண்மைத்துறை', grievances: ['அரசு ஊழியர் பிரச்சனை / Govt Staff Issue', 'இடமாற்றம்/பணி நியமனம் / Transfer/Posting', 'சேவை விவகாரம் / Service Matter', 'பொது புகார் / General Complaint'] },
+    'HOMEEXC': { name: 'Home, Prohibition and Excise Department', nameTA: 'உள்துறை, தடை மற்றும் கலால்துறை', grievances: ['சட்டம்-ஒழுங்கு / Law and Order', 'மதுக்கடை புகார் / Liquor Shop Complaint', 'சத்தம் மாசு / Noise Pollution', 'சட்டவிரோத நடவடிக்கை / Illegal Activity', 'CCTV கோரிக்கை / CCTV Request', 'போதை ஒழிப்பு / Anti-Drug Complaint', 'பொது புகார் / General Complaint'] },
+    'HUD': { name: 'Housing and Urban Development Department', nameTA: 'வீட்டு வசதி மற்றும் நகர்ப்புற வளர்ச்சித்துறை', grievances: ['PMAY வீட்டு திட்டம் / PMAY Housing', 'வீட்டு மனை பட்டா / Site Patta', 'குடிசை மாற்று வாரியம் / Slum Clearance Board', 'கட்டிட ஒப்புதல் / Building Approval', 'பொது புகார் / General Complaint'] },
+    'IND': { name: 'Industries Department', nameTA: 'தொழில்துறை', grievances: ['தொழிற்சாலை உரிமம் / Industrial License', 'தொழிற்சாலை பிரச்சனை / Factory Issue', 'தொழில் பூங்கா / Industrial Estate', 'பொது புகார் / General Complaint'] },
+    'IT': { name: 'Information Technology Department', nameTA: 'தகவல் தொழில்நுட்பத்துறை', grievances: ['e-ஆளுமை சேவை / e-Governance Service', 'இணைய தளம் பிரச்சனை / Online Portal Issue', 'டிஜிட்டல் சேவை புகார் / Digital Service Complaint', 'பொது புகார் / General Complaint'] },
+    'LBREMP': { name: 'Labour Welfare and Skill Development Department', nameTA: 'தொழிலாளர் நலம் மற்றும் திறன் மேம்பாட்டுத்துறை', grievances: ['ESI பிரச்சனை / ESI Issue', 'PF புகார் / PF Complaint', 'தொழிற்சாலை பாதுகாப்பு / Factory Safety', 'திறன் பயிற்சி / Skill Training', 'பொது புகார் / General Complaint'] },
+    'LAW': { name: 'Law Department', nameTA: 'சட்டத்துறை', grievances: ['இலவச சட்ட உதவி / Free Legal Aid', 'நீதிமன்ற தொடர்பான சேவை / Court Related Service', 'பொது புகார் / General Complaint'] },
+    'LEGIS': { name: 'Legislative Assembly Department', nameTA: 'சட்டமன்றத்துறை', grievances: ['MLA அலுவலக புகார் / MLA Office Complaint', 'தொகுதி விவகாரம் / Constituency Matter', 'பொது புகார் / General Complaint'] },
+    'MSME': { name: 'Micro, Small and Medium Enterprises Department', nameTA: 'நுண்ணிய, சிறு மற்றும் நடுத்தர தொழில்துறை', grievances: ['MSME கடன் / MSME Loan', 'உரிமம் / License Issue', 'மானிய திட்டம் / Subsidy Scheme', 'பொது புகார் / General Complaint'] },
+    'MAWS': { name: 'Municipal Administration and Water Supply Department', nameTA: 'நகராட்சி நிர்வாகம் மற்றும் குடிநீர் வழங்கல் துறை', grievances: ['குடிநீர் பிரச்சனை / Drinking Water Issue', 'வடிகால் அடைப்பு / Drainage Overflow', 'குப்பை அகற்றல் / Garbage Collection', 'சாலை சீரமைப்பு / Road Repair', 'தெரு விளக்கு / Street Light', 'கட்டிட அனுமதி / Building Permit', 'சொத்து வரி / Property Tax', 'பொது புகார் / General Complaint'] },
+    'ELECTION': { name: 'Public Elections Department', nameTA: 'பொது தேர்தல்துறை', grievances: ['வாக்காளர் அடையாள அட்டை / Voter ID Issue', 'வாக்காளர் பட்டியல் திருத்தம் / Electoral Roll Correction', 'பொது புகார் / General Complaint'] },
+    'PUBLIC': { name: 'Public Department', nameTA: 'பொதுத்துறை', grievances: ['பொது புகார் / General Public Grievance', 'அரசு சேவை தாமதம் / Govt Service Delay', 'பொது புகார் / General Complaint'] },
+    'PWD': { name: 'Public Works Department', nameTA: 'பொதுப்பணித்துறை', grievances: ['அரசு கட்டிடம் சீரமைப்பு / Govt Building Repair', 'பாலம் பராமரிப்பு / Bridge Maintenance', 'கால்வாய் / நீர்வழி / Canal/Waterway', 'பொது புகார் / General Complaint'] },
+    'REV': { name: 'Revenue and Disaster Management Department', nameTA: 'வருவாய் மற்றும் பேரிடர் மேலாண்மைத்துறை', grievances: ['பட்டா/சிட்டா பிரச்சனை / Patta/Chitta Issue', 'நில அளவை / Land Survey', 'ஆக்கிரமிப்பு / Encroachment', 'இயற்கை பேரிடர் நிவாரணம் / Natural Disaster Relief', 'சான்றிதழ் வழங்கல் / Certificate Issue', 'வருவாய் சான்றிதழ் / Income Certificate', 'பொது புகார் / General Complaint'] },
+    'RDPR': { name: 'Rural Development and Panchayat Raj Department', nameTA: 'ஊரக வளர்ச்சி மற்றும் பஞ்சாயத்து ராஜ்துறை', grievances: ['கிராம சாலை / Village Road', 'ஊரக குடிநீர் / Rural Water Supply', 'பஞ்சாயத்து புகார் / Panchayat Complaint', 'MGNREGA / MGNREGA Issue', 'ஊரக வீட்டு வசதி / Rural Housing', 'பொது புகார் / General Complaint'] },
+    'SCHOOL': { name: 'School Education Department', nameTA: 'பள்ளிக்கல்வித்துறை', grievances: ['பள்ளி கட்டிடம் / School Building', 'ஆசிரியர் பற்றாக்குறை / Teacher Shortage', 'மதிய உணவு / Mid-Day Meal', 'பள்ளி பேருந்து / School Bus', 'சேர்க்கை பிரச்சனை / Admission Issue', 'பொது புகார் / General Complaint'] },
+    'SWNM': { name: 'Social Welfare and Women Empowerment Department', nameTA: 'சமூக நலம் மற்றும் மகளிர் மேம்பாட்டுத்துறை', grievances: ['தொட்டில் குழந்தை திட்டம் / Cradle Baby Scheme', 'மகளிர் உதவி எண் / Women Helpline', 'முதியோர் இல்லம் / Old Age Home', 'திருமண உதவி / Marriage Assistance', 'பொது புகார் / General Complaint'] },
+    'TAMINF': { name: 'Tamil Development and Information Department', nameTA: 'தமிழ் வளர்ச்சி மற்றும் தகவல்துறை', grievances: ['தமிழ் பெயர் பலகை / Tamil Signboard', 'மொழிபெயர்ப்பு சேவை / Translation Service', 'ஊடக புகார் / Media Complaint', 'பொது புகார் / General Complaint'] },
+    'TOURCUL': { name: 'Tourism, Culture and Religious Endowments Department', nameTA: 'சுற்றுலா, கலாச்சாரம் மற்றும் அறநிலையத்துறை', grievances: ['கோவில் பராமரிப்பு / Temple Maintenance', 'சுற்றுலா தளம் / Tourist Spot Issue', 'திருவிழா ஏற்பாடு / Festival Arrangement', 'பொது புகார் / General Complaint'] },
+    'TRANS': { name: 'Transport Department', nameTA: 'போக்குவரத்துத்துறை', grievances: ['பேருந்து வழித்தடம் கோரிக்கை / Bus Route Demand', 'பேருந்து நிறுத்தம் / Bus Stop Issue', 'MTC புகார் / MTC Complaint', 'ஓட்டுநர் உரிமம் / Driving License', 'வாகன அனுமதி / Vehicle Permit', 'பொது புகார் / General Complaint'] },
+    'DIFFABLE': { name: 'Welfare of Differently Abled Persons Department', nameTA: 'மாற்றுத்திறனாளிகள் நலத்துறை', grievances: ['மாற்றுத்திறன் சான்றிதழ் / Disability Certificate', 'உதவி சாதனம் / Assistive Device', 'உதவித்தொகை / Scholarship', 'சரிவு வசதி / Ramp Facility', 'பொது புகார் / General Complaint'] },
+    'YOUTHSP': { name: 'Youth Welfare and Sports Development Department', nameTA: 'இளைஞர் நலம் மற்றும் விளையாட்டு மேம்பாட்டுத்துறை', grievances: ['விளையாட்டு மைதானம் / Playground', 'விளையாட்டு உபகரணம் / Sports Equipment', 'இளைஞர் திட்டம் / Youth Scheme', 'விளையாட்டு வசதி / Sports Facility', 'பொது புகார் / General Complaint'] },
+    'WRD': { name: 'Water Resources Department', nameTA: 'நீர்வளத்துறை', grievances: ['கால்வாய் பராமரிப்பு / Canal Maintenance', 'அணை நீர் திறப்பு / Dam Water Release', 'நீர்ப்பாசன பிரச்சனை / Irrigation Issue', 'வெள்ள கட்டுப்பாடு / Flood Control', 'பொது புகார் / General Complaint'] },
+    'PLGDEV': { name: 'Planning and Development Department', nameTA: 'திட்டம் மற்றும் வளர்ச்சித்துறை', grievances: ['வளர்ச்சி திட்டம் / Development Scheme', 'பகுதி திட்டம் / Area Plan', 'பொது புகார் / General Complaint'] },
+    'SPI': { name: 'Special Programme Implementation Department', nameTA: 'சிறப்பு திட்ட செயலாக்கத்துறை', grievances: ['சிறப்பு திட்டம் / Special Scheme', 'SPI திட்ட புகார் / SPI Project Grievance', 'பொது புகார் / General Complaint'] }
+};
+
+// ===== POPULATE DEPARTMENT DROPDOWN ON LOAD =====
+function populateDepartmentDropdown() {
+    const deptSelect = document.getElementById('govDepartment');
+    if (!deptSelect) return;
+    deptSelect.innerHTML = '<option value="">-- அரசு துறையை தேர்வு செய்யுங்கள் --</option>';
+    Object.entries(govDepartments).forEach(([code, dept]) => {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = `${dept.name} (${code})`;
+        deptSelect.appendChild(option);
+    });
+}
+
+// ===== DEPARTMENT → GRIEVANCE TYPE CASCADING =====
+function onDepartmentChange() {
+    const deptSelect = document.getElementById('govDepartment');
+    const grievanceSelect = document.getElementById('grievanceType');
+    const selectedDept = deptSelect.value;
+
+    grievanceSelect.innerHTML = '<option value="">-- குறையின் வகையை தேர்வு செய்யுங்கள் --</option>';
+
+    if (!selectedDept) {
+        grievanceSelect.disabled = true;
+        return;
+    }
+
+    const dept = govDepartments[selectedDept];
+    if (dept && dept.grievances) {
+        dept.grievances.forEach(grievance => {
+            const option = document.createElement('option');
+            option.value = grievance;
+            option.textContent = grievance;
+            grievanceSelect.appendChild(option);
+        });
+        grievanceSelect.disabled = false;
+    }
+}
+
+// Initialize department dropdown on page load
+document.addEventListener('DOMContentLoaded', () => { populateDepartmentDropdown(); });
+
+// ===== TAMBARAM 70 WARDS - ZONE & AREA DATA =====
+const zoneData = {
+    '1': {
+        name: 'Pammal',
+        areas: {
+            'anakaputhur': { name: 'Anakaputhur', wards: [1, 2, 3, 4] },
+            'pammal': { name: 'Pammal', wards: [5, 6, 7, 8, 10, 11, 12] },
+            'thiruneermalai': { name: 'Thiruneermalai', wards: [29, 30, 31] }
+        }
+    },
+    '2': {
+        name: 'Pallavaram',
+        areas: {
+            'pallavaram': { name: 'Pallavaram', wards: [9, 13, 14, 15, 16, 17, 26, 27, 28] },
+            'keelkattalai': { name: 'Keelkattalai', wards: [18, 19, 20] },
+            'hasthinapuram': { name: 'Hasthinapuram/Nemilichery', wards: [21, 24] }
+        }
+    },
+    '3': {
+        name: 'Sembakkam',
+        areas: {
+            'sembakkam': { name: 'Sembakkam', wards: [35, 36, 37, 38, 39, 40, 42] },
+            'chitlapakkam': { name: 'Chitlapakkam', wards: [34, 43, 44] },
+            'hasthinapuram-s': { name: 'Hasthinapuram/Nemilichery', wards: [22, 23, 25] },
+            'rajakilpakkam': { name: 'Rajakilpakkam', wards: [41] }
+        }
+    },
+    '4': {
+        name: 'Perungalathur',
+        areas: {
+            'perungalathur': { name: 'Perungalathur', wards: [32, 33, 55, 56, 57, 58] },
+            'tambaram-irumbuliyur': { name: 'Tambaram/Irumbuliyur', wards: [49, 50, 51, 52, 53, 54, 60] },
+            'peerkankaranai': { name: 'Peerkankaranai', wards: [59, 61] }
+        }
+    },
+    '5': {
+        name: 'East Tambaram/Selaiyur',
+        areas: {
+            'selaiyur': { name: 'Selaiyur', wards: [45, 46, 47, 48, 63, 64, 65] },
+            'tambaram-east': { name: 'Tambaram/Irumbuliyur', wards: [62] },
+            'rajakilpakkam-e': { name: 'Rajakilpakkam', wards: [66] },
+            'madambakkam': { name: 'Madambakkam', wards: [67, 68, 69, 70] }
+        }
+    }
+};
+
+const zoneNames = { '1': 'Zone 1 - Pammal', '2': 'Zone 2 - Pallavaram', '3': 'Zone 3 - Sembakkam', '4': 'Zone 4 - Perungalathur', '5': 'Zone 5 - East Tambaram/Selaiyur' };
+
+// Legacy area name mapping (for backward compatibility with existing data)
+const areaNames = {};
+Object.values(zoneData).forEach(zone => {
+    Object.entries(zone.areas).forEach(([key, val]) => { areaNames[key] = val.name; });
+});
+
+// ===== ZONE → AREA CASCADING DROPDOWN =====
+function onZoneChange() {
+    const zoneSelect = document.getElementById('zone');
+    const areaSelect = document.getElementById('area');
+    const wardGroup = document.getElementById('wardDisplayGroup');
+    const wardNumbers = document.getElementById('wardNumbers');
+    const selectedZone = zoneSelect.value;
+
+    // Reset area dropdown
+    areaSelect.innerHTML = '<option value="">-- பகுதியை தேர்வு செய்யுங்கள் --</option>';
+    wardGroup.style.display = 'none';
+    wardNumbers.textContent = '-';
+
+    if (!selectedZone) {
+        areaSelect.disabled = true;
+        return;
+    }
+
+    // Populate areas for the selected zone
+    const zone = zoneData[selectedZone];
+    if (zone) {
+        Object.entries(zone.areas).forEach(([key, areaInfo]) => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = areaInfo.name;
+            areaSelect.appendChild(option);
+        });
+        areaSelect.disabled = false;
+    }
+
+    // Add area change listener
+    areaSelect.onchange = function() {
+        const selectedArea = areaSelect.value;
+        if (selectedArea && zone && zone.areas[selectedArea]) {
+            const wards = zone.areas[selectedArea].wards;
+            wardGroup.style.display = 'block';
+            wardNumbers.textContent = 'வார்டு ' + wards.join(', ');
+        } else {
+            wardGroup.style.display = 'none';
+            wardNumbers.textContent = '-';
+        }
+    };
+}
 
 function aiAutoDetectCategory(text) {
     const lowerText = text.toLowerCase();
@@ -226,13 +406,17 @@ let currentStep = 1;
 
 function nextStep(step) {
     if (currentStep === 1) {
-        const name = document.getElementById('citizenName'), mobile = document.getElementById('mobileNumber'), area = document.getElementById('area');
+        const name = document.getElementById('citizenName'), mobile = document.getElementById('mobileNumber'), zone = document.getElementById('zone'), area = document.getElementById('area');
         if (!name || !name.value.trim()) { showNotification('உங்கள் பெயரை உள்ளிடுங்கள்!', 'error'); return; }
         if (!mobile || !mobile.value.trim() || mobile.value.trim().length < 10) { showNotification('சரியான தொலைபேசி எண்ணை உள்ளிடுங்கள்!', 'error'); return; }
-        if (!area || !area.value) { showNotification('பகுதியை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        if (!zone || !zone.value) { showNotification('மண்டலத்தை (Zone) தேர்வு செய்யுங்கள்!', 'error'); return; }
+        if (!area || !area.value) { showNotification('பகுதியை (Area) தேர்வு செய்யுங்கள்!', 'error'); return; }
     }
     if (currentStep === 2) {
-        if (!document.querySelector('.cat-card-new.selected')) { showNotification('புகார் வகையை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        const dept = document.getElementById('govDepartment');
+        const grievance = document.getElementById('grievanceType');
+        if (!dept || !dept.value) { showNotification('அரசு துறையை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        if (!grievance || !grievance.value) { showNotification('குறையின் வகையை தேர்வு செய்யுங்கள்!', 'error'); return; }
         const title = document.getElementById('title');
         if (!title || !title.value.trim()) { showNotification('புகார் தலைப்பு எழுதுங்கள்!', 'error'); return; }
     }
@@ -252,11 +436,16 @@ function updateWizardUI() {
 }
 
 function populateReviewSummary() {
-    const name = document.getElementById('citizenName'), mobile = document.getElementById('mobileNumber'), area = document.getElementById('area'), selectedCat = document.querySelector('.cat-card-new.selected'), title = document.getElementById('title');
+    const name = document.getElementById('citizenName'), mobile = document.getElementById('mobileNumber'), zone = document.getElementById('zone'), area = document.getElementById('area'), title = document.getElementById('title');
+    const dept = document.getElementById('govDepartment'), grievance = document.getElementById('grievanceType');
     document.getElementById('reviewName').textContent = name ? name.value : '-';
     document.getElementById('reviewPhone').textContent = mobile ? '+91 ' + mobile.value : '-';
-    document.getElementById('reviewArea').textContent = area ? area.options[area.selectedIndex].text : '-';
-    document.getElementById('reviewCategory').textContent = selectedCat ? selectedCat.querySelector('span').textContent : '-';
+    const zoneTxt = zone && zone.value ? zone.options[zone.selectedIndex].text : '';
+    const areaTxt = area && area.value ? area.options[area.selectedIndex].text : '';
+    document.getElementById('reviewArea').textContent = (zoneTxt ? zoneTxt + ' → ' : '') + (areaTxt || '-');
+    const deptTxt = dept && dept.value ? `${govDepartments[dept.value].name} (${dept.value})` : '-';
+    const grievanceTxt = grievance && grievance.value ? grievance.value : '';
+    document.getElementById('reviewCategory').textContent = deptTxt + (grievanceTxt ? ' → ' + grievanceTxt : '');
     document.getElementById('reviewTitle').textContent = title ? title.value : '-';
 }
 
@@ -292,17 +481,32 @@ let complaintCounter = 849;
 if (complaintForm) {
     complaintForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const selectedCat = document.querySelector('.cat-card-new.selected');
-        if (!selectedCat) { showNotification('புகார் வகையை தேர்வு செய்யுங்கள்!', 'error'); return; }
-        const area = document.getElementById('area').value;
-        if (!area) { showNotification('பகுதியை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        const deptSelect = document.getElementById('govDepartment');
+        const grievanceSelect = document.getElementById('grievanceType');
+        const zoneSelect = document.getElementById('zone');
+        const areaSelect = document.getElementById('area');
+        if (!deptSelect || !deptSelect.value) { showNotification('அரசு துறையை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        if (!grievanceSelect || !grievanceSelect.value) { showNotification('குறையின் வகையை தேர்வு செய்யுங்கள்!', 'error'); return; }
+        if (!areaSelect || !areaSelect.value) { showNotification('பகுதியை தேர்வு செய்யுங்கள்!', 'error'); return; }
         const title = document.getElementById('title').value;
         if (!title) { showNotification('புகார் தலைப்பு எழுதுங்கள்!', 'error'); return; }
         const description = document.getElementById('description').value;
-        const categoryValue = selectedCat.dataset.value;
+
+        // Collect all new government fields
+        const departmentCode = deptSelect.value;
+        const departmentName = govDepartments[departmentCode] ? govDepartments[departmentCode].name : departmentCode;
+        const departmentNameTA = govDepartments[departmentCode] ? govDepartments[departmentCode].nameTA : '';
+        const grievanceValue = grievanceSelect.value;
+        const zoneValue = zoneSelect ? zoneSelect.value : '';
+        const zoneName = zoneSelect && zoneSelect.value ? zoneSelect.options[zoneSelect.selectedIndex].text : '';
+        const areaValue = areaSelect.value;
+        const areaName = areaSelect.options[areaSelect.selectedIndex].text;
+        // Get ward numbers if available
+        const wardNumbersEl = document.getElementById('wardNumbers');
+        const wardNumbers = wardNumbersEl ? wardNumbersEl.textContent : '';
+
         const citizenName = document.getElementById('citizenName') ? document.getElementById('citizenName').value.trim() : '';
         const mobileNumber = document.getElementById('mobileNumber') ? document.getElementById('mobileNumber').value.trim() : '';
-        const locationText = document.getElementById('locationText') ? document.getElementById('locationText').textContent.trim() : '';
         const manualAddress = document.getElementById('manualAddress') ? document.getElementById('manualAddress').value.trim() : '';
         const submitBtn = complaintForm.querySelector('.btn-submit');
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> சமர்ப்பிக்கிறது...';
@@ -320,18 +524,30 @@ if (complaintForm) {
 
             complaintsDB[lastComplaintId] = {
                 id: lastComplaintId, govId: govStyleId,
-                title: title + (areaNames[area] ? ' - ' + areaNames[area] : ''),
-                description: description || '', category: categoryNames[categoryValue] || categoryValue,
-                area: areaNames[area] || area,
+                title: title + (areaName ? ' - ' + areaName : ''),
+                description: description || '',
+                // Government standard fields
+                department: departmentCode,
+                departmentName: departmentName,
+                departmentNameTA: departmentNameTA,
+                grievanceType: grievanceValue,
+                category: departmentName + ' (' + departmentCode + ')',
+                // Location fields
+                zone: zoneValue,
+                zoneName: zoneName,
+                area: areaValue,
+                areaName: areaName,
+                wardNumbers: wardNumbers,
+                // Citizen details
                 citizenName: citizenName,
                 mobileNumber: mobileNumber,
-                location: locationText || '',
                 address: manualAddress || '',
+                // Status & assignment
                 assigned: '-', date: dateStr, status: 'புதியது', statusClass: 'badge-new', createdAt: now.toISOString(),
                 timeline: [
                     { text: 'புகார் பதிவு செய்யப்பட்டது', time: `${dateStr} - ${timeStr}`, state: 'completed' },
                     { text: 'ஆய்வு செய்யப்படுகிறது', time: 'நிலுவையில்...', state: 'active' },
-                    { text: 'துறைக்கு ஒதுக்கப்படும்', time: 'நிலுவையில்...', state: '' },
+                    { text: `${departmentName}-க்கு ஒதுக்கப்படும்`, time: 'நிலுவையில்...', state: '' },
                     { text: 'பணி தொடங்கப்படும்', time: 'நிலுவையில்...', state: '' },
                     { text: 'தீர்வு & உறுதிப்படுத்தல்', time: 'நிலுவையில்...', state: '' }
                 ]
@@ -340,6 +556,9 @@ if (complaintForm) {
             const generatedIdEl = document.getElementById('generatedComplaintId');
             if (generatedIdEl) generatedIdEl.textContent = govStyleId;
             if (firebaseReady && window.VoiceToMLA_DB) VoiceToMLA_DB.saveComplaint(complaintsDB[lastComplaintId]);
+            // Always save to localStorage as backup (for offline/cross-page sharing)
+            localStorage.setItem('vtm_all_complaints', JSON.stringify(complaintsDB));
+            localStorage.setItem('vtm_complaint_counter', String(complaintCounter));
             // Update logged-in user's name if they are "User" (generic) and typed their name
             if (loggedInUser && loggedInUser.name === 'User' && citizenName) {
                 loggedInUser.name = citizenName;
@@ -366,13 +585,21 @@ async function searchComplaint() {
     const result = document.getElementById('trackResult');
     if (!input.value) { showNotification('Complaint ID enter செய்யுங்கள்!', 'error'); return; }
     result.style.opacity = '0.5';
-    // Always fetch fresh data from Firebase before searching
+    // Always fetch fresh data from Firebase AND localStorage before searching
     try {
         if (window.VoiceToMLA_DB) {
             const fc = await VoiceToMLA_DB.getAllComplaints();
             if (fc && Object.keys(fc).length > 0) Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
         }
     } catch(e) { console.log('Fresh fetch error:', e); }
+    // Also load from localStorage (admin updates are saved here)
+    try {
+        const localData = localStorage.getItem('vtm_all_complaints');
+        if (localData) {
+            const parsed = JSON.parse(localData);
+            Object.keys(parsed).forEach(k => { complaintsDB[k] = parsed[k]; });
+        }
+    } catch(e) {}
     setTimeout(() => {
         let searchVal = input.value.trim().toUpperCase();
         let complaint = null;
@@ -450,11 +677,21 @@ let firebaseReady = false;
 
 async function loadComplaintsFromFirebase() {
     try {
-        await VoiceToMLA_DB.initializeDefaultComplaints();
-        const fc = await VoiceToMLA_DB.getAllComplaints();
-        if (Object.keys(fc).length > 0) Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
-        const counterDoc = await db.collection('vtm_config').doc('counter').get();
-        if (counterDoc.exists) complaintCounter = counterDoc.data().lastComplaintNumber + 1;
+        // First try to just get complaints (skip initializeDefaultComplaints if it fails)
+        let fc = {};
+        try {
+            await VoiceToMLA_DB.initializeDefaultComplaints();
+        } catch(initErr) {
+            console.log('Init default skipped:', initErr.message);
+        }
+        fc = await VoiceToMLA_DB.getAllComplaints();
+        if (fc && Object.keys(fc).length > 0) {
+            Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
+        }
+        try {
+            const counterDoc = await db.collection('vtm_config').doc('counter').get();
+            if (counterDoc.exists) complaintCounter = counterDoc.data().lastComplaintNumber + 1;
+        } catch(ce) { console.log('Counter read error:', ce.message); }
         firebaseReady = true;
         updateDashboardStats();
         updateTrustIndex();
@@ -462,8 +699,15 @@ async function loadComplaintsFromFirebase() {
         console.log('🔥 Firebase loaded:', Object.keys(complaintsDB).length, 'complaints');
         showNotification('🔥 Database connected! ' + Object.keys(complaintsDB).length + ' complaints loaded.', 'success');
     } catch (error) {
-        console.error('Firebase error:', error);
-        showNotification('⚠️ Offline mode - using local data', 'info');
+        console.error('Firebase connection error:', error.message || error);
+        // Still mark as ready if db object exists (might work for writes even if reads failed)
+        if (typeof db !== 'undefined') {
+            firebaseReady = true;
+            console.log('⚠️ Firebase partially available - writes may still work');
+            showNotification('⚠️ Database connection issue - using local data. Writes may still work.', 'info');
+        } else {
+            showNotification('⚠️ Offline mode - using local data', 'info');
+        }
     }
 }
 
@@ -715,9 +959,24 @@ document.addEventListener('click', (e) => {
 });
 
 // ===== CITIZEN DASHBOARD =====
-function loadCitizenComplaints() {
+async function loadCitizenComplaints() {
     const input = document.getElementById('citizenSearchInput'), statsSection = document.getElementById('citizenStats'), listSection = document.getElementById('citizenComplaintsList');
     if (!input || !input.value.trim()) { showNotification('Mobile Number உள்ளிடுங்கள்!', 'error'); return; }
+    // Fetch fresh from Firebase AND localStorage before searching
+    try {
+        if (window.VoiceToMLA_DB) {
+            const fc = await VoiceToMLA_DB.getAllComplaints();
+            if (fc && Object.keys(fc).length > 0) Object.keys(fc).forEach(k => { complaintsDB[k] = fc[k]; });
+        }
+    } catch(e) { console.log('Citizen search: Firebase fetch error', e); }
+    // Also read from localStorage (admin may have updated status/assignment)
+    try {
+        const localData = localStorage.getItem('vtm_all_complaints');
+        if (localData) {
+            const parsed = JSON.parse(localData);
+            Object.keys(parsed).forEach(k => { complaintsDB[k] = parsed[k]; });
+        }
+    } catch(e) {}
     const searchVal = input.value.trim();
     let matched = Object.values(complaintsDB).filter(c => c.mobileNumber === searchVal);
     if (matched.length === 0) { const m = Object.keys(complaintsDB).find(k => k.includes(searchVal) || (complaintsDB[k].govId && complaintsDB[k].govId.includes(searchVal))); if (m) matched.push(complaintsDB[m]); }
