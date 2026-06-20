@@ -848,6 +848,20 @@
                     ${c.address ? `<div class="detail-row"><span class="dlabel">🏠 Address</span><span class="dvalue">${c.address}</span></div>` : ''}
                     ${c.description ? `<div class="detail-row"><span class="dlabel">📄 Description</span><span class="dvalue" style="white-space:pre-wrap;font-size:0.75rem;">${c.description}</span></div>` : ''}
                     
+                    <!-- ATTACHMENTS SECTION -->
+                    ${c.attachments && c.attachments.length > 0 ? `
+                    <div style="margin-top:15px;padding:12px;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;">
+                        <h4 style="font-size:0.85rem;margin:0 0 10px;color:#92400e;"><i class="fas fa-paperclip"></i> Attachments (${c.attachments.length})</h4>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            ${c.attachments.map((src, idx) => `<div style="width:90px;height:90px;border-radius:8px;overflow:hidden;border:2px solid #fde68a;cursor:pointer;" onclick="window.open('${src}','_blank')">
+                                <img src="${src}" style="width:100%;height:100%;object-fit:cover;" alt="Attachment ${idx+1}">
+                            </div>`).join('')}
+                        </div>
+                    </div>` : `
+                    <div style="margin-top:10px;padding:8px 12px;background:#f9fafb;border-radius:8px;">
+                        <p style="font-size:0.75rem;color:#9ca3af;margin:0;"><i class="fas fa-paperclip"></i> No attachments</p>
+                    </div>`}
+
                     <!-- ASSIGN VOLUNTEER SECTION -->
                     <div style="margin-top:18px;padding:15px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;">
                         <h4 style="font-size:0.85rem;margin:0 0 10px;color:#1d4ed8;"><i class="fas fa-user-plus"></i> Assign Volunteer</h4>
