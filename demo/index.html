@@ -18,9 +18,9 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <span class="logo-icon"><img src="../assets/logo.svg" alt="Logo" style="width:28px;height:28px;vertical-align:middle;"></span>
+                <img src="../assets/IMG_20260620_100511.png" alt="VTM Logo" style="height:50px;width:auto;object-fit:contain;border-radius:6px;">
+                <span class="logo-icon" style="margin-left:6px;"><img src="../assets/logo.svg" alt="Logo" style="width:24px;height:24px;vertical-align:middle;"></span>
                 <span class="logo-text">Voice to Minister</span>
-                <span class="demo-badge">DEMO</span>
             </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" class="nav-link active" data-page="home">முகப்பு</a></li>
@@ -65,39 +65,26 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="demo-hero-stats">
-                            <div class="hero-stat-card">
-                                <div class="stat-icon"><i class="fas fa-clipboard-list"></i></div>
-                                <div class="stat-info">
-                                    <span class="stat-num">1,247</span>
-                                    <span class="stat-text">மொத்த புகார்கள்</span>
-                                </div>
+                        <div class="demo-hero-stats" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;">
+                            <!-- CM Vijay Photo & Details -->
+                            <div style="text-align:center;">
+                                <img src="../assets/tvk-vijay-it-wing-tamilaga-vettri-kazhagam.jpg.jpg" alt="CM C. Joseph Vijay" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:4px solid #dc2626;box-shadow:0 8px 30px rgba(220,38,38,0.4),0 0 0 6px rgba(255,255,255,0.1);">
                             </div>
-                            <div class="hero-stat-card resolved">
-                                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                                <div class="stat-info">
-                                    <span class="stat-num">1,089</span>
-                                    <span class="stat-text">தீர்க்கப்பட்டவை</span>
-                                </div>
-                            </div>
-                            <div class="hero-stat-card pending">
-                                <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                                <div class="stat-info">
-                                    <span class="stat-num">158</span>
-                                    <span class="stat-text">நிலுவையில்</span>
-                                </div>
-                            </div>
-                            <div class="hero-stat-card time">
-                                <div class="stat-icon"><i class="fas fa-bolt"></i></div>
-                                <div class="stat-info">
-                                    <span class="stat-num">2.3 நாள்</span>
-                                    <span class="stat-text">சராசரி தீர்வு நேரம்</span>
+                            <div style="text-align:center;">
+                                <p style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin:0 0 5px;font-weight:400;letter-spacing:1px;text-transform:uppercase;">Under the Leadership of</p>
+                                <h3 style="font-size:1.3rem;margin:0 0 6px;color:white;font-weight:800;">C. Joseph Vijay</h3>
+                                <p style="font-size:0.9rem;color:#fca5a5;margin:0 0 4px;font-weight:600;">முதலமைச்சர் | Chief Minister</p>
+                                <p style="font-size:0.8rem;color:rgba(255,255,255,0.7);margin:0;">Government of Tamil Nadu</p>
+                                <div style="margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                    <img src="../assets/Tamilaga_Vettri_Kazhagam_(TVK)_Flag.png" alt="TVK" style="width:28px;height:auto;">
+                                    <span style="font-size:0.75rem;color:rgba(255,255,255,0.6);font-weight:500;">தமிழக வெற்றி கழகம் (TVK)</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
 
             <!-- Daily Thirukkural Section -->
             <section class="recent-section">
@@ -572,7 +559,8 @@
                         <h2><i class="fas fa-newspaper"></i> Minister Updates & அறிவிப்புகள்</h2>
                         <p>D. Sarathkumar - Cabinet Minister (HRM) | தாம்பரம் தொகுதி</p>
                     </div>
-                    <div class="updates-grid">
+                    <div class="updates-grid" id="publicUpdatesGrid">
+                        <!-- Updates will be loaded dynamically from admin posts -->
                         <div class="update-card">
                             <div class="update-date">
                                 <span class="day">14</span>
@@ -1220,6 +1208,65 @@
 
     <script src="firebase-db.js"></script>
     <script src="script.js?v=3.0"></script>
+    <!-- Load Admin Updates on Public Site -->
+    <script>
+    (function loadPublicUpdates() {
+        setTimeout(async function() {
+            const grid = document.getElementById('publicUpdatesGrid');
+            if (!grid) return;
+            let updates = [];
+
+            // Try Firebase first
+            try {
+                if (typeof db !== 'undefined') {
+                    const snapshot = await db.collection('vtm_updates').get();
+                    if (!snapshot.empty) {
+                        snapshot.docs.forEach(doc => updates.push(doc.data()));
+                        updates.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    }
+                }
+            } catch(e) { console.log('Public updates Firebase error:', e); }
+
+            // Fallback: localStorage
+            if (updates.length === 0) {
+                try {
+                    const local = JSON.parse(localStorage.getItem('vtm_updates') || '[]');
+                    if (local.length > 0) updates = local;
+                } catch(e) {}
+            }
+
+            if (updates.length === 0) return; // Keep default static cards
+
+            // Render dynamic updates (prepend admin updates before static ones)
+            const tagClassMap = {
+                '📋 அறிவிப்பு': '', '✅ நிறைவு': 'success', '📅 நிகழ்வு': 'info', '⚠️ அவசரம்': 'urgent'
+            };
+            const dynamicHTML = updates.map(u => {
+                const tagCls = tagClassMap[u.tag] || '';
+                const tagLabel = u.tag ? u.tag.replace(/📋 |✅ |📅 |⚠️ /g, '') : 'அறிவிப்பு';
+                const mediaHTML = (u.mediaFiles && u.mediaFiles.length > 0) ?
+                    `<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">${u.mediaFiles.map(f => f.type && f.type.startsWith('video/') ? `<div style="width:80px;height:60px;background:#1a1a2e;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="color:white;font-size:1.5rem;"></i></div>` : `<img src="${f.data}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;border:1px solid #eee;">`).join('')}</div>` : '';
+                const videoHTML = u.videoUrl ? `<a href="${u.videoUrl}" target="_blank" style="display:inline-block;margin-top:6px;font-size:0.75rem;color:#2563eb;text-decoration:none;"><i class="fas fa-video"></i> Watch Video</a>` : '';
+                const areaHTML = u.area ? `<span style="font-size:0.7rem;color:#059669;display:block;margin-top:4px;">📍 ${u.area}</span>` : '';
+                return `<div class="update-card">
+                    <div class="update-date">
+                        <span class="day">${u.day || '01'}</span>
+                        <span class="month">${u.month || 'Jun'}</span>
+                    </div>
+                    <div class="update-content">
+                        <span class="update-tag ${tagCls}">${tagLabel}</span>
+                        <h4>${u.title || ''}</h4>
+                        <p>${u.content || ''}</p>
+                        ${areaHTML}${mediaHTML}${videoHTML}
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Prepend dynamic updates before existing static ones
+            grid.insertAdjacentHTML('afterbegin', dynamicHTML);
+        }, 1500); // Wait for Firebase to initialize
+    })();
+    </script>
     <!-- QR Code Generator (lightweight) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
