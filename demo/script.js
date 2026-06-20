@@ -762,6 +762,14 @@ async function loadComplaintsFromFirebase() {
             const counterDoc = await db.collection('vtm_config').doc('counter').get();
             if (counterDoc.exists) complaintCounter = counterDoc.data().lastComplaintNumber + 1;
         } catch(ce) { console.log('Counter read error:', ce.message); }
+        // Also merge localStorage data (test complaints that may not have saved to Firebase)
+        try {
+            const localData = localStorage.getItem('vtm_all_complaints');
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                Object.keys(parsed).forEach(k => { if (!complaintsDB[k]) complaintsDB[k] = parsed[k]; });
+            }
+        } catch(e) {}
         firebaseReady = true;
         updateDashboardStats();
         updateTrustIndex();
