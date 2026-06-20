@@ -671,7 +671,22 @@
             let loadedFromFirebase = false;
             try {
                 if (typeof db !== 'undefined') {
-                    // Direct Firestore query to get ALL complaints (most reliable)
+                    // Force server fetch (bypass cache) to get ALL complaints from Firebase
+                    const snapshot = await db.collection('vtm_complaints').get({ source: 'server' });
+                    if (!snapshot.empty) {
+                        snapshot.docs.forEach(doc => {
+                            const data = doc.data();
+                            const key = data.id || doc.id;
+                            complaintsDB[key] = data;
+                        });
+                        loadedFromFirebase = true;
+                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from Firebase (server)');
+                    }
+                }
+            } catch (e) {
+                console.log('Server fetch failed, trying cache:', e.message);
+                // Fallback to cache if offline
+                try {
                     const snapshot = await db.collection('vtm_complaints').get();
                     if (!snapshot.empty) {
                         snapshot.docs.forEach(doc => {
@@ -680,10 +695,10 @@
                             complaintsDB[key] = data;
                         });
                         loadedFromFirebase = true;
-                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from Firebase');
+                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from cache');
                     }
-                }
-            } catch (e) { console.log('Firebase load error:', e.message); }
+                } catch (e2) { console.log('Firebase load error:', e2.message); }
+            }
 
             // FALLBACK: Always also load from localStorage (cross-page sharing when Firebase is offline)
             try {

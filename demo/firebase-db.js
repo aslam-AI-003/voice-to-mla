@@ -35,15 +35,21 @@ const VoiceToMLA_DB = {
         }
     },
 
-    // Get all complaints from Firestore
+    // Get all complaints from Firestore (force server to avoid stale cache)
     async getAllComplaints() {
         try {
-            const snapshot = await db.collection('vtm_complaints').get();
+            let snapshot;
+            try {
+                snapshot = await db.collection('vtm_complaints').get({ source: 'server' });
+            } catch (serverErr) {
+                console.log('Server fetch failed, using cache:', serverErr.message);
+                snapshot = await db.collection('vtm_complaints').get();
+            }
             
             const complaints = {};
             snapshot.docs.forEach(doc => {
                 const data = doc.data();
-                complaints[data.id] = data;
+                complaints[data.id || doc.id] = data;
             });
             console.log(`✅ Loaded ${snapshot.docs.length} complaints from Firebase`);
             return complaints;
