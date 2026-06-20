@@ -22,15 +22,33 @@ const VoiceToMLA_DB = {
     // Save a new complaint to Firestore
     async saveComplaint(complaint) {
         try {
+            // Remove very large fields that exceed Firestore 1MB doc limit
+            const saveData = { ...complaint };
+            // If attachments array is too large (>800KB), remove it from Firestore save
+            if (saveData.attachments && JSON.stringify(saveData.attachments).length > 800000) {
+                saveData.attachments = [];
+                saveData.attachmentsTooBig = true;
+            }
             await db.collection('vtm_complaints').doc(complaint.id).set({
-                ...complaint,
+                ...saveData,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             });
             console.log('✅ Complaint saved to Firebase:', complaint.id);
+            // Verify write by reading back
+            const verify = await db.collection('vtm_complaints').doc(complaint.id).get();
+            if (verify.exists) {
+                console.log('✅✅ VERIFIED: Complaint exists in Firebase:', complaint.id);
+            } else {
+                console.warn('⚠️ Write may have failed - doc not found after save');
+            }
             return true;
         } catch (error) {
-            console.error('❌ Error saving complaint:', error);
+            console.error('❌ Error saving complaint:', error.message, error.code);
+            // Alert user about the failure so they know
+            if (error.code === 'permission-denied') {
+                console.error('🚫 PERMISSION DENIED - Firestore rules are blocking writes!');
+            }
             return false;
         }
     },
