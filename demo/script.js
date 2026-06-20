@@ -523,6 +523,11 @@ if (complaintForm) {
         const wardNumbersEl = document.getElementById('wardNumbers');
         const wardNumbers = wardNumbersEl ? wardNumbersEl.textContent : '';
 
+        // Collect uploaded photos/videos as base64
+        const attachments = [];
+        const previewImages = document.querySelectorAll('#uploadPreview img');
+        previewImages.forEach(img => { if (img.src && img.src.startsWith('data:')) attachments.push(img.src); });
+
         const citizenName = document.getElementById('citizenName') ? document.getElementById('citizenName').value.trim() : '';
         const mobileNumber = document.getElementById('mobileNumber') ? document.getElementById('mobileNumber').value.trim() : '';
         const manualAddress = document.getElementById('manualAddress') ? document.getElementById('manualAddress').value.trim() : '';
@@ -556,6 +561,8 @@ if (complaintForm) {
                 area: areaValue,
                 areaName: areaName,
                 wardNumbers: wardNumbers,
+                // Attachments (photos/videos)
+                attachments: attachments,
                 // Citizen details
                 citizenName: citizenName,
                 mobileNumber: mobileNumber,
@@ -845,8 +852,26 @@ function viewComplaintDetail(complaintId) {
     const complaint = complaintsDB[complaintId]; if (!complaint) return;
     const displayId = complaint.govId || `TN/TBM/CPT/2026/${complaint.id.split('-').pop()}`;
     let em = document.getElementById('detailModal'); if (em) em.remove();
+    
+    // Build attachments section
+    let attachmentsHTML = '';
+    if (complaint.attachments && complaint.attachments.length > 0) {
+        attachmentsHTML = `<div style="margin-top:15px;padding-top:12px;border-top:1px solid var(--light-gray);">
+            <p style="font-size:0.8rem;font-weight:700;margin-bottom:10px;"><i class="fas fa-paperclip" style="color:var(--primary);margin-right:5px;"></i> Attachments (${complaint.attachments.length})</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                ${complaint.attachments.map((src, idx) => `<div style="width:100px;height:100px;border-radius:8px;overflow:hidden;border:2px solid var(--light-gray);cursor:pointer;" onclick="window.open('${src}','_blank')">
+                    <img src="${src}" style="width:100%;height:100%;object-fit:cover;" alt="Attachment ${idx+1}">
+                </div>`).join('')}
+            </div>
+        </div>`;
+    } else {
+        attachmentsHTML = `<div style="margin-top:15px;padding-top:12px;border-top:1px solid var(--light-gray);">
+            <p style="font-size:0.8rem;color:var(--gray);"><i class="fas fa-paperclip" style="margin-right:5px;"></i> No attachments</p>
+        </div>`;
+    }
+
     const modal = document.createElement('div'); modal.className = 'modal active'; modal.id = 'detailModal';
-    modal.innerHTML = `<div class="modal-overlay" onclick="document.getElementById('detailModal').remove()"></div><div class="modal-content" style="max-width:600px;max-height:80vh;overflow-y:auto;"><button class="modal-close" onclick="document.getElementById('detailModal').remove()">&times;</button><div style="padding:5px;"><div style="text-align:center;margin-bottom:20px;"><h3>📋 புகார் விவரம்</h3><code style="background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:6px;font-weight:700;">${displayId}</code></div><div style="background:var(--light);padding:12px;border-radius:8px;margin-bottom:12px;"><p><strong>${complaint.title}</strong></p><p style="font-size:0.8rem;color:var(--gray);">${complaint.area} | ${complaint.category} | ${complaint.date}</p><p style="font-size:0.8rem;margin-top:5px;">Assigned: <strong>${complaint.assigned}</strong></p></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;">${complaint.statusClass === 'badge-assigned' ? `<button class="btn" style="background:#f59e0b;color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="updateComplaintStatus('${complaintId}','progress')"><i class="fas fa-wrench"></i> Start Work</button>` : ''}${complaint.statusClass === 'badge-progress' || complaint.statusClass === 'badge-assigned' ? `<button class="btn" style="background:#10b981;color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="updateComplaintStatus('${complaintId}','resolved')"><i class="fas fa-check-circle"></i> Mark Resolved</button>` : ''}${complaint.statusClass === 'badge-resolved' ? '<span style="color:#10b981;font-weight:600;">✅ தீர்வு!</span>' : ''}<button class="btn" style="background:var(--warning);color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="escalateComplaint('${complaintId}')"><i class="fas fa-exclamation-triangle"></i> Escalate</button><button class="btn btn-primary" style="font-size:0.75rem;padding:6px 12px;" onclick="document.getElementById('detailModal').remove();openAssignModal('${complaintId}')"><i class="fas fa-user-plus"></i> Assign</button></div></div></div>`;
+    modal.innerHTML = `<div class="modal-overlay" onclick="document.getElementById('detailModal').remove()"></div><div class="modal-content" style="max-width:600px;max-height:85vh;overflow-y:auto;"><button class="modal-close" onclick="document.getElementById('detailModal').remove()">&times;</button><div style="padding:5px;"><div style="text-align:center;margin-bottom:20px;"><h3>📋 புகார் விவரம்</h3><code style="background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:6px;font-weight:700;">${displayId}</code></div><div style="background:var(--light);padding:12px;border-radius:8px;margin-bottom:12px;"><p><strong>${complaint.title}</strong></p><p style="font-size:0.8rem;color:var(--gray);">${complaint.area} | ${complaint.category} | ${complaint.date}</p><p style="font-size:0.8rem;margin-top:5px;">👤 Citizen: <strong>${complaint.citizenName || '-'}</strong> | 📱 ${complaint.mobileNumber || '-'}</p><p style="font-size:0.8rem;margin-top:3px;">🏠 Address: ${complaint.address || '-'}</p><p style="font-size:0.8rem;margin-top:3px;">📝 Description: ${complaint.description || '-'}</p><p style="font-size:0.8rem;margin-top:5px;">Assigned: <strong>${complaint.assigned}</strong></p></div>${attachmentsHTML}<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;">${complaint.statusClass === 'badge-assigned' ? `<button class="btn" style="background:#f59e0b;color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="updateComplaintStatus('${complaintId}','progress')"><i class="fas fa-wrench"></i> Start Work</button>` : ''}${complaint.statusClass === 'badge-progress' || complaint.statusClass === 'badge-assigned' ? `<button class="btn" style="background:#10b981;color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="updateComplaintStatus('${complaintId}','resolved')"><i class="fas fa-check-circle"></i> Mark Resolved</button>` : ''}${complaint.statusClass === 'badge-resolved' ? '<span style="color:#10b981;font-weight:600;">✅ தீர்வு!</span>' : ''}<button class="btn" style="background:var(--warning);color:white;font-size:0.75rem;padding:6px 12px;border-radius:6px;" onclick="escalateComplaint('${complaintId}')"><i class="fas fa-exclamation-triangle"></i> Escalate</button><button class="btn btn-primary" style="font-size:0.75rem;padding:6px 12px;" onclick="document.getElementById('detailModal').remove();openAssignModal('${complaintId}')"><i class="fas fa-user-plus"></i> Assign</button></div></div></div>`;
     document.body.appendChild(modal);
 }
 
