@@ -671,33 +671,27 @@
             let loadedFromFirebase = false;
             try {
                 if (typeof db !== 'undefined') {
-                    // Force server fetch (bypass cache) to get ALL complaints from Firebase
-                    const snapshot = await db.collection('vtm_complaints').get({ source: 'server' });
+                    // Simple get() - let Firestore decide server vs cache
+                    console.log('📡 Fetching complaints from Firestore...');
+                    const snapshot = await db.collection('vtm_complaints').get();
+                    console.log('📡 Firestore returned:', snapshot.size, 'documents');
                     if (!snapshot.empty) {
                         snapshot.docs.forEach(doc => {
                             const data = doc.data();
                             const key = data.id || doc.id;
                             complaintsDB[key] = data;
+                            console.log('  📄 Doc:', doc.id, '→ key:', key, '| title:', (data.title || '').substring(0, 30));
                         });
                         loadedFromFirebase = true;
-                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from Firebase (server)');
+                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from Firebase');
+                    } else {
+                        console.log('⚠️ Firestore returned EMPTY snapshot');
                     }
+                } else {
+                    console.log('❌ db is undefined - Firebase not initialized!');
                 }
             } catch (e) {
-                console.log('Server fetch failed, trying cache:', e.message);
-                // Fallback to cache if offline
-                try {
-                    const snapshot = await db.collection('vtm_complaints').get();
-                    if (!snapshot.empty) {
-                        snapshot.docs.forEach(doc => {
-                            const data = doc.data();
-                            const key = data.id || doc.id;
-                            complaintsDB[key] = data;
-                        });
-                        loadedFromFirebase = true;
-                        console.log('✅ Admin loaded', snapshot.docs.length, 'complaints from cache');
-                    }
-                } catch (e2) { console.log('Firebase load error:', e2.message); }
+                console.error('❌ Firebase load error:', e.message, e.code, e);
             }
 
             // FALLBACK: Always also load from localStorage (cross-page sharing when Firebase is offline)
@@ -724,18 +718,20 @@
                 if (typeof db !== 'undefined') {
                     // Use simple onSnapshot without orderBy to avoid index issues
                     db.collection('vtm_complaints').onSnapshot((snapshot) => {
+                        let newCount = 0;
                         snapshot.docs.forEach(doc => {
                             const data = doc.data();
                             const key = data.id || doc.id;
+                            if (!complaintsDB[key]) newCount++;
                             complaintsDB[key] = data;
                         });
-                        console.log('🔄 Real-time update:', snapshot.docs.length, 'complaints');
+                        console.log('🔄 Real-time update:', snapshot.docs.length, 'total,', newCount, 'new complaints');
                         renderComplaints();
                         updateDashboardLive();
                     }, (error) => {
-                        console.log('Real-time listener error:', error);
-                        // Fallback: try polling every 10 seconds
-                        setInterval(loadFromFirebase, 10000);
+                        console.log('Real-time listener error:', error.message);
+                        // Fallback: polling every 15 seconds
+                        setInterval(loadFromFirebase, 15000);
                     });
                 }
             } catch(e) { console.log('Realtime listener setup error:', e); }
