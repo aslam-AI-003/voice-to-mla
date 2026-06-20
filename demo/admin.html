@@ -654,6 +654,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
     <script src="firebase-db.js"></script>
 
     <script>
@@ -887,8 +888,8 @@
                 const attachSection = document.getElementById('attachmentSection_' + id);
                 if (!attachSection) return;
                 
-                // Try to get attachments from: 1) complaint object, 2) localStorage, 3) vtm_all_complaints in localStorage
-                let attachments = c.attachments || [];
+                // Try to get attachments from: 1) attachmentURLs (Firebase Storage), 2) complaint object, 3) localStorage
+                let attachments = c.attachmentURLs || c.attachments || [];
                 
                 if (attachments.length === 0) {
                     try {

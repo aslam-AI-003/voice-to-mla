@@ -12,6 +12,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 // ===== VOICE TO MINISTER - FIRESTORE OPERATIONS =====
 const VoiceToMLA_DB = {
@@ -230,6 +231,31 @@ const VoiceToMLA_DB = {
             
             console.log('✅ Default complaints initialized!');
         }
+    },
+
+    // --- FIREBASE STORAGE: Upload attachment ---
+    async uploadAttachment(complaintId, file, index) {
+        try {
+            const fileName = `attachment_${index}_${Date.now()}_${file.name}`;
+            const storageRef = storage.ref(`complaints/${complaintId}/${fileName}`);
+            const snapshot = await storageRef.put(file);
+            const downloadURL = await snapshot.ref.getDownloadURL();
+            console.log('📸 Uploaded attachment:', fileName, '→', downloadURL.substring(0, 60) + '...');
+            return downloadURL;
+        } catch (error) {
+            console.error('❌ Upload error:', error);
+            return null;
+        }
+    },
+
+    // Upload multiple attachments and return array of URLs
+    async uploadAllAttachments(complaintId, files) {
+        const urls = [];
+        for (let i = 0; i < files.length; i++) {
+            const url = await this.uploadAttachment(complaintId, files[i], i);
+            if (url) urls.push(url);
+        }
+        return urls;
     }
 };
 

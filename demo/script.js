@@ -600,15 +600,29 @@ if (complaintForm) {
 
             const generatedIdEl = document.getElementById('generatedComplaintId');
             if (generatedIdEl) generatedIdEl.textContent = govStyleId;
-            // Save complaint to Firebase (WITHOUT attachments - too large for Firestore 1MB limit)
+            // Upload attachments to Firebase Storage & save URLs to Firestore
             if (firebaseReady && window.VoiceToMLA_DB) {
                 const complaintForFirebase = { ...complaintsDB[lastComplaintId] };
-                delete complaintForFirebase.attachments; // Remove attachments for Firebase
-                complaintForFirebase.hasAttachments = attachments.length > 0;
-                complaintForFirebase.attachmentCount = attachments.length;
+                delete complaintForFirebase.attachments; // Don't store base64 in Firestore
+                complaintForFirebase.hasAttachments = uploadedFiles.length > 0;
+                complaintForFirebase.attachmentCount = uploadedFiles.length;
+                complaintForFirebase.attachmentURLs = []; // Will be updated after upload
                 VoiceToMLA_DB.saveComplaint(complaintForFirebase);
+                
+                // Upload files to Firebase Storage in background
+                if (uploadedFiles.length > 0) {
+                    VoiceToMLA_DB.uploadAllAttachments(lastComplaintId, uploadedFiles).then(urls => {
+                        if (urls.length > 0) {
+                            // Update Firestore with download URLs
+                            VoiceToMLA_DB.updateComplaint(lastComplaintId, { attachmentURLs: urls });
+                            console.log('📸 All attachments uploaded:', urls.length);
+                            // Also save URLs to localStorage
+                            try { localStorage.setItem('vtm_attachments_' + lastComplaintId, JSON.stringify(urls)); } catch(e) {}
+                        }
+                    }).catch(e => console.log('Upload error:', e));
+                }
             }
-            // Store attachments separately in localStorage (keyed by complaint ID)
+            // Also store base64 in localStorage as fallback
             if (attachments.length > 0) {
                 try { localStorage.setItem('vtm_attachments_' + lastComplaintId, JSON.stringify(attachments)); } catch(e) { console.log('Attachment localStorage save error:', e); }
             }
@@ -1132,19 +1146,30 @@ function updateTrustIndex() {
 }
 
 // ===== FILE UPLOAD =====
+let uploadedFiles = []; // Store actual File objects for Firebase Storage upload
 const uploadArea = document.getElementById('uploadArea'), fileInput = document.getElementById('fileInput'), uploadPreview = document.getElementById('uploadPreview');
 if (uploadArea) {
     uploadArea.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', (e) => {
         Array.from(e.target.files).forEach(file => {
-            if (file.type.startsWith('image/')) {
+            if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+                uploadedFiles.push(file); // Keep reference to actual File object
                 const reader = new FileReader();
-                reader.onload = (ev) => { const p = document.createElement('div'); p.style.cssText = 'width:80px;height:80px;border-radius:8px;overflow:hidden;position:relative;'; p.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;"><button onclick="this.parentElement.remove()" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:red;color:white;border:none;cursor:pointer;">&times;</button>`; uploadPreview.appendChild(p); };
+                reader.onload = (ev) => { 
+                    const p = document.createElement('div'); 
+                    p.style.cssText = 'width:80px;height:80px;border-radius:8px;overflow:hidden;position:relative;'; 
+                    p.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;"><button onclick="this.parentElement.remove();window.removeUploadedFile('${file.name}')" style="position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:red;color:white;border:none;cursor:pointer;">&times;</button>`; 
+                    uploadPreview.appendChild(p); 
+                };
                 reader.readAsDataURL(file);
             }
         });
     });
 }
+// Remove file from uploadedFiles array when X is clicked
+window.removeUploadedFile = function(fileName) {
+    uploadedFiles = uploadedFiles.filter(f => f.name !== fileName);
+};
 
 // ===== LOCATION =====
 const getLocationBtn = document.getElementById('getLocation');
