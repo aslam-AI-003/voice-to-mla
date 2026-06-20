@@ -47,15 +47,23 @@ const TRANSLATIONS = {
     'step3_subtitle': { ta: 'தகவல்களை உறுதி செய்யுங்கள்', en: 'Confirm your information' },
 
     // Form Labels
-    'label_name': { ta: 'பெயர்', en: 'Name' },
-    'label_mobile': { ta: 'மொபைல் எண்', en: 'Mobile Number' },
-    'label_area': { ta: 'பகுதி', en: 'Area' },
-    'label_address': { ta: 'முகவரி (Optional)', en: 'Address (Optional)' },
+    'label_name': { ta: 'பெயர் (Name) <span class="required">*</span>', en: 'Name <span class="required">*</span>' },
+    'label_mobile': { ta: 'தொலைபேசி எண் (Mobile) <span class="required">*</span>', en: 'Mobile Number <span class="required">*</span>' },
+    'label_zone': { ta: 'மண்டலம் (Zone) <span class="required">*</span>', en: 'Zone <span class="required">*</span>' },
+    'label_area': { ta: 'பகுதி (Area) <span class="required">*</span>', en: 'Area <span class="required">*</span>' },
+    'label_address': { ta: 'முகவரி (விருப்பம்)', en: 'Address (Optional)' },
     'label_category': { ta: 'புகார் வகை', en: 'Complaint Category' },
-    'label_title': { ta: 'புகார் தலைப்பு', en: 'Complaint Title' },
+    'label_title': { ta: 'புகார் தலைப்பு <span class="required">*</span>', en: 'Complaint Title <span class="required">*</span>' },
     'label_description': { ta: 'விரிவான விளக்கம்', en: 'Detailed Description' },
-    'label_photo': { ta: 'புகைப்படம் / ஆதாரம்', en: 'Photo / Evidence' },
+    'label_photo': { ta: 'புகைப்படம் / வீடியோ இணைக்க', en: 'Attach Photo / Video' },
     'label_location': { ta: 'இடம்', en: 'Location' },
+    'label_dept': { ta: 'Government Department / குறை தொடர்புடைய அரசு துறை <span class="required">*</span>', en: 'Government Department <span class="required">*</span>' },
+    'label_grievance': { ta: 'Grievance Type / குறையின் வகை <span class="required">*</span>', en: 'Grievance Type <span class="required">*</span>' },
+    // Placeholders
+    'ph_name': { ta: 'உங்கள் முழு பெயர்', en: 'Your full name' },
+    'ph_title': { ta: 'உதா: சாலையில் பள்ளம், Street light வேலை செய்யல', en: 'E.g.: Pothole on road, Street light not working' },
+    'ph_description': { ta: 'பிரச்சனையை விரிவாக எழுதுங்கள்...', en: 'Describe the issue in detail...' },
+    'ph_address': { ta: 'சாலை பெயர், அடையாளம் (Landmark)', en: 'Street name, Landmark' },
 
     // Categories
     'cat_road': { ta: 'சாலைகள்', en: 'Roads' },
@@ -183,8 +191,97 @@ function updateToggleButton() {
     });
 }
 
+// Text replacement map for bulk translation (Tamil -> English)
+const TEXT_REPLACEMENTS = {
+    // Form labels and text
+    'பெயர் (Name)': 'Name',
+    'தொலைபேசி எண் (Mobile)': 'Mobile Number',
+    'மண்டலம் (Zone)': 'Zone',
+    'பகுதி (Area)': 'Area',
+    'முகவரி (விருப்பம்)': 'Address (Optional)',
+    'புகார் தலைப்பு': 'Complaint Title',
+    'விரிவான விளக்கம்': 'Detailed Description',
+    'புகைப்படம் / வீடியோ இணைக்க': 'Attach Photo / Video',
+    'Government Department / குறை தொடர்புடைய அரசு துறை': 'Government Department',
+    'Grievance Type / குறையின் வகை': 'Grievance Type',
+    'வார்டு எண் (Ward Number)': 'Ward Number',
+    // Wizard steps
+    '👤 உங்கள் தகவல்கள்': '👤 Your Information',
+    'புகார் செய்பவரின் விவரங்கள்': 'Complainant details',
+    '📋 புகார் விவரங்கள்': '📋 Complaint Details',
+    'பிரச்சனை என்ன என்பதை தெரிவிக்கவும்': 'Describe the issue',
+    '📍 இடம் & சமர்ப்பிப்பு': '📍 Location & Submit',
+    'சரியான இடத்தை குறிப்பிடவும்': 'Specify the correct location',
+    // Buttons
+    'அடுத்து': 'Next',
+    'முந்தைய': 'Previous',
+    'புகார் சமர்ப்பி': 'Submit Complaint',
+    'தேடு': 'Search',
+    // Track page
+    'புகார் நிலை காண': 'Track Complaint Status',
+    'உங்கள் புகார் எந்த நிலையில் உள்ளது என பாருங்கள்': 'Check the current status of your complaint',
+    // My Complaints
+    'என் புகார்கள்': 'My Complaints',
+    'உங்கள் அனைத்து புகார்களின் நிலையை இங்கே பாருங்கள்': 'View status of all your complaints here',
+    'Mobile Number enter செய்தால் உங்கள் அனைத்து புகார்களும் தெரியும்': 'Enter your Mobile Number to see all your complaints',
+    // Success modal
+    'புகார் வெற்றிகரமாக பதிவு செய்யப்பட்டது!': 'Complaint Registered Successfully!',
+    'நிலை: நிலுவையில் (Pending)': 'Status: Pending',
+    'உங்கள் புகார் அமைச்சர் அலுவலகத்திற்கு அனுப்பப்பட்டது. விரைவில் அதிகாரிக்கு ஒதுக்கப்படும்.': 'Your complaint has been sent to the Minister\'s office. It will be assigned to an official soon.',
+    'நிலை காண': 'Track Status',
+    // Review summary
+    'உங்கள் புகார் சுருக்கம்': 'Your Complaint Summary',
+    'பெயர்:': 'Name:',
+    'தொலைபேசி:': 'Phone:',
+    'பகுதி:': 'Area:',
+    'வகை:': 'Category:',
+    'தலைப்பு:': 'Title:',
+    // Stats
+    'மொத்த புகார்கள்': 'Total Complaints',
+    'நிலுவையில்': 'Pending',
+    'தீர்வு': 'Resolved',
+    'மொத்தம்': 'Total',
+    'இன்று புதிய': 'New Today',
+    'மொத்த தீர்வு': 'Total Resolved',
+    'இன்று தீர்வு': 'Resolved Today',
+    'நிலுவை': 'Pending',
+    // Footer
+    'மக்கள் குரல் - தாம்பரம் தொகுதி': 'People\'s Voice - Tambaram Constituency',
+    'தொடர்பு': 'Contact',
+    'QR Scan செய்யுங்கள்': 'Scan QR Code',
+    // Timeline
+    'புகார் பதிவு செய்யப்பட்டது': 'Complaint Registered',
+    'ஆய்வு செய்யப்படுகிறது': 'Under Review',
+    'பணி தொடங்கப்பட்டது': 'Work Started',
+    'தீர்வு & உறுதிப்படுத்தல்': 'Resolution & Confirmation',
+    'நிலுவையில்...': 'Pending...',
+    // Progress steps
+    'யார்?': 'Who?',
+    'என்ன?': 'What?',
+    'எங்கே?': 'Where?',
+    // Dashboard
+    'Area-wise புகார்கள்': 'Area-wise Complaints',
+    'Category-wise பிரிவு': 'Category-wise Breakdown',
+    'Weekly Resolution Graph - வாரவாரி தீர்வு': 'Weekly Resolution Graph',
+    'Minister Updates & அறிவிப்புகள்': 'Minister Updates & Announcements',
+    // Placeholders
+    'உங்கள் முழு பெயர்': 'Your full name',
+    'உதா: சாலையில் பள்ளம், Street light வேலை செய்யல': 'E.g.: Pothole on road, Street light not working',
+    'பிரச்சனையை விரிவாக எழுதுங்கள்...': 'Describe the issue in detail...',
+    'சாலை பெயர், அடையாளம் (Landmark)': 'Street name, Landmark',
+    '-- மண்டலத்தை தேர்வு செய்யுங்கள் --': '-- Select Zone --',
+    '-- முதலில் மண்டலத்தை தேர்வு செய்யுங்கள் --': '-- Select Zone first --',
+    '-- அரசு துறையை தேர்வு செய்யுங்கள் --': '-- Select Government Department --',
+    '-- முதலில் அரசு துறையை தேர்வு செய்யுங்கள் --': '-- Select Department first --',
+    'உங்கள் Mobile Number அல்லது Complaint ID': 'Your Mobile Number or Complaint ID',
+};
+
+// Store original text for reverting back to Tamil
+const originalTexts = new WeakMap();
+
 // Apply language to all elements with data-lang attribute
 function applyLanguage() {
+    // 1. Apply data-lang tagged elements
     document.querySelectorAll('[data-lang]').forEach(el => {
         const key = el.getAttribute('data-lang');
         if (TRANSLATIONS[key]) {
@@ -196,8 +293,90 @@ function applyLanguage() {
             }
         }
     });
+
+    // 2. Apply bulk text replacements for non-tagged elements
+    if (currentLang === 'en') {
+        applyBulkTranslation();
+    } else {
+        revertBulkTranslation();
+    }
+
     // Update html lang attribute
     document.documentElement.lang = currentLang === 'ta' ? 'ta' : 'en';
+}
+
+function applyBulkTranslation() {
+    // Translate labels, headings, paragraphs, buttons, spans
+    const selectors = 'label, h1, h2, h3, h4, p, button, span, a, option';
+    document.querySelectorAll(selectors).forEach(el => {
+        // Skip elements already handled by data-lang
+        if (el.hasAttribute('data-lang')) return;
+        // Skip script/style elements
+        if (el.closest('script') || el.closest('style')) return;
+
+        const text = el.textContent.trim();
+        // Check placeholders for inputs
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            const ph = el.placeholder;
+            if (ph && TEXT_REPLACEMENTS[ph]) {
+                if (!originalTexts.has(el)) originalTexts.set(el, { placeholder: ph });
+                el.placeholder = TEXT_REPLACEMENTS[ph];
+            }
+            return;
+        }
+
+        // For options in select
+        if (el.tagName === 'OPTION') {
+            const optText = el.textContent.trim();
+            if (TEXT_REPLACEMENTS[optText]) {
+                if (!originalTexts.has(el)) originalTexts.set(el, { text: el.textContent });
+                el.textContent = TEXT_REPLACEMENTS[optText];
+            }
+            return;
+        }
+
+        // For text elements - only replace if it's a direct match (no nested elements with complex structure)
+        if (el.children.length === 0 || (el.children.length === 1 && el.children[0].tagName === 'I')) {
+            for (const [tamilText, englishText] of Object.entries(TEXT_REPLACEMENTS)) {
+                if (text === tamilText || text === '✅ ' + tamilText || text === '⏳ ' + tamilText) {
+                    if (!originalTexts.has(el)) originalTexts.set(el, { html: el.innerHTML });
+                    // Preserve icons
+                    const iconMatch = el.innerHTML.match(/^(<i[^>]*><\/i>)\s*/);
+                    if (iconMatch) {
+                        el.innerHTML = iconMatch[1] + ' ' + englishText;
+                    } else {
+                        el.innerHTML = el.innerHTML.replace(tamilText, englishText);
+                    }
+                    break;
+                }
+            }
+        }
+    });
+
+    // Also translate input/textarea placeholders
+    document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+        if (el.hasAttribute('data-lang')) return;
+        const ph = el.placeholder;
+        if (TEXT_REPLACEMENTS[ph]) {
+            if (!originalTexts.has(el)) originalTexts.set(el, { placeholder: ph });
+            el.placeholder = TEXT_REPLACEMENTS[ph];
+        }
+    });
+}
+
+function revertBulkTranslation() {
+    // Revert all stored originals
+    const selectors = 'label, h1, h2, h3, h4, p, button, span, a, option, input, textarea';
+    document.querySelectorAll(selectors).forEach(el => {
+        if (el.hasAttribute('data-lang')) return;
+        const orig = originalTexts.get(el);
+        if (orig) {
+            if (orig.html !== undefined) el.innerHTML = orig.html;
+            if (orig.text !== undefined) el.textContent = orig.text;
+            if (orig.placeholder !== undefined) el.placeholder = orig.placeholder;
+            originalTexts.delete(el);
+        }
+    });
 }
 
 // Initialize language on page load

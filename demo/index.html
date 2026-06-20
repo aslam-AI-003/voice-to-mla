@@ -235,20 +235,20 @@
                             <!-- STEP 1: Who -->
                             <div class="wizard-step active" id="step1">
                                 <div class="step-title">
-                                    <h3>👤 உங்கள் தகவல்கள்</h3>
-                                    <p>புகார் செய்பவரின் விவரங்கள்</p>
+                                    <h3 data-lang="step1_title">👤 உங்கள் தகவல்கள்</h3>
+                                    <p data-lang="step1_subtitle">புகார் செய்பவரின் விவரங்கள்</p>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="citizenName">பெயர் (Name) <span class="required">*</span></label>
+                                    <label for="citizenName" data-lang="label_name">பெயர் (Name) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-user"></i>
-                                        <input type="text" id="citizenName" placeholder="உங்கள் முழு பெயர்" required>
+                                        <input type="text" id="citizenName" placeholder="உங்கள் முழு பெயர்" data-lang="ph_name" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="mobileNumber">தொலைபேசி எண் (Mobile) <span class="required">*</span></label>
+                                    <label for="mobileNumber" data-lang="label_mobile">தொலைபேசி எண் (Mobile) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-phone"></i>
                                         <div class="phone-input-group">
@@ -259,7 +259,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="zone">மண்டலம் (Zone) <span class="required">*</span></label>
+                                    <label for="zone" data-lang="label_zone">மண்டலம் (Zone) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-map"></i>
                                         <select id="zone" required onchange="onZoneChange()">
@@ -301,13 +301,13 @@
                             <!-- STEP 2: What -->
                             <div class="wizard-step" id="step2">
                                 <div class="step-title">
-                                    <h3>📋 புகார் விவரங்கள்</h3>
-                                    <p>பிரச்சனை என்ன என்பதை தெரிவிக்கவும்</p>
+                                    <h3 data-lang="step2_title">📋 புகார் விவரங்கள்</h3>
+                                    <p data-lang="step2_subtitle">பிரச்சனை என்ன என்பதை தெரிவிக்கவும்</p>
                                 </div>
 
                                 <!-- Government Department Dropdown -->
                                 <div class="form-group">
-                                    <label for="govDepartment">Government Department / குறை தொடர்புடைய அரசு துறை <span class="required">*</span></label>
+                                    <label for="govDepartment" data-lang="label_dept">Government Department / குறை தொடர்புடைய அரசு துறை <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-university"></i>
                                         <select id="govDepartment" required onchange="onDepartmentChange()">
