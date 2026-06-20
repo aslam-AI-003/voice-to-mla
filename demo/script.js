@@ -526,7 +526,27 @@ if (complaintForm) {
         // Collect uploaded photos/videos as base64
         const attachments = [];
         const previewImages = document.querySelectorAll('#uploadPreview img');
-        previewImages.forEach(img => { if (img.src && img.src.startsWith('data:')) attachments.push(img.src); });
+        previewImages.forEach(img => { 
+            if (img.src && img.src.startsWith('data:')) {
+                // Limit each image to ~500KB for Firebase compatibility
+                if (img.src.length < 700000) {
+                    attachments.push(img.src);
+                } else {
+                    // Compress large images using canvas
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 800;
+                        canvas.height = 800 * (img.naturalHeight / img.naturalWidth);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        attachments.push(canvas.toDataURL('image/jpeg', 0.6));
+                    } catch(e) {
+                        attachments.push(img.src.substring(0, 700000)); // Fallback: truncate
+                    }
+                }
+            }
+        });
+        console.log('📎 Attachments collected:', attachments.length, 'images');
 
         const citizenName = document.getElementById('citizenName') ? document.getElementById('citizenName').value.trim() : '';
         const mobileNumber = document.getElementById('mobileNumber') ? document.getElementById('mobileNumber').value.trim() : '';
@@ -580,7 +600,18 @@ if (complaintForm) {
 
             const generatedIdEl = document.getElementById('generatedComplaintId');
             if (generatedIdEl) generatedIdEl.textContent = govStyleId;
-            if (firebaseReady && window.VoiceToMLA_DB) VoiceToMLA_DB.saveComplaint(complaintsDB[lastComplaintId]);
+            // Save complaint to Firebase (WITHOUT attachments - too large for Firestore 1MB limit)
+            if (firebaseReady && window.VoiceToMLA_DB) {
+                const complaintForFirebase = { ...complaintsDB[lastComplaintId] };
+                delete complaintForFirebase.attachments; // Remove attachments for Firebase
+                complaintForFirebase.hasAttachments = attachments.length > 0;
+                complaintForFirebase.attachmentCount = attachments.length;
+                VoiceToMLA_DB.saveComplaint(complaintForFirebase);
+            }
+            // Store attachments separately in localStorage (keyed by complaint ID)
+            if (attachments.length > 0) {
+                try { localStorage.setItem('vtm_attachments_' + lastComplaintId, JSON.stringify(attachments)); } catch(e) { console.log('Attachment localStorage save error:', e); }
+            }
             // Always save to localStorage as backup (for offline/cross-page sharing)
             localStorage.setItem('vtm_all_complaints', JSON.stringify(complaintsDB));
             localStorage.setItem('vtm_complaint_counter', String(complaintCounter));
