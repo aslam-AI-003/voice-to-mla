@@ -130,11 +130,61 @@
         }
         .sidebar-overlay.active { display: block; }
 
+        /* Responsive - Large Desktop (1440px and below - most laptops) */
+        @media (max-width: 1600px) {
+            .admin-main { max-width: calc(100vw - var(--sidebar-w)); overflow-x: hidden; }
+            .admin-table { font-size: 0.72rem; table-layout: auto; }
+            .admin-table th, .admin-table td { padding: 8px 6px; white-space: nowrap; }
+            .admin-table td:nth-child(4) { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+            .admin-table td:nth-child(8) { max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+            .stats-row { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+        }
+
+        /* Responsive - Medium Desktop (1280px - typical 13-15" laptops) */
+        @media (max-width: 1366px) {
+            .admin-content { padding: 20px; }
+            .admin-table { font-size: 0.68rem; }
+            .admin-table th, .admin-table td { padding: 7px 5px; }
+            .admin-table td:nth-child(1) { font-size: 0.6rem; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+            .admin-table td:nth-child(4) { max-width: 120px; }
+            .admin-table td:nth-child(5) { max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+            .admin-table td:nth-child(7) { max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+            .admin-table td:nth-child(8) { max-width: 85px; overflow: hidden; text-overflow: ellipsis; }
+            .stats-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .stat-card { padding: 15px; }
+            .stat-card .stat-info h4 { font-size: 1.3rem; }
+            .stat-card .stat-info p { font-size: 0.7rem; }
+            .stat-card .stat-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+            .admin-grid { gap: 15px; }
+            .admin-card { padding: 18px; }
+        }
+
+        /* Responsive - Small Desktop / Tablet Landscape (1024px - 1280px) */
+        @media (max-width: 1280px) {
+            :root { --sidebar-w: 220px; }
+            .sidebar-brand h3 { font-size: 0.85rem; }
+            .sidebar-brand p { font-size: 0.65rem; }
+            .sidebar-nav a { font-size: 0.8rem; padding: 10px 16px; }
+            .admin-table { font-size: 0.65rem; }
+            .admin-table th, .admin-table td { padding: 6px 4px; }
+            .admin-table td:nth-child(1) { max-width: 110px; }
+            .admin-table td:nth-child(3) { max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
+            .admin-table td:nth-child(4) { max-width: 100px; }
+            .admin-table td:nth-child(5) { max-width: 80px; }
+            .admin-table td:nth-child(7) { max-width: 80px; }
+            .admin-table td:nth-child(8) { max-width: 75px; }
+            .stat-card .stat-info h4 { font-size: 1.1rem; }
+            .stat-card .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
+            .admin-topbar h2 { font-size: 1rem; }
+        }
+
         /* Responsive - Tablet */
         @media (max-width: 1024px) {
-            .admin-table { font-size: 0.7rem; }
-            .admin-table th, .admin-table td { padding: 6px 8px; }
+            .admin-table { font-size: 0.63rem; }
+            .admin-table th, .admin-table td { padding: 5px 4px; }
             .stats-row { grid-template-columns: repeat(3, 1fr); }
+            .admin-grid { grid-template-columns: 1fr; }
+            .admin-content { padding: 15px; }
         }
 
         /* Responsive - Mobile */
