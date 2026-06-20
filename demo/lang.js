@@ -175,6 +175,28 @@ function toggleLanguage() {
     localStorage.setItem('vtm_lang', currentLang);
     applyLanguage();
     updateToggleButton();
+    // Re-populate dynamic dropdowns if functions exist
+    if (typeof populateDepartmentDropdown === 'function') populateDepartmentDropdown();
+    if (typeof onDepartmentChange === 'function') {
+        const deptSelect = document.getElementById('govDepartment');
+        if (deptSelect && deptSelect.value) onDepartmentChange();
+    }
+    // Update zone dropdown placeholder
+    const zoneSelect = document.getElementById('zone');
+    if (zoneSelect) {
+        const firstOpt = zoneSelect.querySelector('option[value=""]');
+        if (firstOpt) firstOpt.textContent = currentLang === 'en' ? '-- Select Zone --' : '-- மண்டலத்தை தேர்வு செய்யுங்கள் --';
+    }
+    // Update area dropdown placeholder & re-populate if zone selected
+    if (typeof onZoneChange === 'function' && zoneSelect && zoneSelect.value) {
+        onZoneChange();
+    } else {
+        const areaSelect = document.getElementById('area');
+        if (areaSelect) {
+            const firstOpt = areaSelect.querySelector('option[value=""]');
+            if (firstOpt) firstOpt.textContent = currentLang === 'en' ? '-- Select Area --' : '-- முதலில் மண்டலத்தை தேர்வு செய்யுங்கள் --';
+        }
+    }
 }
 
 // Update toggle button text

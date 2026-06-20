@@ -240,13 +240,17 @@ const govDepartments = {
 function populateDepartmentDropdown() {
     const deptSelect = document.getElementById('govDepartment');
     if (!deptSelect) return;
-    deptSelect.innerHTML = '<option value="">-- அரசு துறையை தேர்வு செய்யுங்கள் --</option>';
+    const savedValue = deptSelect.value;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ta';
+    const placeholder = lang === 'en' ? '-- Select Government Department --' : '-- அரசு துறையை தேர்வு செய்யுங்கள் --';
+    deptSelect.innerHTML = `<option value="">${placeholder}</option>`;
     Object.entries(govDepartments).forEach(([code, dept]) => {
         const option = document.createElement('option');
         option.value = code;
-        option.textContent = `${dept.name} (${code})`;
+        option.textContent = lang === 'en' ? `${dept.name} (${code})` : `${dept.nameTA || dept.name} (${code})`;
         deptSelect.appendChild(option);
     });
+    if (savedValue) deptSelect.value = savedValue;
 }
 
 // ===== DEPARTMENT → GRIEVANCE TYPE CASCADING =====
@@ -254,8 +258,11 @@ function onDepartmentChange() {
     const deptSelect = document.getElementById('govDepartment');
     const grievanceSelect = document.getElementById('grievanceType');
     const selectedDept = deptSelect.value;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ta';
+    const savedGrievance = grievanceSelect.value;
 
-    grievanceSelect.innerHTML = '<option value="">-- குறையின் வகையை தேர்வு செய்யுங்கள் --</option>';
+    const placeholder = lang === 'en' ? '-- Select Grievance Type --' : '-- குறையின் வகையை தேர்வு செய்யுங்கள் --';
+    grievanceSelect.innerHTML = `<option value="">${placeholder}</option>`;
 
     if (!selectedDept) {
         grievanceSelect.disabled = true;
@@ -267,11 +274,19 @@ function onDepartmentChange() {
         dept.grievances.forEach(grievance => {
             const option = document.createElement('option');
             option.value = grievance;
-            option.textContent = grievance;
+            // Grievance format: "Tamil / English" - show appropriate part based on lang
+            if (lang === 'en' && grievance.includes(' / ')) {
+                option.textContent = grievance.split(' / ')[1];
+            } else if (lang === 'ta' && grievance.includes(' / ')) {
+                option.textContent = grievance.split(' / ')[0];
+            } else {
+                option.textContent = grievance;
+            }
             grievanceSelect.appendChild(option);
         });
         grievanceSelect.disabled = false;
     }
+    if (savedGrievance) grievanceSelect.value = savedGrievance;
 }
 
 // Initialize department dropdown on page load
@@ -338,9 +353,11 @@ function onZoneChange() {
     const wardGroup = document.getElementById('wardDisplayGroup');
     const wardNumbers = document.getElementById('wardNumbers');
     const selectedZone = zoneSelect.value;
+    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ta';
 
     // Reset area dropdown
-    areaSelect.innerHTML = '<option value="">-- பகுதியை தேர்வு செய்யுங்கள் --</option>';
+    const areaPlaceholder = lang === 'en' ? '-- Select Area --' : '-- பகுதியை தேர்வு செய்யுங்கள் --';
+    areaSelect.innerHTML = `<option value="">${areaPlaceholder}</option>`;
     wardGroup.style.display = 'none';
     wardNumbers.textContent = '-';
 
