@@ -23,12 +23,13 @@
                 <span class="logo-text">Voice to Minister</span>
             </div>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#" class="nav-link active" data-page="home">முகப்பு</a></li>
-                <li><a href="#" class="nav-link" data-page="complaint">புகார் செய்</a></li>
-                <li><a href="#" class="nav-link" data-page="mycomplaints">என் புகார்கள்</a></li>
-                <li><a href="#" class="nav-link" data-page="updates">Updates</a></li>
-                <li><a href="#" class="nav-link" data-page="dashboard">Minister Dashboard</a></li>
+                <li><a href="#" class="nav-link active" data-page="home" data-lang="nav_home">முகப்பு</a></li>
+                <li><a href="#" class="nav-link" data-page="complaint" data-lang="nav_complaint">புகார் செய்</a></li>
+                <li><a href="#" class="nav-link" data-page="mycomplaints" data-lang="nav_mycomplaints">என் புகார்கள்</a></li>
+                <li><a href="#" class="nav-link" data-page="updates" data-lang="nav_updates">Updates</a></li>
+                <li><a href="#" class="nav-link" data-page="dashboard" data-lang="nav_dashboard">Minister Dashboard</a></li>
             </ul>
+            <button class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch to English"><span style="font-size:0.7rem;">EN</span></button>
             <div class="nav-right" style="display:none;">
                 <button class="btn-login" id="loginBtn">
                     <i class="fas fa-user-circle"></i>
@@ -53,14 +54,13 @@
                 <div class="container">
                     <div class="demo-hero-content">
                         <div class="demo-hero-text">
-                            <h1>உங்கள் குரல்,<br>நேரடியாக அமைச்சருக்கு</h1>
-                            <p>தாம்பரம் தொகுதியின் பிரச்சனைகளை நேரடியாக தெரிவியுங்கள். 
-                            புகார் செய்யுங்கள், நிலையை track செய்யுங்கள்.</p>
+                            <h1 data-lang="hero_title">உங்கள் குரல்,<br>நேரடியாக அமைச்சருக்கு</h1>
+                            <p data-lang="hero_desc">தாம்பரம் தொகுதியின் பிரச்சனைகளை நேரடியாக தெரிவியுங்கள். புகார் செய்யுங்கள், நிலையை track செய்யுங்கள்.</p>
                             <div class="hero-actions">
-                                <button class="btn btn-primary btn-lg" onclick="navigateTo('complaint')">
+                                <button class="btn btn-primary btn-lg" onclick="navigateTo('complaint')" data-lang="hero_btn_complaint">
                                     <i class="fas fa-plus-circle"></i> புகார் செய்
                                 </button>
-                                <button class="btn btn-outline-white btn-lg" onclick="navigateTo('mycomplaints')">
+                                <button class="btn btn-outline-white btn-lg" onclick="navigateTo('mycomplaints')" data-lang="hero_btn_track">
                                     <i class="fas fa-search"></i> நிலை காண
                                 </button>
                             </div>
@@ -207,8 +207,8 @@
             <section class="complaint-form-section">
                 <div class="container">
                     <div class="form-header">
-                        <h2><i class="fas fa-edit"></i> புகார் பதிவு செய்யுங்கள்</h2>
-                        <p>உங்கள் பகுதி பிரச்சனையை 3 எளிய படிகளில் பதிவு செய்யுங்கள்</p>
+                        <h2><i class="fas fa-edit"></i> <span data-lang="form_title">புகார் பதிவு செய்யுங்கள்</span></h2>
+                        <p data-lang="form_subtitle">உங்கள் பகுதி பிரச்சனையை 3 எளிய படிகளில் பதிவு செய்யுங்கள்</p>
                     </div>
 
                     <!-- Progress Bar -->
@@ -1206,6 +1206,7 @@
         </div>
     </footer>
 
+    <script src="lang.js"></script>
     <script src="firebase-db.js"></script>
     <script src="script.js?v=3.0"></script>
     <!-- Load Admin Updates on Public Site -->

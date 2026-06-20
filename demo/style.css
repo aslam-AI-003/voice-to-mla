@@ -94,7 +94,9 @@ body {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 5px;
+    gap: 3px;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .nav-link {
@@ -106,6 +108,8 @@ body {
     border-radius: var(--radius-sm);
     transition: var(--transition);
     font-family: 'Noto Sans Tamil', sans-serif;
+    white-space: nowrap;
+    text-align: center;
 }
 
 .nav-link:hover {
@@ -135,6 +139,28 @@ body {
 }
 
 .btn-login:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Language Toggle Button */
+.lang-toggle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    background: var(--white);
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+.lang-toggle-btn:hover {
     background: var(--primary);
     color: var(--white);
 }
@@ -1805,6 +1831,11 @@ body {
     .dash-grid {
         grid-template-columns: 1fr;
     }
+
+    .nav-link {
+        font-size: 0.75rem;
+        padding: 6px 8px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2254,9 +2285,13 @@ body {
     background: var(--light);
     border: 2px dashed var(--primary);
     border-radius: var(--radius);
-    padding: 15px 25px;
+    padding: 15px 20px;
     margin: 15px 0;
     display: inline-block;
+    max-width: 100%;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
 .success-modal .complaint-id-display code {
@@ -2264,6 +2299,7 @@ body {
     font-weight: 800;
     color: var(--primary);
     letter-spacing: 1px;
+    word-break: break-all;
 }
 
 .success-modal .status-pending {
@@ -2296,5 +2332,23 @@ body {
     
     .progress-line {
         width: 40px;
+    }
+
+    /* Success modal - complaint ID responsive */
+    .success-modal .complaint-id-display {
+        padding: 12px 15px;
+        margin: 10px auto;
+        display: block;
+    }
+    .success-modal .complaint-id-display code {
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+    .modal-content {
+        padding: 25px 20px;
+        width: 92%;
+    }
+    .success-modal .success-content {
+        padding: 15px 5px;
     }
 }
