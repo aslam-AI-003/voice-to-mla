@@ -600,26 +600,29 @@ if (complaintForm) {
 
             const generatedIdEl = document.getElementById('generatedComplaintId');
             if (generatedIdEl) generatedIdEl.textContent = govStyleId;
-            // Upload attachments to Firebase Storage & save URLs to Firestore
+            // Save to Firebase Firestore (with compressed base64 attachments for cross-device viewing)
             if (firebaseReady && window.VoiceToMLA_DB) {
                 const complaintForFirebase = { ...complaintsDB[lastComplaintId] };
-                delete complaintForFirebase.attachments; // Don't store base64 in Firestore
-                complaintForFirebase.hasAttachments = uploadedFiles.length > 0;
-                complaintForFirebase.attachmentCount = uploadedFiles.length;
-                complaintForFirebase.attachmentURLs = []; // Will be updated after upload
+                // For small attachments (< 500KB total), store base64 directly in Firestore for cross-device access
+                const smallAttachments = attachments.filter(a => a.length < 200000); // ~150KB each max
+                if (smallAttachments.length > 0 && smallAttachments.join('').length < 900000) {
+                    complaintForFirebase.attachments = smallAttachments; // Store in Firestore directly
+                } else {
+                    delete complaintForFirebase.attachments; // Too large for Firestore
+                }
+                complaintForFirebase.hasAttachments = attachments.length > 0;
+                complaintForFirebase.attachmentCount = attachments.length;
+                complaintForFirebase.attachmentURLs = [];
                 VoiceToMLA_DB.saveComplaint(complaintForFirebase);
                 
-                // Upload files to Firebase Storage in background
+                // Also try Firebase Storage upload in background (for large files)
                 if (uploadedFiles.length > 0) {
                     VoiceToMLA_DB.uploadAllAttachments(lastComplaintId, uploadedFiles).then(urls => {
                         if (urls.length > 0) {
-                            // Update Firestore with download URLs
                             VoiceToMLA_DB.updateComplaint(lastComplaintId, { attachmentURLs: urls });
-                            console.log('📸 All attachments uploaded:', urls.length);
-                            // Also save URLs to localStorage
-                            try { localStorage.setItem('vtm_attachments_' + lastComplaintId, JSON.stringify(urls)); } catch(e) {}
+                            console.log('📸 All attachments uploaded to Storage:', urls.length);
                         }
-                    }).catch(e => console.log('Upload error:', e));
+                    }).catch(e => console.log('Storage upload error (base64 fallback used):', e));
                 }
             }
             // Also store base64 in localStorage as fallback
