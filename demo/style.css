@@ -63,6 +63,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
 
 .nav-brand {
@@ -1862,6 +1863,27 @@ body {
 
     .hamburger {
         display: flex;
+    }
+
+    .lang-toggle-btn {
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .logo-icon {
+        display: none !important;
+    }
+
+    .nav-brand img {
+        height: 38px !important;
+    }
+
+    .logo-text {
+        font-size: 0.95rem;
     }
 
     .demo-hero-text h1 {
