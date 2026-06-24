@@ -1235,6 +1235,13 @@
 
             if (updates.length === 0) return; // Keep default static cards
 
+            // Helper: Extract YouTube video ID from URL
+            function getYouTubeId(url) {
+                if (!url) return null;
+                const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/);
+                return match ? match[1] : null;
+            }
+
             // Render dynamic updates (prepend admin updates before static ones)
             const tagClassMap = {
                 '📋 அறிவிப்பு': '', '✅ நிறைவு': 'success', '📅 நிகழ்வு': 'info', '⚠️ அவசரம்': 'urgent'
@@ -1242,10 +1249,39 @@
             const dynamicHTML = updates.map(u => {
                 const tagCls = tagClassMap[u.tag] || '';
                 const tagLabel = u.tag ? u.tag.replace(/📋 |✅ |📅 |⚠️ /g, '') : 'அறிவிப்பு';
-                const mediaHTML = (u.mediaFiles && u.mediaFiles.length > 0) ?
-                    `<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">${u.mediaFiles.map(f => f.type && f.type.startsWith('video/') ? `<div style="width:80px;height:60px;background:#1a1a2e;border-radius:8px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="color:white;font-size:1.5rem;"></i></div>` : `<img src="${f.data}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;border:1px solid #eee;">`).join('')}</div>` : '';
-                const videoHTML = u.videoUrl ? `<a href="${u.videoUrl}" target="_blank" style="display:inline-block;margin-top:6px;font-size:0.75rem;color:#2563eb;text-decoration:none;"><i class="fas fa-video"></i> Watch Video</a>` : '';
-                const areaHTML = u.area ? `<span style="font-size:0.7rem;color:#059669;display:block;margin-top:4px;">📍 ${u.area}</span>` : '';
+                
+                // Media: Images (clickable full-view) & Videos (playable)
+                let mediaHTML = '';
+                if (u.mediaFiles && u.mediaFiles.length > 0) {
+                    mediaHTML = `<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">` +
+                        u.mediaFiles.map(f => {
+                            if (f.type && f.type.startsWith('video/')) {
+                                return `<video controls style="width:100%;max-width:320px;height:auto;border-radius:10px;border:1px solid #e5e7eb;margin-top:4px;" preload="metadata">
+                                    <source src="${f.data}" type="${f.type}">Your browser does not support video.</video>`;
+                            } else {
+                                return `<a href="${f.data}" target="_blank" title="Click to view full image" style="display:inline-block;">
+                                    <img src="${f.data}" style="width:120px;height:90px;object-fit:cover;border-radius:10px;border:2px solid #e5e7eb;cursor:pointer;transition:transform 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                </a>`;
+                            }
+                        }).join('') + `</div>`;
+                }
+
+                // YouTube embed or video link
+                let videoHTML = '';
+                if (u.videoUrl) {
+                    const ytId = getYouTubeId(u.videoUrl);
+                    if (ytId) {
+                        videoHTML = `<div style="margin-top:12px;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1);">
+                            <iframe width="100%" height="200" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius:12px;max-width:400px;"></iframe>
+                        </div>`;
+                    } else {
+                        videoHTML = `<a href="${u.videoUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;background:#eef2ff;color:#2563eb;border-radius:8px;font-size:0.8rem;text-decoration:none;font-weight:500;border:1px solid #c7d2fe;">
+                            <i class="fas fa-external-link-alt"></i> Watch Video
+                        </a>`;
+                    }
+                }
+
+                const areaHTML = u.area ? `<span style="font-size:0.75rem;color:#059669;display:inline-flex;align-items:center;gap:4px;margin-top:6px;background:#ecfdf5;padding:3px 10px;border-radius:12px;">📍 ${u.area}</span>` : '';
                 return `<div class="update-card">
                     <div class="update-date">
                         <span class="day">${u.day || '01'}</span>

@@ -409,9 +409,9 @@
             <div class="admin-topbar">
                 <h2><i class="fas fa-tachometer-alt"></i> Minister Dashboard</h2>
                 <div class="topbar-right">
-                    <button class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch to English"><span style="font-size:0.7rem;">EN</span></button>
+                    <button class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language" style="width:32px;height:32px;border-radius:50%;border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:#374151;flex-shrink:0;">EN</button>
                     <div class="notif-bell" onclick="alert('3 new notifications')"><i class="fas fa-bell"></i><span class="badge">3</span></div>
-                    <span id="staffUserDisplay" style="font-size:0.8rem;color:#666;">👤 Staff User</span>
+                    <div id="staffUserDisplay" style="font-size:0.78rem;color:#374151;display:flex;align-items:center;gap:6px;flex-shrink:0;max-width:250px;">👤 Staff User</div>
                 </div>
             </div>
 
@@ -763,7 +763,7 @@
                     const displayId = c.govId || `TN/TBM/CPT/2026/${(c.id || '').split('-').pop()}`;
                     const statusLabel = c.status || 'புதியது';
                     const statusCls = c.statusClass || 'badge-new';
-                    const zoneTxt = c.zoneName || (c.zone ? 'Zone ' + c.zone : '-');
+                    const zoneTxt = 'Tambaram Constituency';
                     const areaTxt = c.areaName || c.area || '-';
                     const deptTxt = c.department ? c.department : (c.category || '-');
                     const grievanceTxt = c.grievanceType || '-';
@@ -1069,7 +1069,9 @@
         });
 
         // ===== STAFF LOGIN SYSTEM (Username/Password + Registration) =====
-        let currentStaffUser = JSON.parse(localStorage.getItem('vtm_admin_staff') || 'null');
+        // Always require fresh login - clear any stored session on page load
+        localStorage.removeItem('vtm_admin_staff');
+        let currentStaffUser = null;
         let staffAccounts = JSON.parse(localStorage.getItem('vtm_staff_accounts') || '{}');
 
         // Default demo account
@@ -1564,7 +1566,7 @@
             if (dashBody) {
                 dashBody.innerHTML = sorted.map(c => {
                     const displayId = c.govId || `TN/TBM/CPT/2026/${(c.id || '').split('-').pop()}`;
-                    const zoneTxt = c.zoneName || (c.zone ? 'Zone ' + c.zone : '-');
+                    const zoneTxt = 'Tambaram Constituency';
                     const areaTxt = c.areaName || c.area || '-';
                     const deptTxt = c.department ? c.department : (c.category || '-');
                     const grievanceTxt = c.grievanceType || '-';
