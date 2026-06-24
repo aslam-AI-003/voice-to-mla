@@ -259,27 +259,15 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="zone" data-lang="label_zone">மண்டலம் (Zone) <span class="required">*</span></label>
-                                    <div class="input-icon-wrap">
-                                        <i class="fas fa-map"></i>
-                                        <select id="zone" required onchange="onZoneChange()">
-                                            <option value="">-- மண்டலத்தை தேர்வு செய்யுங்கள் --</option>
-                                            <option value="1">Zone 1 - Pammal</option>
-                                            <option value="2">Zone 2 - Pallavaram</option>
-                                            <option value="3">Zone 3 - Sembakkam</option>
-                                            <option value="4">Zone 4 - Perungalathur</option>
-                                            <option value="5">Zone 5 - East Tambaram/Selaiyur</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                <!-- Zone hidden - default Tambaram constituency -->
+                                <input type="hidden" id="zone" value="tambaram">
 
                                 <div class="form-group">
-                                    <label for="area">பகுதி (Area) <span class="required">*</span></label>
+                                    <label for="area" data-lang="label_area">வார்டு & பகுதி (Ward & Area) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <select id="area" required disabled>
-                                            <option value="">-- முதலில் மண்டலத்தை தேர்வு செய்யுங்கள் --</option>
+                                        <select id="area" required>
+                                            <option value="">-- வார்டு தேர்வு செய்யுங்கள் / Select Ward --</option>
                                         </select>
                                     </div>
                                 </div>
@@ -337,10 +325,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="description">விரிவான விளக்கம்</label>
+                                    <label for="description">விரிவான விளக்கம் (Detailed Description) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-align-left"></i>
-                                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்..." style="padding-left:40px;"></textarea>
+                                        <textarea id="description" rows="4" placeholder="பிரச்சனையை விரிவாக எழுதுங்கள்..." style="padding-left:40px;" required></textarea>
                                     </div>
                                 </div>
 
@@ -375,10 +363,10 @@
 
 
                                 <div class="form-group">
-                                    <label for="manualAddress">முகவரி (விருப்பம்)</label>
+                                    <label for="manualAddress">முகவரி (Address) <span class="required">*</span></label>
                                     <div class="input-icon-wrap">
                                         <i class="fas fa-home"></i>
-                                        <input type="text" id="manualAddress" placeholder="சாலை பெயர், அடையாளம் (Landmark)">
+                                        <input type="text" id="manualAddress" placeholder="சாலை பெயர், அடையாளம் (Landmark)" required>
                                     </div>
                                 </div>
 

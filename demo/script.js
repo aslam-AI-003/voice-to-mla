@@ -293,104 +293,113 @@ function onDepartmentChange() {
 // Initialize department dropdown on page load
 document.addEventListener('DOMContentLoaded', () => { populateDepartmentDropdown(); });
 
-// ===== TAMBARAM 70 WARDS - ZONE & AREA DATA =====
-const zoneData = {
-    '1': {
-        name: 'Pammal',
-        areas: {
-            'anakaputhur': { name: 'Anakaputhur', wards: [1, 2, 3, 4] },
-            'pammal': { name: 'Pammal', wards: [5, 6, 7, 8, 10, 11, 12] },
-            'thiruneermalai': { name: 'Thiruneermalai', wards: [29, 30, 31] }
-        }
-    },
-    '2': {
-        name: 'Pallavaram',
-        areas: {
-            'pallavaram': { name: 'Pallavaram', wards: [9, 13, 14, 15, 16, 17, 26, 27, 28] },
-            'keelkattalai': { name: 'Keelkattalai', wards: [18, 19, 20] },
-            'hasthinapuram': { name: 'Hasthinapuram/Nemilichery', wards: [21, 24] }
-        }
-    },
-    '3': {
-        name: 'Sembakkam',
-        areas: {
-            'sembakkam': { name: 'Sembakkam', wards: [35, 36, 37, 38, 39, 40, 42] },
-            'chitlapakkam': { name: 'Chitlapakkam', wards: [34, 43, 44] },
-            'hasthinapuram-s': { name: 'Hasthinapuram/Nemilichery', wards: [22, 23, 25] },
-            'rajakilpakkam': { name: 'Rajakilpakkam', wards: [41] }
-        }
-    },
-    '4': {
-        name: 'Perungalathur',
-        areas: {
-            'perungalathur': { name: 'Perungalathur', wards: [32, 33, 55, 56, 57, 58] },
-            'tambaram-irumbuliyur': { name: 'Tambaram/Irumbuliyur', wards: [49, 50, 51, 52, 53, 54, 60] },
-            'peerkankaranai': { name: 'Peerkankaranai', wards: [59, 61] }
-        }
-    },
-    '5': {
-        name: 'East Tambaram/Selaiyur',
-        areas: {
-            'selaiyur': { name: 'Selaiyur', wards: [45, 46, 47, 48, 63, 64, 65] },
-            'tambaram-east': { name: 'Tambaram/Irumbuliyur', wards: [62] },
-            'rajakilpakkam-e': { name: 'Rajakilpakkam', wards: [66] },
-            'madambakkam': { name: 'Madambakkam', wards: [67, 68, 69, 70] }
-        }
-    }
-};
+// ===== TAMBARAM 70 WARDS DATA =====
+const wardAreaData = [
+    { ward: 1, area: 'Anakaputhur' },
+    { ward: 2, area: 'Anakaputhur' },
+    { ward: 3, area: 'Anakaputhur' },
+    { ward: 4, area: 'Anakaputhur' },
+    { ward: 5, area: 'Anakaputhur & Pammal' },
+    { ward: 6, area: 'Pammal' },
+    { ward: 7, area: 'Pammal' },
+    { ward: 8, area: 'Pammal' },
+    { ward: 9, area: 'Issa Pallavaram' },
+    { ward: 10, area: 'Pammal' },
+    { ward: 11, area: 'Pammal' },
+    { ward: 12, area: 'Pammal' },
+    { ward: 13, area: 'Issa Pallavaram & Pallavaram' },
+    { ward: 14, area: 'Pallavaram' },
+    { ward: 15, area: 'Pallavaram' },
+    { ward: 16, area: 'Pallavaram' },
+    { ward: 17, area: 'Pallavaram' },
+    { ward: 18, area: 'Keelkattalai' },
+    { ward: 19, area: 'Keelkattalai' },
+    { ward: 20, area: 'Keelkattalai' },
+    { ward: 21, area: 'Nemilicheri & Pallavaram' },
+    { ward: 22, area: 'Hasthinapuram, Nemilicheri & Pallavaram' },
+    { ward: 23, area: 'Hasthinapuram, Nemilicheri & Pallavaram' },
+    { ward: 24, area: 'Pallavaram' },
+    { ward: 25, area: 'Hasthinapuram, Nemilicheri & Pallavaram' },
+    { ward: 26, area: 'Pallavaram' },
+    { ward: 27, area: 'Pallavaram' },
+    { ward: 28, area: 'Pallavaram' },
+    { ward: 29, area: 'Thiruneermalai' },
+    { ward: 30, area: 'Thiruneermalai' },
+    { ward: 31, area: 'Thiruneermalai' },
+    { ward: 32, area: 'Kadapperi, Pulikoradu & Tambaram' },
+    { ward: 33, area: 'Chitlapakkam & Kadapperi' },
+    { ward: 34, area: 'Chitlapakkam' },
+    { ward: 35, area: 'Hasthinapuram & Pallavaram' },
+    { ward: 36, area: 'Hasthinapuram' },
+    { ward: 37, area: 'Hasthinapuram' },
+    { ward: 38, area: 'Hasthinapuram' },
+    { ward: 39, area: 'Sembakkam' },
+    { ward: 40, area: 'Gowrivakkam & Sembakkam' },
+    { ward: 41, area: 'Gowrivakkam & Rajakilpakkam' },
+    { ward: 42, area: 'Rajakilpakkam & Sembakkam' },
+    { ward: 43, area: 'Chitlapakkam' },
+    { ward: 44, area: 'Chitlapakkam' },
+    { ward: 45, area: 'Selaiyur' },
+    { ward: 46, area: 'Selaiyur' },
+    { ward: 47, area: 'Selaiyur' },
+    { ward: 48, area: 'Selaiyur & Tambaram' },
+    { ward: 49, area: 'Tambaram' },
+    { ward: 50, area: 'Kadapperi & Tambaram' },
+    { ward: 51, area: 'Pulikoradu & Tambaram' },
+    { ward: 52, area: 'Pulikoradu & Tambaram' },
+    { ward: 53, area: 'Irumbuliyur & Tambaram' },
+    { ward: 54, area: 'Tambaram' },
+    { ward: 55, area: 'Perungalathur' },
+    { ward: 56, area: 'Perungalathur' },
+    { ward: 57, area: 'Perungalathur' },
+    { ward: 58, area: 'Perungalathur' },
+    { ward: 59, area: 'Peerkankaranai' },
+    { ward: 60, area: 'Irumbuliyur & Tambaram' },
+    { ward: 61, area: 'Peerkankaranai' },
+    { ward: 62, area: 'Irumbuliyur' },
+    { ward: 63, area: 'Irumbuliyur & Selaiyur' },
+    { ward: 64, area: 'Selaiyur' },
+    { ward: 65, area: 'Selaiyur' },
+    { ward: 66, area: 'Rajakilpakkam' },
+    { ward: 67, area: 'Madambakkam' },
+    { ward: 68, area: 'Madambakkam & Selaiyur' },
+    { ward: 69, area: 'Madambakkam' },
+    { ward: 70, area: 'Madambakkam' }
+];
 
-const zoneNames = { '1': 'Zone 1 - Pammal', '2': 'Zone 2 - Pallavaram', '3': 'Zone 3 - Sembakkam', '4': 'Zone 4 - Perungalathur', '5': 'Zone 5 - East Tambaram/Selaiyur' };
+// Legacy compatibility - zone names kept for backward compatibility with existing complaints
+const zoneNames = { '1': 'Zone 1 - Pammal', '2': 'Zone 2 - Pallavaram', '3': 'Zone 3 - Sembakkam', '4': 'Zone 4 - Perungalathur', '5': 'Zone 5 - East Tambaram/Selaiyur', 'tambaram': 'Tambaram Constituency' };
 
 // Legacy area name mapping (for backward compatibility with existing data)
 const areaNames = {};
-Object.values(zoneData).forEach(zone => {
-    Object.entries(zone.areas).forEach(([key, val]) => { areaNames[key] = val.name; });
-});
+wardAreaData.forEach(w => { areaNames['ward-' + w.ward] = w.area; });
 
-// ===== ZONE → AREA CASCADING DROPDOWN =====
-function onZoneChange() {
-    const zoneSelect = document.getElementById('zone');
+// ===== POPULATE WARD DROPDOWN ON LOAD =====
+function populateWardDropdown() {
     const areaSelect = document.getElementById('area');
-    const wardGroup = document.getElementById('wardDisplayGroup');
-    const wardNumbers = document.getElementById('wardNumbers');
-    const selectedZone = zoneSelect.value;
+    if (!areaSelect) return;
     const lang = (typeof currentLang !== 'undefined') ? currentLang : 'ta';
+    const placeholder = lang === 'en' ? '-- Select Ward --' : '-- வார்டு தேர்வு செய்யுங்கள் / Select Ward --';
+    areaSelect.innerHTML = `<option value="">${placeholder}</option>`;
+    wardAreaData.forEach(w => {
+        const option = document.createElement('option');
+        option.value = 'ward-' + w.ward;
+        option.textContent = `Ward ${w.ward} - ${w.area}`;
+        areaSelect.appendChild(option);
+    });
+}
 
-    // Reset area dropdown
-    const areaPlaceholder = lang === 'en' ? '-- Select Area --' : '-- பகுதியை தேர்வு செய்யுங்கள் --';
-    areaSelect.innerHTML = `<option value="">${areaPlaceholder}</option>`;
-    wardGroup.style.display = 'none';
-    wardNumbers.textContent = '-';
+// Initialize ward dropdown on page load (with fallback for already-loaded DOM)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { populateWardDropdown(); });
+} else {
+    populateWardDropdown();
+}
 
-    if (!selectedZone) {
-        areaSelect.disabled = true;
-        return;
-    }
-
-    // Populate areas for the selected zone
-    const zone = zoneData[selectedZone];
-    if (zone) {
-        Object.entries(zone.areas).forEach(([key, areaInfo]) => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = areaInfo.name;
-            areaSelect.appendChild(option);
-        });
-        areaSelect.disabled = false;
-    }
-
-    // Add area change listener
-    areaSelect.onchange = function() {
-        const selectedArea = areaSelect.value;
-        if (selectedArea && zone && zone.areas[selectedArea]) {
-            const wards = zone.areas[selectedArea].wards;
-            wardGroup.style.display = 'block';
-            wardNumbers.textContent = 'வார்டு ' + wards.join(', ');
-        } else {
-            wardGroup.style.display = 'none';
-            wardNumbers.textContent = '-';
-        }
-    };
+// Legacy function - kept for backward compatibility (no-op now since zone is hidden)
+function onZoneChange() {
+    // Zone is now hidden with default value 'tambaram'
+    // Ward dropdown is populated on page load
 }
 
 function aiAutoDetectCategory(text) {
@@ -437,6 +446,8 @@ function nextStep(step) {
         if (!grievance || !grievance.value) { showNotification('குறையின் வகையை தேர்வு செய்யுங்கள்!', 'error'); return; }
         const title = document.getElementById('title');
         if (!title || !title.value.trim()) { showNotification('புகார் தலைப்பு எழுதுங்கள்!', 'error'); return; }
+        const description = document.getElementById('description');
+        if (!description || !description.value.trim()) { showNotification('விரிவான விளக்கம் எழுதுங்கள்!', 'error'); return; }
     }
     currentStep = step;
     updateWizardUI();
@@ -458,9 +469,9 @@ function populateReviewSummary() {
     const dept = document.getElementById('govDepartment'), grievance = document.getElementById('grievanceType');
     document.getElementById('reviewName').textContent = name ? name.value : '-';
     document.getElementById('reviewPhone').textContent = mobile ? '+91 ' + mobile.value : '-';
-    const zoneTxt = zone && zone.value ? zone.options[zone.selectedIndex].text : '';
+    const zoneTxt = zone && zone.value ? (zoneNames[zone.value] || zone.value) : 'Tambaram';
     const areaTxt = area && area.value ? area.options[area.selectedIndex].text : '';
-    document.getElementById('reviewArea').textContent = (zoneTxt ? zoneTxt + ' → ' : '') + (areaTxt || '-');
+    document.getElementById('reviewArea').textContent = areaTxt || '-';
     const deptTxt = dept && dept.value ? `${govDepartments[dept.value].name} (${dept.value})` : '-';
     const grievanceTxt = grievance && grievance.value ? grievance.value : '';
     document.getElementById('reviewCategory').textContent = deptTxt + (grievanceTxt ? ' → ' + grievanceTxt : '');
@@ -515,8 +526,8 @@ if (complaintForm) {
         const departmentName = govDepartments[departmentCode] ? govDepartments[departmentCode].name : departmentCode;
         const departmentNameTA = govDepartments[departmentCode] ? govDepartments[departmentCode].nameTA : '';
         const grievanceValue = grievanceSelect.value;
-        const zoneValue = zoneSelect ? zoneSelect.value : '';
-        const zoneName = zoneSelect && zoneSelect.value ? zoneSelect.options[zoneSelect.selectedIndex].text : '';
+        const zoneValue = zoneSelect ? zoneSelect.value : 'tambaram';
+        const zoneName = zoneValue ? (zoneNames[zoneValue] || 'Tambaram Constituency') : 'Tambaram Constituency';
         const areaValue = areaSelect.value;
         const areaName = areaSelect.options[areaSelect.selectedIndex].text;
         // Get ward numbers if available
@@ -644,6 +655,9 @@ if (complaintForm) {
             submitBtn.disabled = false;
             document.getElementById('successModal').classList.add('active');
             complaintForm.reset();
+            // Re-set hidden zone value and repopulate ward dropdown after reset
+            document.getElementById('zone').value = 'tambaram';
+            populateWardDropdown();
             document.querySelectorAll('.cat-card-new').forEach(c => c.classList.remove('selected'));
             currentStep = 1; updateWizardUI();
             updateDashboardStats();
