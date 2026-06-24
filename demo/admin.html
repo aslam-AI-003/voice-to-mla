@@ -329,7 +329,10 @@
             <!-- LOGIN FORM -->
             <div id="loginFormView">
                 <input type="text" id="loginUsername" placeholder="👤 Username" autocomplete="username">
-                <input type="password" id="loginPassword" placeholder="🔑 Password" autocomplete="current-password">
+                <div style="position:relative;">
+                    <input type="password" id="loginPassword" placeholder="🔑 Password" autocomplete="current-password" style="padding-right:45px;">
+                    <button type="button" onclick="togglePasswordVisibility('loginPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem;padding:4px;"><i class="fas fa-eye"></i></button>
+                </div>
                 <button class="btn-login" onclick="staffLogin()"><i class="fas fa-lock-open"></i> Login</button>
                 <p style="font-size:0.7rem;color:#999;margin-top:15px;">Demo: <code>admin</code> / <code>admin123</code></p>
                 <div style="margin-top:18px;padding-top:15px;border-top:1px solid #e5e7eb;">
@@ -363,8 +366,14 @@
                 <div style="border-top:1px solid #e5e7eb;padding-top:12px;margin-top:5px;">
                     <p style="font-size:0.75rem;color:#666;margin-bottom:10px;">🔑 Create Login Credentials</p>
                     <input type="text" id="regUsername" placeholder="Username (e.g., staff_aslam)" style="margin-bottom:10px;" autocomplete="off">
-                    <input type="password" id="regPassword" placeholder="Password (min 4 chars)" style="margin-bottom:10px;">
-                    <input type="password" id="regConfirmPassword" placeholder="Confirm Password" style="margin-bottom:12px;">
+                    <div style="position:relative;margin-bottom:10px;">
+                        <input type="password" id="regPassword" placeholder="Password (min 4 chars)" style="padding-right:45px;margin-bottom:0;">
+                        <button type="button" onclick="togglePasswordVisibility('regPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem;padding:4px;"><i class="fas fa-eye"></i></button>
+                    </div>
+                    <div style="position:relative;margin-bottom:12px;">
+                        <input type="password" id="regConfirmPassword" placeholder="Confirm Password" style="padding-right:45px;margin-bottom:0;">
+                        <button type="button" onclick="togglePasswordVisibility('regConfirmPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem;padding:4px;"><i class="fas fa-eye"></i></button>
+                    </div>
                 </div>
                 <button class="btn-login" onclick="staffRegister()"><i class="fas fa-user-plus"></i> Register & Create Account</button>
                 <p style="font-size:0.75rem;color:#666;margin-top:12px;cursor:pointer;" onclick="showLoginView()">← Back to Login</p>
@@ -658,6 +667,18 @@
     <script src="firebase-db.js"></script>
 
     <script>
+        // ===== PASSWORD VISIBILITY TOGGLE =====
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
         // ===== COMPLAINTS DATA (local + Firebase) =====
         let complaintsDB = {
             'TVK-2026-00847': { id: 'TVK-2026-00847', govId: 'TN/TBM/CPT/2026/00847', title: 'சாலையில் பள்ளம் - Mudichur Main Road', category: 'சாலைகள்', area: 'Mudichur', zone: '4', zoneName: 'Zone 4 - Perungalathur', department: 'Highways Department', grievanceType: 'Road Damage / Pothole', citizenName: 'ராஜேஷ்', mobileNumber: '9876543210', assigned: 'Highway Department - Mr. Kumar', date: 'May 13, 2026', status: 'பணியில்', statusClass: 'badge-progress' },
@@ -1188,13 +1209,20 @@
         document.getElementById('loginUsername').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('loginPassword').focus(); });
 
         // Load staff accounts from Firebase on page load
+        // NOTE: Firebase stores password as '***' for security, so we never overwrite local passwords with Firebase data
         async function loadStaffAccounts() {
             try {
                 if (typeof db !== 'undefined') {
                     const snapshot = await db.collection('vtm_staff').get();
                     snapshot.forEach(doc => {
+                        const fbData = doc.data();
                         if (!staffAccounts[doc.id]) {
-                            staffAccounts[doc.id] = doc.data();
+                            // Only add if not already in local (can't login without real password anyway)
+                            staffAccounts[doc.id] = fbData;
+                        } else {
+                            // Merge non-password fields from Firebase (keep local password intact)
+                            const localPassword = staffAccounts[doc.id].password;
+                            staffAccounts[doc.id] = { ...staffAccounts[doc.id], ...fbData, password: localPassword };
                         }
                     });
                     localStorage.setItem('vtm_staff_accounts', JSON.stringify(staffAccounts));
